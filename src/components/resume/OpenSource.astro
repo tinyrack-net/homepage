@@ -1,0 +1,54 @@
+---
+import type { SupportedLanguageCodes } from "@/lib/language";
+import type { OpenSourceExperience } from "@/libs/constants";
+import IndentLine from "@/components/IndentLine.astro";
+import { t as translate } from "@/i18n";
+
+type Props = {
+  lang: SupportedLanguageCodes;
+  opensourceExperience: OpenSourceExperience[];
+};
+
+const { opensourceExperience } = Astro.props;
+const t = (key: string) => translate(Astro.props.lang, key);
+---
+
+<h3 id="open_source" class="text-2xl font-bold">
+  {t("about.open_source")}
+</h3>
+<IndentLine class="flex flex-col gap-4">
+  {
+    opensourceExperience.map((exp) => (
+      <div class="p-3">
+        <div class="flex flex-row justify-between">
+          <div>
+            <h2 class="text-3xl">{t(exp.projectName)}</h2>
+            <p class="text-sm">
+              <a
+                class="break-all"
+                href={`https://${t(exp.publicLink)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="ri-links-line" />
+                {t(exp.publicLink)}
+              </a>
+            </p>
+          </div>
+          <div class="inline-flex flex-col items-end">
+            <span class="text-sm">
+              <i class="ri-calendar-line" />
+              {t(exp.period)}
+            </span>
+          </div>
+        </div>
+        <p class="mt-4">{t(exp.description)}</p>
+        <ul class="mt-2 list-inside list-disc">
+          {exp.features.map((feature) => (
+            <li class="ml-6 list-outside">{t(feature)}</li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</IndentLine>

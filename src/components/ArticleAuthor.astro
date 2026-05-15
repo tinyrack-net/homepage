@@ -1,0 +1,74 @@
+---
+import { Image } from "astro:assets";
+import ProfileImage from "@/assets/images/profile.jpg";
+import { LINKS, OWNER_NAME } from "@/libs/constants";
+import { t } from "@/i18n";
+import type { SupportedLanguageCodes } from "@/lib/language";
+
+type Props = {
+  lang: SupportedLanguageCodes;
+};
+
+const _t = (key: string) => t(Astro.props.lang, key);
+---
+
+<div class="flex justify-center">
+  <div
+    class="bg-base-200 rounded-2xl p-6 flex gap-6 overflow-hidden items-center flex-col sm:flex-row"
+  >
+    <Image
+      class="rounded-full w-30 h-30 shrink"
+      src={ProfileImage}
+      alt="author profile"
+      loading="lazy"
+      width={120}
+      height={120}
+    />
+    <div class="flex flex-col gap-2 flex-1 overflow-hidden">
+      <span class="text-xl font-bold">
+        {OWNER_NAME}
+      </span>
+      <p class="flex-1">
+        <Fragment set:html={_t("author.introduction")} />
+      </p>
+      <div class="flex justify-end gap-2 mt-2">
+        <a
+          class="btn btn-circle font-medium text-lg"
+          href={LINKS.GITHUB}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="ri-github-line"></i>
+          <span class="sr-only">GitHub</span>
+        </a>
+        <a
+          class="btn btn-circle font-medium text-lg"
+          href={`mailto: ${LINKS.EMAIL}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="ri-mail-line"></i>
+          <span class="sr-only">Email</span>
+        </a>
+        <a
+          class="btn btn-circle font-medium text-lg"
+          href={LINKS.NPM}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="ri-npmjs-line"></i>
+          <span class="sr-only">npm</span>
+        </a>
+        <a
+          class="btn btn-circle font-medium text-lg"
+          href={LINKS.LINKEDIN}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="ri-linkedin-box-line"></i>
+          <span class="sr-only">LinkedIn</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

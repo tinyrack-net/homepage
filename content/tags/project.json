@@ -1,0 +1,16 @@
+{
+  "slug": "project",
+  "name": "#project",
+  "visibility": "internal",
+  "order": 10,
+  "translations": {
+    "en": {
+      "title": "Projects",
+      "description": "I create projects to solve problems in my work or daily life."
+    },
+    "ko": {
+      "title": "별 건 없어요.\n제가 만들었거나 만들고 있는 프로젝트입니다.",
+      "description": "저는 주로 업무나 일상에서의 문제를 해결하기 위해 프로젝트를 생성합니다."
+    }
+  }
+}

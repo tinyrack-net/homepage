@@ -1,0 +1,16 @@
+{
+  "slug": "ai",
+  "name": "ai",
+  "visibility": "public",
+  "order": 2,
+  "translations": {
+    "en": {
+      "title": "ai",
+      "description": ""
+    },
+    "ko": {
+      "title": "ai",
+      "description": ""
+    }
+  }
+}

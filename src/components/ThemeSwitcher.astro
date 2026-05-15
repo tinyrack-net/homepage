@@ -1,0 +1,107 @@
+---
+type Props = {
+  labels: {
+    theme: string | undefined;
+    auto: string | undefined;
+    light: string | undefined;
+    dark: string | undefined;
+  };
+};
+
+const { labels } = Astro.props;
+---
+
+<div class="dropdown dropdown-top" data-theme-switcher>
+  <button
+    type="button"
+    tabindex="0"
+    class="btn btn-ghost w-full justify-start font-medium"
+  >
+    <i class="ri-contrast-2-line"></i>
+    <span>{labels.theme}</span>
+  </button>
+  <ul
+    tabindex="-1"
+    class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+  >
+    <li>
+      <button type="button" class="justify-start" data-theme-option="auto">
+        <i class="ri-computer-line"></i>
+        {labels.auto}
+      </button>
+    </li>
+    <li>
+      <button type="button" class="justify-start" data-theme-option="light">
+        <i class="ri-sun-line"></i>
+        {labels.light}
+      </button>
+    </li>
+    <li>
+      <button type="button" class="justify-start" data-theme-option="dark">
+        <i class="ri-moon-line"></i>
+        {labels.dark}
+      </button>
+    </li>
+  </ul>
+</div>
+
+<script>
+  import {
+      applyTheme,
+      getThemePreference,
+      isSupportedTheme,
+      setThemePreference,
+      THEME_MEDIA_QUERY,
+    } from "@/lib/theme";
+
+    const syncThemeSwitcher = (switcher: Element) => {
+      const selectedTheme = getThemePreference(window.localStorage);
+
+      switcher.querySelectorAll("[data-theme-option]").forEach((option) => {
+        if (!(option instanceof HTMLButtonElement)) {
+          return;
+        }
+
+        option.classList.toggle(
+          "font-bold",
+          option.dataset.themeOption === selectedTheme,
+        );
+      });
+    };
+
+    const syncAllThemeSwitchers = () => {
+      document.querySelectorAll("[data-theme-switcher]").forEach(syncThemeSwitcher);
+    };
+
+    const handleThemeSelection = (event: Event) => {
+      const target = event.target;
+
+      if (!(target instanceof Element)) {
+        return;
+      }
+
+      const option = target.closest("[data-theme-option]");
+
+      if (!(option instanceof HTMLButtonElement)) {
+        return;
+      }
+
+      const selectedTheme = option.dataset.themeOption;
+
+      if (!isSupportedTheme(selectedTheme)) {
+        return;
+      }
+
+      setThemePreference(window.localStorage, selectedTheme);
+      applyTheme(
+        document.documentElement,
+        selectedTheme,
+        window.matchMedia(THEME_MEDIA_QUERY).matches,
+      );
+      syncAllThemeSwitchers();
+    };
+
+    syncAllThemeSwitchers();
+    document.addEventListener("click", handleThemeSelection);
+    document.addEventListener("astro:after-swap", syncAllThemeSwitchers);
+</script>

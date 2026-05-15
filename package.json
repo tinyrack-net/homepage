@@ -1,0 +1,47 @@
+{
+  "name": "winetree94-com",
+  "packageManager": "pnpm@10.33.0",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "deploy": "wrangler deploy",
+    "test": "vitest",
+    "test:unit": "vitest run --project unit",
+    "test:component": "vitest run --project browser",
+    "test:e2e": "playwright test",
+    "test:coverage": "vitest run --project unit --project browser --coverage",
+    "test:ci": "pnpm test:unit && pnpm test:component && pnpm test:e2e",
+    "biome": "biome check .",
+    "biome:fix": "biome check --write ."
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.8",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "3.7.2",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/vite": "4.1.16",
+    "astro": "^6.1.5",
+    "daisyui": "^5.5.19",
+    "remixicon": "^4.9.1",
+    "tailwindcss": "4.1.16",
+    "typescript": "^6.0.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.11",
+    "@playwright/test": "^1.59.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@vitest/browser": "^4.1.4",
+    "@vitest/browser-playwright": "4.1.4",
+    "@vitest/coverage-v8": "^4.1.4",
+    "playwright": "^1.59.1",
+    "sharp": "^0.34.5",
+    "vite": "7.3.2",
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "^4.1.4",
+    "wrangler": "4.81.1"
+  }
+}

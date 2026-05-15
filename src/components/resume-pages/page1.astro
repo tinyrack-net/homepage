@@ -1,0 +1,60 @@
+---
+import { Image } from "astro:assets";
+import ProfileImage from "@/assets/images/profile.jpg";
+import { t as translate } from "@/i18n";
+import type { SupportedLanguageCodes } from "@/lib/language";
+import Skills from "../resume/Skills.astro";
+
+type Props = {
+  lang: SupportedLanguageCodes;
+};
+
+const t = (key: string) => translate(Astro.props.lang, key);
+---
+
+<div class="flex h-full w-full flex-col justify-center text-left">
+  <div class="flex flex-row">
+    <div class="flex shrink-0 flex-col items-center justify-center">
+      <Image
+        class="profile-image max-h-[150px] min-h-[150px] max-w-[150px] min-w-[150px] rounded-full"
+        src={ProfileImage}
+        alt="Profile"
+        width={150}
+        height={150}
+      />
+      <div class="mt-4">
+        <p class="text-sm">
+          <i class="ri-mail-line mr-2"></i>me@winetree94.com
+        </p>
+        <p class="text-sm">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://winetree94.com"
+          >
+            <i class="ri-home-3-line mr-2"></i>winetree94.com
+          </a>
+        </p>
+        <p class="text-sm">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/winetree94"
+          >
+            <i class="ri-github-line mr-2"></i>github.com/winetree94
+          </a>
+        </p>
+      </div>
+    </div>
+    <div class="mt-0 ml-8 flex flex-col justify-center">
+      <h4 class="text-xl">{t("about.title")}</h4>
+      <p class="mt-4">
+        <Fragment set:html={t("about.description")} />
+      </p>
+    </div>
+  </div>
+
+  <div class="mt-8 flex flex-col">
+    <Skills lang={Astro.props.lang} />
+  </div>
+</div>

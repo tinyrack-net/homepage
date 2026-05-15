@@ -1,0 +1,139 @@
+---
+import { t } from "@/i18n";
+import { getNavigationTags } from "@/lib/content";
+import { LOCALE_INFO } from "@/lib/language";
+import type { SupportedLanguageCodes } from "@/lib/language";
+import ThemeSwitcher from "./ThemeSwitcher.astro";
+
+type Props = {
+  lang: SupportedLanguageCodes;
+  alternativeLanguageLinks?: Array<{
+    href: string;
+    label: string;
+    lang: SupportedLanguageCodes;
+  }>;
+};
+
+const { lang, alternativeLanguageLinks } = Astro.props;
+
+const tags = await getNavigationTags();
+
+const labels = {
+  theme: t(lang, "theme"),
+  light: t(lang, "theme.light"),
+  dark: t(lang, "theme.dark"),
+  auto: t(lang, "theme.auto"),
+};
+---
+
+<div class="drawer">
+  <input id="global-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="fixed top-4 left-4">
+    <!-- Page content here -->
+    <label for="global-drawer" class="btn drawer-button btn-circle">
+      <i class="ri-menu-line"></i>
+    </label>
+  </div>
+  <div class="drawer-content">
+    <slot />
+  </div>
+  <div class="drawer-side">
+    <label for="global-drawer" aria-label="close sidebar" class="drawer-overlay"
+    ></label>
+    <div class="bg-base-200 flex min-h-full w-60 flex-col p-4">
+      <div class="flex flex-1 flex-col">
+        <ul class="menu w-full p-0">
+          <!-- Sidebar content here -->
+          <li class="my-2 font-bold text-neutral-600">winetree94</li>
+          <li>
+            <a href={`/${lang}/`}>Hello</a>
+          </li>
+          <li>
+            <a href={`/${lang}/resume/`}>Resume</a>
+          </li>
+          <li>
+            <a href={`/${lang}/about/`}>About Me</a>
+          </li>
+          <li class="my-2 font-bold text-neutral-600">Contents</li>
+          <li><a href={`/${lang}/tags/project/`}>Projects</a></li>
+          <li><a href={`/${lang}/tags/blog/`}>Blog</a></li>
+          <li class="my-2 font-bold text-neutral-600">Tags</li>
+        </ul>
+        <div class="mt-2 flex flex-wrap gap-2">
+          {
+            tags.map((tag) => (
+              <a class="badge badge-soft" href={`/${lang}/tags/${tag.data.slug}/`}>
+                {tag.data.name}
+              </a>
+            ))
+          }
+        </div>
+        <ul class="menu mt-2 w-full p-0">
+          <!-- Sidebar content here -->
+          <li class="my-2 font-bold text-neutral-600">Links</li>
+          <li>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://tinyrack.net"
+            >
+              tinyrack
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="flex flex-col">
+        <div class="flex flex-col">
+          <div class="divider m-0 p-0"></div>
+
+          <!-- Theme Toggle -->
+          <ThemeSwitcher labels={labels} />
+
+          <!-- Language Toggle -->
+          <div class="dropdown dropdown-top">
+            <button
+              type="button"
+              tabindex="0"
+              class="btn btn-ghost w-full justify-start font-medium"
+            >
+              <i class="ri-translate"></i>
+              {LOCALE_INFO[lang]}
+            </button>
+            <ul
+              tabindex="-1"
+              class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+            >
+              {
+                Object.entries(LOCALE_INFO).map(([code, name]) => {
+                  const targetLang = code as SupportedLanguageCodes;
+                  let href = `/${targetLang}/`;
+
+                  if (alternativeLanguageLinks) {
+                    const altLink = alternativeLanguageLinks.find((link) => link.lang === targetLang);
+                    if (altLink) {
+                      href = altLink.href;
+                    } else if (targetLang === lang) {
+                      href = Astro.url.pathname;
+                    }
+                  } else {
+                    const pathSegments = Astro.url.pathname.split("/").filter(Boolean);
+                    if (pathSegments.length > 0 && pathSegments[0] === lang) {
+                      pathSegments[0] = targetLang;
+                      href = `/${pathSegments.join("/")}/`;
+                    }
+                  }
+
+                  return (
+                    <li>
+                      <a href={href}>{name}</a>
+                    </li>
+                  );
+                })
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

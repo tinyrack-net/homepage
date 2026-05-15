@@ -1,0 +1,16 @@
+{
+  "slug": "en",
+  "name": "#en",
+  "visibility": "internal",
+  "order": 9,
+  "translations": {
+    "en": {
+      "title": "#en",
+      "description": ""
+    },
+    "ko": {
+      "title": "#en",
+      "description": ""
+    }
+  }
+}

@@ -1,0 +1,22 @@
+---
+import type { SupportedLanguageCodes } from "@/lib/language";
+
+type Props = {
+  class?: string | null;
+  lang: SupportedLanguageCodes;
+  date: string;
+};
+---
+
+<time
+  class={`text-neutral-500 ${Astro.props.class || ""}`}
+  datetime={Astro.props.date}
+>
+  {
+    new Date(Astro.props.date).toLocaleDateString(Astro.props.lang, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  }
+</time>

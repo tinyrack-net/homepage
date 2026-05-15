@@ -1,0 +1,121 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseHead from "@/components/BaseHead.astro";
+import BlogHeader from "@/components/BlogHeader.astro";
+import ContentImage from "@/components/ContentImage.astro";
+import Footer from "@/components/Footer.astro";
+import Gtm from "@/components/Gtm.astro";
+import TextDate from "@/components/TextDate.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "@/libs/constants";
+import { t as translate } from "@/i18n";
+import { type ArticleEntry, getAllArticles, getAllTags, type TagEntry } from "@/lib/content";
+import {
+  SUPPORTED_LANGUAGES,
+  SUPPORTED_LANGUAGE_CODES,
+  type SupportedLanguageCodes,
+} from "@/lib/language";
+
+type Props = {
+  tag: TagEntry;
+  posts: ArticleEntry[];
+};
+
+export const getStaticPaths = (async () => {
+  const [articles, allTags] = await Promise.all([getAllArticles(), getAllTags()]);
+  const languageTags = new Set<string>(SUPPORTED_LANGUAGE_CODES);
+  const tags = allTags.filter((tag) => !languageTags.has(tag.data.slug));
+  const langs = Object.values(SUPPORTED_LANGUAGES);
+  const postsByLangAndTag = new Map<string, ArticleEntry[]>();
+
+  for (const article of articles) {
+    for (const tag of article.data.tags) {
+      const key = `${article.data.lang}:${tag}`;
+      const posts = postsByLangAndTag.get(key);
+
+      if (posts) {
+        posts.push(article);
+      } else {
+        postsByLangAndTag.set(key, [article]);
+      }
+    }
+  }
+
+  return langs.flatMap((lang) =>
+      tags.map((tag) => ({
+        params: {
+          lang,
+          tag: tag.data.slug,
+        },
+        props: {
+          tag,
+          posts: postsByLangAndTag.get(`${lang}:${tag.data.slug}`) ?? [],
+        },
+      })),
+  );
+}) satisfies GetStaticPaths;
+
+const { tag, posts } = Astro.props as Props;
+const tagTranslation = tag.data.translations[Astro.params.lang];
+const t = (key: string) => translate(Astro.params.lang as SupportedLanguageCodes, key);
+---
+
+<!doctype html>
+<html lang={Astro.params.lang}>
+  <head>
+    <BaseHead
+      title={tagTranslation?.title || SITE_TITLE}
+      description={tagTranslation?.description || SITE_DESCRIPTION}
+      lang={Astro.params.lang}
+    />
+  </head>
+  <body>
+    <Gtm />
+    <BlogHeader lang={Astro.params.lang} />
+    <main class="mt-18 flex w-full justify-center">
+      <article class="flex w-full max-w-[720px] flex-col px-4">
+        {
+          tagTranslation && (
+            <div class="flex flex-col items-center justify-center gap-4">
+              <h1 class="text-3xl whitespace-pre-line">{tagTranslation.title}</h1>
+              <p class="text-lg whitespace-pre-line">{tagTranslation.description}</p>
+            </div>
+          )
+        }
+        {
+          posts.length ? (
+            <ul class="mt-8 flex list-none flex-wrap gap-8">
+              {posts.map((post) => (
+                <li class="w-full sm:w-[calc(50%-1rem)]">
+                  <a
+                    class="flex flex-col"
+                    href={`/${Astro.params.lang}/article/${post.data.routeSlug}/`}
+                  >
+                    {post.data.featureImage && (
+                      <ContentImage
+                        class="aspect-video w-full rounded-xl object-cover"
+                        src={post.data.featureImage}
+                        alt={post.data.title}
+                        loading="lazy"
+                        widths={[360, 720]}
+                        sizes="(min-width: 640px) 344px, 100vw"
+                      />
+                    )}
+                    <h6 class="title mt-4">{post.data.title}</h6>
+                    <p class="date">
+                      <TextDate lang={Astro.params.lang} date={post.data.publishedAt} />
+                    </p>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div class="flex justify-center">
+              <p>{t("global.empty")}</p>
+            </div>
+          )
+        }
+      </article>
+    </main>
+    <Footer />
+  </body>
+</html>

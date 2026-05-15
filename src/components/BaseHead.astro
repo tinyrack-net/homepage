@@ -1,0 +1,84 @@
+---
+// Import the global.css file here so that it is included on
+// all pages through the use of the <BaseHead /> component.
+import "@/styles/global.css";
+import { LANGUAGE_HEAD_LINKS } from "@/i18n";
+import type { SupportedLanguageCodes } from "@/lib/language";
+
+interface Props {
+  lang?: SupportedLanguageCodes;
+  title: string;
+  description: string;
+  ogImageUrl?: string;
+}
+
+const headLinks = Astro.props.lang ? LANGUAGE_HEAD_LINKS[Astro.props.lang] : [];
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const {
+  title,
+  description,
+  ogImageUrl = `/og/index/${Astro.props.lang}.png`,
+} = Astro.props;
+---
+
+<!-- Global Metadata --><!-- Google Tag Manager -->
+<script is:inline>
+  ((w, d, s, l, i) => {
+      w[l] = w[l] || [];
+      w[l].push({ "gtm.start": Date.now(), event: "gtm.js" });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l !== "dataLayer" ? `&l=${l}` : "";
+      j.async = true;
+      j.src = `https://www.googletagmanager.com/gtm.js?id=${i}${dl}`;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", "GTM-5NJV8H34");
+</script>
+<!-- End Google Tag Manager -->
+<meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+/>
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Font preloads -->
+{headLinks.map((link: { rel: string; href: string; as?: string; type?: string; crossorigin?: boolean }) => (
+  <link
+    rel={link.rel}
+    href={link.href}
+    as={link.as}
+    type={link.type}
+    crossorigin={link.crossorigin ? "anonymous" : undefined}
+  />
+))}
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={Astro.url} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={new URL(ogImageUrl, Astro.url)} />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={Astro.url} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={new URL(ogImageUrl, Astro.url)} />
+
+<script>
+  import { setupTheme } from "@/lib/theme";
+
+    setupTheme();
+</script>

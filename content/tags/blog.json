@@ -1,0 +1,16 @@
+{
+  "slug": "blog",
+  "name": "#blog",
+  "visibility": "internal",
+  "order": 11,
+  "translations": {
+    "en": {
+      "title": "Accidental Musings",
+      "description": "A collection of survival logs and records that barely made it past my procrastination."
+    },
+    "ko": {
+      "title": "어쩌다 보니 쓰게 된 글들",
+      "description": "수많은 작심삼일을 뚫고 간신히 남긴 생존 신고이자 기록입니다."
+    }
+  }
+}

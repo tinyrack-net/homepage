@@ -1,0 +1,16 @@
+{
+  "slug": "frontend",
+  "name": "frontend",
+  "visibility": "public",
+  "order": 13,
+  "translations": {
+    "en": {
+      "title": "frontend",
+      "description": ""
+    },
+    "ko": {
+      "title": "frontend",
+      "description": ""
+    }
+  }
+}

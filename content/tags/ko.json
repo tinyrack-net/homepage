@@ -1,0 +1,16 @@
+{
+  "slug": "ko",
+  "name": "#ko",
+  "visibility": "internal",
+  "order": 12,
+  "translations": {
+    "en": {
+      "title": "#ko",
+      "description": ""
+    },
+    "ko": {
+      "title": "#ko",
+      "description": ""
+    }
+  }
+}

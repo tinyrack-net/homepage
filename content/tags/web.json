@@ -1,0 +1,16 @@
+{
+  "slug": "web",
+  "name": "web",
+  "visibility": "public",
+  "order": 2,
+  "translations": {
+    "en": {
+      "title": "web",
+      "description": ""
+    },
+    "ko": {
+      "title": "web",
+      "description": ""
+    }
+  }
+}

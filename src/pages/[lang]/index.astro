@@ -1,0 +1,126 @@
+---
+import { Image } from "astro:assets";
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+import ProfileImage from "@/assets/images/profile.jpg";
+import BaseHead from "@/components/BaseHead.astro";
+import BlogHeader from "@/components/BlogHeader.astro";
+import Footer from "@/components/Footer.astro";
+import Gtm from "@/components/Gtm.astro";
+import { LINKS, SITE_DESCRIPTIONS, SITE_IMAGES, SITE_TITLES } from "@/libs/constants";
+import { t as translate } from "@/i18n";
+import { LOCALE_INFO, SUPPORTED_LANGUAGES } from "@/lib/language";
+
+export const getStaticPaths = (async () => {
+  return Object.values(SUPPORTED_LANGUAGES).map((lang) => ({
+    params: {
+      lang: lang,
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+// type Params = InferGetStaticParamsType<typeof getStaticPaths>;
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const t = (key: string) => translate(Astro.params.lang, key);
+
+const title = SITE_TITLES[Astro.params.lang];
+const description = SITE_DESCRIPTIONS[Astro.params.lang];
+const image = SITE_IMAGES[Astro.params.lang];
+
+const keywords = [
+  "WEB",
+  "FRONTEND",
+  "OPENSOURCE",
+  "ONPREMISE",
+  "LINUX",
+  "DEVOPS",
+  "CLOUDNATIVE",
+  "KUBERNETES",
+];
+---
+
+<!doctype html>
+<html lang={Astro.params.lang}>
+  <head>
+    <BaseHead
+      title={title}
+      description={description}
+      ogImageUrl={image}
+      lang={Astro.params.lang}
+    />
+  </head>
+  <body class="flex h-dvh w-full flex-col">
+    <Gtm />
+    <BlogHeader lang={Astro.params.lang} />
+    <main
+      class="mx-auto flex w-[720px] max-w-[calc(100%-2em)] flex-1 flex-col items-center justify-center px-4 py-12"
+    >
+      <span class={`text-rotate text-5xl duration-3000`}>
+        <span class="justify-items-center">
+          {keywords.map((keyword) => <span>{keyword}</span>)}
+        </span>
+      </span>
+      <p class="text-center mt-6">
+        <Fragment set:html={t("home.introduction")} />
+      </p>
+      <div class="mt-8 flex items-center gap-2">
+        <Image
+          class="avatar h-6 w-6 rounded-full"
+          src={ProfileImage}
+          alt=""
+          width={24}
+          height={24}
+        />
+        <span class="text">winetree94</span>
+      </div>
+      <div class="mt-4 flex gap-4">
+        <a
+          class="btn btn-circle font-medium text-lg"
+          href={LINKS.GITHUB}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="ri-github-line"></i>
+          <span class="sr-only">GitHub</span>
+        </a>
+        <a
+          class="btn btn-circle font-medium text-lg"
+          href={`mailto: ${LINKS.EMAIL}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="ri-mail-line"></i>
+          <span class="sr-only">Email</span>
+        </a>
+        <a
+          class="btn btn-circle font-medium text-lg"
+          href={LINKS.NPM}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="ri-npmjs-line"></i>
+          <span class="sr-only">npm</span>
+        </a>
+        <a
+          class="btn btn-circle font-medium text-lg"
+          href={LINKS.LINKEDIN}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="ri-linkedin-box-line"></i>
+          <span class="sr-only">LinkedIn</span>
+        </a>
+      </div>
+      <div class="mt-4 flex gap-4">
+        {
+          Object.entries(LOCALE_INFO).map(([code, name]) => (
+            <a class="badge badge-neutral badge-ghost" href={`/${code}/`}>
+              {name}
+            </a>
+          ))
+        }
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>
