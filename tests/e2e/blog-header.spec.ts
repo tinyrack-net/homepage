@@ -46,6 +46,35 @@ test("drawer includes winetree94 profile link", async ({ page }) => {
   await expect(profileLink).toHaveAttribute("href", "https://winetree94.com");
 });
 
+test("drawer includes product links", async ({ page }) => {
+  await page.goto("/");
+
+  await openDrawer(page);
+
+  const drawer = page.locator(".drawer-side");
+  await expect(drawer.getByText("Products", { exact: true })).toBeVisible();
+
+  const dotweaveLink = drawer.getByRole("link", {
+    name: "Dotweave",
+    exact: true,
+  });
+  await expect(dotweaveLink).toBeVisible();
+  await expect(dotweaveLink).toHaveAttribute(
+    "href",
+    "https://dotweave.tinyrack.net",
+  );
+
+  const proxerLink = drawer.getByRole("link", {
+    name: "Proxer",
+    exact: true,
+  });
+  await expect(proxerLink).toBeVisible();
+  await expect(proxerLink).toHaveAttribute(
+    "href",
+    "https://proxer.tinyrack.net",
+  );
+});
+
 test("drawer language selector navigates equivalent routes", async ({
   page,
 }) => {
