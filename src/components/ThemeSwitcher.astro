@@ -47,61 +47,61 @@ const { labels } = Astro.props;
 
 <script>
   import {
-      applyTheme,
-      getThemePreference,
-      isSupportedTheme,
-      setThemePreference,
-      THEME_MEDIA_QUERY,
-    } from "@/lib/theme";
+          applyTheme,
+          getThemePreference,
+          isSupportedTheme,
+          setThemePreference,
+          THEME_MEDIA_QUERY,
+        } from "@/lib/theme";
 
-    const syncThemeSwitcher = (switcher: Element) => {
-      const selectedTheme = getThemePreference(window.localStorage);
+        const syncThemeSwitcher = (switcher: Element) => {
+          const selectedTheme = getThemePreference(window.localStorage);
 
-      switcher.querySelectorAll("[data-theme-option]").forEach((option) => {
-        if (!(option instanceof HTMLButtonElement)) {
-          return;
-        }
+          switcher.querySelectorAll("[data-theme-option]").forEach((option) => {
+            if (!(option instanceof HTMLButtonElement)) {
+              return;
+            }
 
-        option.classList.toggle(
-          "font-bold",
-          option.dataset.themeOption === selectedTheme,
-        );
-      });
-    };
+            option.classList.toggle(
+              "font-bold",
+              option.dataset.themeOption === selectedTheme,
+            );
+          });
+        };
 
-    const syncAllThemeSwitchers = () => {
-      document.querySelectorAll("[data-theme-switcher]").forEach(syncThemeSwitcher);
-    };
+        const syncAllThemeSwitchers = () => {
+          document.querySelectorAll("[data-theme-switcher]").forEach(syncThemeSwitcher);
+        };
 
-    const handleThemeSelection = (event: Event) => {
-      const target = event.target;
+        const handleThemeSelection = (event: Event) => {
+          const target = event.target;
 
-      if (!(target instanceof Element)) {
-        return;
-      }
+          if (!(target instanceof Element)) {
+            return;
+          }
 
-      const option = target.closest("[data-theme-option]");
+          const option = target.closest("[data-theme-option]");
 
-      if (!(option instanceof HTMLButtonElement)) {
-        return;
-      }
+          if (!(option instanceof HTMLButtonElement)) {
+            return;
+          }
 
-      const selectedTheme = option.dataset.themeOption;
+          const selectedTheme = option.dataset.themeOption;
 
-      if (!isSupportedTheme(selectedTheme)) {
-        return;
-      }
+          if (!isSupportedTheme(selectedTheme)) {
+            return;
+          }
 
-      setThemePreference(window.localStorage, selectedTheme);
-      applyTheme(
-        document.documentElement,
-        selectedTheme,
-        window.matchMedia(THEME_MEDIA_QUERY).matches,
-      );
-      syncAllThemeSwitchers();
-    };
+          setThemePreference(window.localStorage, selectedTheme);
+          applyTheme(
+            document.documentElement,
+            selectedTheme,
+            window.matchMedia(THEME_MEDIA_QUERY).matches,
+          );
+          syncAllThemeSwitchers();
+        };
 
-    syncAllThemeSwitchers();
-    document.addEventListener("click", handleThemeSelection);
-    document.addEventListener("astro:after-swap", syncAllThemeSwitchers);
+        syncAllThemeSwitchers();
+        document.addEventListener("click", handleThemeSelection);
+        document.addEventListener("astro:after-swap", syncAllThemeSwitchers);
 </script>

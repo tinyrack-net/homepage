@@ -1,5 +1,6 @@
 export const SUPPORTED_LANGUAGES = {
   EN: "en",
+  JA: "ja",
   KO: "ko",
 } as const;
 
@@ -10,7 +11,8 @@ export type SupportedLanguageCodes =
 
 export const LOCALE_INFO: Record<SupportedLanguageCodes, string> = {
   en: "English",
+  ja: "日本語",
   ko: "한국어",
 };
 
-export const defaultLangCode = SUPPORTED_LANGUAGES.EN as SupportedLanguageCodes;
+export const defaultLangCode = SUPPORTED_LANGUAGES.KO as SupportedLanguageCodes;

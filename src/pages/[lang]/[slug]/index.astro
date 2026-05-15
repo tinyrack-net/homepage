@@ -1,0 +1,64 @@
+---
+import { render } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import BlogArticle from "@/components/BlogArticle.astro";
+import TextDate from "@/components/TextDate.astro";
+import {
+  type ArticleEntry,
+  getAllArticles,
+  getAllPages,
+  type PageEntry,
+} from "@/lib/content";
+import { defaultLangCode } from "@/lib/language";
+
+type Props =
+  | { kind: "article"; entry: ArticleEntry }
+  | { kind: "page"; entry: PageEntry };
+
+export const getStaticPaths = (async () => {
+  const [articles, pages] = await Promise.all([getAllArticles(), getAllPages()]);
+  const paths = [
+    ...articles
+      .filter((entry) => entry.data.lang !== defaultLangCode)
+      .map((entry) => ({
+        params: { lang: entry.data.lang, slug: entry.data.routeSlug },
+        props: { kind: "article", entry } as Props,
+      })),
+    ...pages
+      .filter((entry) => entry.data.lang !== defaultLangCode)
+      .map((entry) => ({
+        params: { lang: entry.data.lang, slug: entry.data.routeSlug },
+        props: { kind: "page", entry } as Props,
+      })),
+  ];
+  const slugs = new Set<string>();
+
+  for (const path of paths) {
+    const key = `${path.params.lang}/${path.params.slug}`;
+
+    if (slugs.has(key)) {
+      throw new Error(`Duplicate content route slug: ${key}`);
+    }
+    slugs.add(key);
+  }
+
+  return paths;
+}) satisfies GetStaticPaths;
+
+const { kind, entry } = Astro.props as Props;
+const { Content } = await render(entry);
+---
+
+<BlogArticle
+  lang={entry.data.lang}
+  title={entry.data.title}
+  description={entry.data.excerpt || entry.data.title}
+  featureImage={entry.data.featureImage}
+>
+  {kind === "article" && (
+    <div slot="headerMeta" class="mt-2">
+      <TextDate lang={entry.data.lang} date={(entry as ArticleEntry).data.publishedAt} />
+    </div>
+  )}
+  <Content />
+</BlogArticle>

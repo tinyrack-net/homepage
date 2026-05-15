@@ -1,125 +1,79 @@
 ---
-import { Image } from "astro:assets";
-import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
-import ProfileImage from "@/assets/images/profile.jpg";
+import type { GetStaticPaths } from "astro";
 import BaseHead from "@/components/BaseHead.astro";
 import BlogHeader from "@/components/BlogHeader.astro";
+import ContentImage from "@/components/ContentImage.astro";
 import Footer from "@/components/Footer.astro";
 import Gtm from "@/components/Gtm.astro";
-import { LINKS, SITE_DESCRIPTIONS, SITE_IMAGES, SITE_TITLES } from "@/libs/constants";
-import { t as translate } from "@/i18n";
-import { LOCALE_INFO, SUPPORTED_LANGUAGES } from "@/lib/language";
+import TextDate from "@/components/TextDate.astro";
+import { getAllArticles } from "@/lib/content";
+import {
+  defaultLangCode,
+  SUPPORTED_LANGUAGE_CODES,
+  type SupportedLanguageCodes,
+} from "@/lib/language";
+import { getContentPath } from "@/lib/routes";
+import { SITE_DESCRIPTIONS, SITE_TITLES } from "@/libs/constants";
 
-export const getStaticPaths = (async () => {
-  return Object.values(SUPPORTED_LANGUAGES).map((lang) => ({
-    params: {
-      lang: lang,
-    },
+type Props = {
+  lang: SupportedLanguageCodes;
+};
+
+export const getStaticPaths = (() => {
+  return SUPPORTED_LANGUAGE_CODES.filter((lang) => lang !== defaultLangCode).map((lang) => ({
+    params: { lang },
+    props: { lang },
   }));
 }) satisfies GetStaticPaths;
 
-// type Params = InferGetStaticParamsType<typeof getStaticPaths>;
-type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-
-const t = (key: string) => translate(Astro.params.lang, key);
-
-const title = SITE_TITLES[Astro.params.lang];
-const description = SITE_DESCRIPTIONS[Astro.params.lang];
-const image = SITE_IMAGES[Astro.params.lang];
-
-const keywords = [
-  "WEB",
-  "FRONTEND",
-  "OPENSOURCE",
-  "ONPREMISE",
-  "LINUX",
-  "DEVOPS",
-  "CLOUDNATIVE",
-  "KUBERNETES",
-];
+const { lang } = Astro.props as Props;
+const posts = (await getAllArticles()).filter((post) => post.data.lang === lang);
+const siteTitle = SITE_TITLES[lang];
+const siteDescription = SITE_DESCRIPTIONS[lang];
 ---
 
 <!doctype html>
-<html lang={Astro.params.lang}>
+<html lang={lang}>
   <head>
-    <BaseHead
-      title={title}
-      description={description}
-      ogImageUrl={image}
-      lang={Astro.params.lang}
-    />
+    <BaseHead title={siteTitle} description={siteDescription} lang={lang} />
   </head>
-  <body class="flex h-dvh w-full flex-col">
+  <body>
     <Gtm />
-    <BlogHeader lang={Astro.params.lang} />
-    <main
-      class="mx-auto flex w-[720px] max-w-[calc(100%-2em)] flex-1 flex-col items-center justify-center px-4 py-12"
-    >
-      <span class={`text-rotate text-5xl duration-3000`}>
-        <span class="justify-items-center">
-          {keywords.map((keyword) => <span>{keyword}</span>)}
-        </span>
-      </span>
-      <p class="text-center mt-6">
-        <Fragment set:html={t("home.introduction")} />
-      </p>
-      <div class="mt-8 flex items-center gap-2">
-        <Image
-          class="avatar h-6 w-6 rounded-full"
-          src={ProfileImage}
-          alt=""
-          width={24}
-          height={24}
-        />
-        <span class="text">winetree94</span>
-      </div>
-      <div class="mt-4 flex gap-4">
-        <a
-          class="btn btn-circle font-medium text-lg"
-          href={LINKS.GITHUB}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i class="ri-github-line"></i>
-          <span class="sr-only">GitHub</span>
-        </a>
-        <a
-          class="btn btn-circle font-medium text-lg"
-          href={`mailto: ${LINKS.EMAIL}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i class="ri-mail-line"></i>
-          <span class="sr-only">Email</span>
-        </a>
-        <a
-          class="btn btn-circle font-medium text-lg"
-          href={LINKS.NPM}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i class="ri-npmjs-line"></i>
-          <span class="sr-only">npm</span>
-        </a>
-        <a
-          class="btn btn-circle font-medium text-lg"
-          href={LINKS.LINKEDIN}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i class="ri-linkedin-box-line"></i>
-          <span class="sr-only">LinkedIn</span>
-        </a>
-      </div>
-      <div class="mt-4 flex gap-4">
-        {
-          Object.entries(LOCALE_INFO).map(([code, name]) => (
-            <a class="badge badge-neutral badge-ghost" href={`/${code}/`}>
-              {name}
-            </a>
-          ))
-        }
-      </div>
+    <BlogHeader lang={lang} />
+    <main class="mx-auto flex w-full max-w-[920px] flex-col gap-10 px-4 py-16">
+      <section class="text-center">
+        <p class="text-sm font-semibold tracking-[0.3em] text-primary uppercase">Tinyrack</p>
+        <h1 class="mt-4 text-4xl font-bold">{siteTitle}</h1>
+        <p class="mx-auto mt-4 max-w-[640px] text-lg text-neutral-500">
+          {siteDescription}
+        </p>
+      </section>
+      <section>
+        <h2 class="text-2xl font-bold">Latest</h2>
+        <ul class="mt-6 grid gap-8 md:grid-cols-2">
+          {posts.map((post) => (
+            <li>
+              <a class="group flex flex-col" href={getContentPath(lang, post.data.routeSlug)}>
+                {post.data.featureImage && (
+                  <ContentImage
+                    class="aspect-video w-full rounded-2xl object-cover transition group-hover:opacity-90"
+                    src={post.data.featureImage}
+                    alt={post.data.title}
+                    loading="lazy"
+                    widths={[480, 920]}
+                    sizes="(min-width: 768px) 448px, 100vw"
+                  />
+                )}
+                <h3 class="mt-4 text-xl font-bold group-hover:underline">
+                  {post.data.title}
+                </h3>
+                <TextDate class="mt-2" lang={lang} date={post.data.publishedAt} />
+                <p class="mt-3 line-clamp-3 text-neutral-500">{post.data.excerpt}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
     </main>
     <Footer />
   </body>

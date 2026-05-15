@@ -5,24 +5,17 @@ import BaseHead from "@/components/BaseHead.astro";
 import BlogHeader from "@/components/BlogHeader.astro";
 import ContentImage from "@/components/ContentImage.astro";
 import Footer from "@/components/Footer.astro";
-import Gtm from "./Gtm.astro";
-import { t as translate } from "@/i18n";
 import type { SupportedLanguageCodes } from "@/lib/language";
+import Gtm from "./Gtm.astro";
 
 type Props = {
   lang: SupportedLanguageCodes;
   title: string;
   description: string;
   featureImage?: ImageMetadata;
-  alternativeLanguageLinks?: Array<{
-    href: string;
-    label: string;
-    lang: SupportedLanguageCodes;
-  }>;
 };
 
 const props = Astro.props as Props;
-const t = (key: string) => translate(props.lang, key);
 ---
 
 <html lang={props.lang}>
@@ -37,10 +30,7 @@ const t = (key: string) => translate(props.lang, key);
 
   <body>
     <Gtm />
-    <BlogHeader
-      lang={props.lang}
-      alternativeLanguageLinks={props.alternativeLanguageLinks}
-    />
+    <BlogHeader lang={props.lang} />
     <main class="w-full max-w-full">
       <article>
         {props.featureImage && (
@@ -57,21 +47,6 @@ const t = (key: string) => translate(props.lang, key);
           <div class:list={["mt-4 flex flex-col py-4 text-center"]}>
             <h1 class="text-4xl">{props.title}</h1>
             <slot name="headerMeta" />
-            {props.alternativeLanguageLinks && props.alternativeLanguageLinks.length > 0 && (
-              <div class="mt-8 flex items-center justify-end text-sm">
-                {t("article.alternative-language-available")}
-                <div class="ml-1 flex gap-2">
-                  {props.alternativeLanguageLinks.map((alternativeEntry) => (
-                       <a
-                         class:list={["badge badge-neutral badge-ghost text-sm"]}
-                         href={alternativeEntry.href}
-                       >
-                         {alternativeEntry.label}
-                       </a>
-                     ))}
-                   </div>
-              </div>
-            )}
             <div class="divider"></div>
           </div>
           <ArticleContent>

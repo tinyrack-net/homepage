@@ -8,13 +8,14 @@ import {
 
 describe("language constants", () => {
   it("keeps the supported language codes stable", () => {
-    expect(SUPPORTED_LANGUAGES).toEqual({ EN: "en", KO: "ko" });
-    expect(SUPPORTED_LANGUAGE_CODES).toEqual(["en", "ko"]);
-    expect(defaultLangCode).toBe("en");
+    expect(SUPPORTED_LANGUAGES).toEqual({ EN: "en", JA: "ja", KO: "ko" });
+    expect(SUPPORTED_LANGUAGE_CODES).toEqual(["en", "ja", "ko"]);
+    expect(defaultLangCode).toBe("ko");
   });
 
   it("exposes locale labels for each language", () => {
     expect(LOCALE_INFO.en).toBe("English");
+    expect(LOCALE_INFO.ja).toBe("日本語");
     expect(LOCALE_INFO.ko).toBe("한국어");
   });
 });

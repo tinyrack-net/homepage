@@ -1,0 +1,86 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseHead from "@/components/BaseHead.astro";
+import BlogHeader from "@/components/BlogHeader.astro";
+import ContentImage from "@/components/ContentImage.astro";
+import Footer from "@/components/Footer.astro";
+import Gtm from "@/components/Gtm.astro";
+import TextDate from "@/components/TextDate.astro";
+import {
+  type ArticleEntry,
+  getAllArticles,
+  getNavigationTags,
+  type TagEntry,
+} from "@/lib/content";
+import { defaultLangCode, type SupportedLanguageCodes } from "@/lib/language";
+import { getContentPath } from "@/lib/routes";
+import { SITE_DESCRIPTIONS, SITE_TITLES } from "@/libs/constants";
+
+type Props = {
+  lang: SupportedLanguageCodes;
+  tag: TagEntry;
+  posts: ArticleEntry[];
+};
+
+export const getStaticPaths = (async () => {
+  const [articles, tags] = await Promise.all([getAllArticles(), getNavigationTags()]);
+
+  return tags.flatMap((tag) => {
+    const languages = [...new Set(articles.map((article) => article.data.lang))].filter(
+      (lang) => lang !== defaultLangCode,
+    );
+
+    return languages.map((lang) => ({
+      params: { lang, tag: tag.data.slug },
+      props: {
+        lang,
+        tag,
+        posts: articles.filter((article) => {
+          return article.data.lang === lang && article.data.tags.includes(tag.data.slug);
+        }),
+      },
+    }));
+  });
+}) satisfies GetStaticPaths;
+
+const { lang, tag, posts } = Astro.props as Props;
+const tagTitle = tag.data.translations[lang]?.title || tag.data.name;
+const tagDescription = tag.data.translations[lang]?.description || SITE_DESCRIPTIONS[lang];
+const siteTitle = SITE_TITLES[lang];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <BaseHead title={`${tagTitle} - ${siteTitle}`} description={tagDescription} lang={lang} />
+  </head>
+  <body>
+    <Gtm />
+    <BlogHeader lang={lang} />
+    <main class="mx-auto flex w-full max-w-[920px] flex-col px-4 py-16">
+      <h1 class="text-3xl font-bold">{tagTitle}</h1>
+      {tagDescription && <p class="mt-2 text-neutral-500">{tagDescription}</p>}
+      <ul class="mt-8 grid gap-8 md:grid-cols-2">
+        {posts.map((post) => (
+          <li>
+            <a class="group flex flex-col" href={getContentPath(lang, post.data.routeSlug)}>
+              {post.data.featureImage && (
+                <ContentImage
+                  class="aspect-video w-full rounded-2xl object-cover transition group-hover:opacity-90"
+                  src={post.data.featureImage}
+                  alt={post.data.title}
+                  loading="lazy"
+                  widths={[480, 920]}
+                  sizes="(min-width: 768px) 448px, 100vw"
+                />
+              )}
+              <h2 class="mt-4 text-xl font-bold group-hover:underline">{post.data.title}</h2>
+              <TextDate class="mt-2" lang={lang} date={post.data.publishedAt} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </main>
+    <Footer />
+  </body>
+</html>

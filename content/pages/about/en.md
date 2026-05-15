@@ -1,83 +1,76 @@
 ---
-title: "@winetree94"
-excerpt: "My day job is mainly front-end web development. But outside of work, I dabble in a wider range of development fields and hobbies. I'd like to introduce the areas I'm passionate about and currently learning, so you can get to know me a little better.\n\n\nSelf hoster\n\nThe hobby I'm most deeply invested in is, without a doubt, homelabbing. I self-host essential internet services like email, notes, blog, and cloud storage right from a server in my room.\n\nSo I'm also a mini DevOps engineer of sorts. I "
+title: "Welcome!"
+excerpt: "tinyrack.net provides homelab news and reviews. A homelab is a lab at home: a personal environment where you build and operate servers, storage, and network gear."
 lang: "en"
 routeSlug: "about"
 translationKey: "about"
-featureImage: "./images/feature-image.jpg"
-updatedAt: "2025-12-20T15:18:56.000+00:00"
+featureImage: "./images/imgix-klwuhr-wpj8-unsplash-1.jpg"
+updatedAt: "2025-04-28T02:14:59.000+09:00"
 ---
+> tinyrack.net provides homelab news and reviews.
 
-My day job is mainly front-end web development. But outside of work, I dabble in a wider range of development fields and hobbies. I'd like to introduce the areas I'm passionate about and currently learning, so you can get to know me a little better.
+* * *
 
----
+## Homelab?
 
-## Self hoster
+HomeLab means a lab inside your home.
 
-The hobby I'm most deeply invested in is, without a doubt, homelabbing. I self-host essential internet services like email, notes, blog, and cloud storage right from a server in my room.
+In English-speaking communities, it usually means a personal environment where someone builds and operates servers, network equipment, or storage at home. If you have a NAS at home, that can also be called a homelab.
 
-So I'm also a mini DevOps engineer of sorts. I have the (sole) responsibility of managing networking, hardware, virtual environments, and even Kubernetes—all within my home. Thanks to this setup, whenever a service goes down due to a power outage or (more often) my own mistakes, I get to experience the delightful feeling of my entire life crumbling down.
+Most people today use cloud services from Google, Apple, and other large providers. Learning about homelabs lets you build and operate similar services yourself at home. For free, too. Sounds fun, right?
 
-![](./images/homelab-hardware-repair.jpg)
+With a homelab, you can try many different things:
 
-And when hardware decides to act up, it turns my room into a complete disaster zone like this.
+- Image and video backup or management
+- Home-wide ad blocking
+- Password management
+- Web office tools
+- A personal blog
+- Notes, Notion-style
+- Community sites
+- Game servers
 
-It's a pretty odd hobby for a front-end developer, I'll admit, but surprisingly, these activities have come back to help me at work. Somehow, I've ended up being responsible for our company's internal network DevOps as well.
+A homelab is a hobby that makes computers fun again. You can start with an old desktop or laptop, so it is affordable and can reduce e-waste. These days it is also approachable enough that you do not have to be an expert to begin.
 
----
+* * *
 
-![](./images/homelab-kubernetes-dashboard.png)
+## About Me
 
-## On-premise Kubernetes
+![](./images/crop.jpg)
 
-My homelab infrastructure has evolved gradually—from virtual machines (VMs) to containers, and then from standalone containers to a container orchestration environment. Currently, I'm running almost all my services on a single-node Kubernetes cluster.
+I, tinyrack, am a Korean developer and an ordinary middle-aged guy. Although I work as a developer, I am closer to an enthusiast than a specialist. After work I often spend more time tinkering with computers at home. These are the things I usually do there:
 
-Since my home isn't a public cloud environment (like AWS or GCP), I can't enjoy the benefits of managed Kubernetes. So I use an on-premises approach where I manage every component of the cluster myself. Plus, because I'm running stateful workloads directly, I'm dealing with **stateful Kubernetes**—the kind everyone tries to avoid.
+- I maintain my homelab server, including the server that runs this site.
+- I make unpopular YouTube videos to introduce the homelab hobby.
+- I write posts here and on the forum.
+- I experiment with different Linux distributions.
+- I test many kinds of small computers.
 
-That's why I'm really interested in the evolution of Kubernetes and the stateful ecosystem. I enjoy experimenting with new tools whenever they come out. Well, to be honest, I'd probably slack off if it weren't for the looming threat of my entire digital life grinding to a halt—so it's somewhat forced fun.
+I am basically an indoors person, so I do a lot of online activity. You can find me at the links below.
 
-I know this is way more than necessary for a home setup. But hobbies always tend to go beyond necessity, right? You all know what I'm talking about, don't you? :>
+- [YouTube](https://www.youtube.com/@tinyrack?ref=tinyrack.net)
+- [GitHub](https://github.com/winetree94?ref=tinyrack.net)
+- [LinkedIn](https://www.linkedin.com/in/winetree94/?ref=tinyrack.net)
+- [Personal developer blog](https://winetree94.com/?ref=tinyrack.net)
 
----
+* * *
 
-![](./images/ubuntu-neofetch-desktop.png)
+## My Goal
 
-## Linux
+My ultimate goal is to introduce the homelab hobby to more people and create many more homelab addicts like me. I hope your homes eventually become full of server computers and cables.
 
-I'm both a Linux enthusiast and an active user. All my servers run Ubuntu Server, and I use Ubuntu Desktop on my desktop and laptop. For the desktop environment, I prefer GNOME (sorry for writing it as "Gnome").
+That is why I want to build a variety of homelab content and platforms. This space focuses on news and reviews, while the [forum](https://forum.tinyrack.net/?ref=tinyrack.net) provides a wiki and community.
 
-Beyond that, I respect and appreciate all the different distros and desktop environments out there. I always try out new versions of Debian and Fedora as they're released, and I enjoy testing various desktop environments like Cinnamon, MATE, and KDE.
+If you want to try this hobby, I recommend starting with the [forum wiki](https://forum.tinyrack.net/t/topic/9?ref=tinyrack.net). If you get stuck, feel free to ask a question on the forum or contact me by email.
 
-I live in hope that one day Linux will win the desktop OS war against Windows and Mac. It won't be easy, but thanks to Steam's Proton, I think that day might actually come.
+* * *
 
----
+## Contact
 
-## Embedded Computer
+If you have questions, send an email to contact@tinyrack.net.
 
-![](./images/embedded-computer-boards.jpg)
+* * *
 
-I'm also a huge fan of small, low-power embedded computers. There's something deeply satisfying about watching what these affordable, sub-10W machines can accomplish. That's why I'm always excited to follow the development of ARM and RISC-V based CPUs.
+## Image Credit
 
-Hardware-wise, I'm a big fan of Korea's own Hardkernel products, though I also buy and experiment with boards from various manufacturers like Raspberry Pi, Orange Pi, and FriendlyElec. Aside from Raspberry Pi, this field is dominated mostly by Chinese and Taiwanese manufacturers, which is a bit disappointing in terms of diversity.
-
-The product I'm most interested in lately is CIX's CD8180 CPU, which supports full UEFI. I'm hoping that one day these computers will have standardized boot processes, allowing us to install software as freely as we do in x86 environments.
-
----
-
-![](./images/github-sponsors-dashboard.png)
-
-## Open Source Sponsor
-
-My homelab, Linux, and embedded computing hobbies are only possible thanks to the volunteer developers in the open-source ecosystem. That's why I try to support these developers, even if it's just with small amounts.
-
-Modern software development can no longer be done from scratch—most new software is built by assembling open-source components like LEGO bricks. So I really hope that companies using open source will take sponsorship more seriously.
-
----
-
-![](./images/tinyrack-forum-homepage.png)
-
-## tinyrack
-
-I have a dream of building a platform where people can share and easily learn about the homelab hobby. That's why I created and have been developing TinyRack, a blog and community space.
-
-My day job keeps me pretty busy, so I haven't been able to invest as much into it as I'd like yet. But someday, I hope to grow it into the go-to place people think of when they hear "homelab." If you're interested, I'd love for you to check it out.
+[Photo by imgix on Unsplash](https://unsplash.com/photos/img-ix-mining-rig-inside-white-and-gray-room-klWUhr-wPJ8?ref=tinyrack.net)

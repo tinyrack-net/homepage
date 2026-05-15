@@ -40,6 +40,10 @@ html:lang(ko) {
   --font-body: "IBM Plex Sans KR", "Gowun Dodum", sans-serif;
 }
 
+html:lang(ja) {
+  --font-body: "Noto Sans JP", "Gowun Dodum", sans-serif;
+}
+
 body {
   font-family: var(--font-body);
 }

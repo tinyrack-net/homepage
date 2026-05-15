@@ -1,0 +1,20 @@
+{
+  "slug": "hardware",
+  "name": "Hardware",
+  "visibility": "public",
+  "order": 1,
+  "translations": {
+    "en": {
+      "title": "Hardware",
+      "description": ""
+    },
+    "ja": {
+      "title": "ハードウェア",
+      "description": ""
+    },
+    "ko": {
+      "title": "Hardware",
+      "description": ""
+    }
+  }
+}

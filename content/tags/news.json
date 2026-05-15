@@ -1,0 +1,20 @@
+{
+  "slug": "news",
+  "name": "News",
+  "visibility": "public",
+  "order": 2,
+  "translations": {
+    "en": {
+      "title": "News",
+      "description": ""
+    },
+    "ja": {
+      "title": "ニュース",
+      "description": ""
+    },
+    "ko": {
+      "title": "News",
+      "description": ""
+    }
+  }
+}

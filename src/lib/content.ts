@@ -1,6 +1,6 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 
-const LANGUAGE_TAGS = new Set(["en", "ko"]);
+const LANGUAGE_TAGS = new Set(["en", "ja", "ko"]);
 
 export type ArticleEntry = CollectionEntry<"articles">;
 export type PageEntry = CollectionEntry<"pages">;

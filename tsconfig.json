@@ -4,17 +4,10 @@
     "baseUrl": "./",
     "resolveJsonModule": true,
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"]
     },
     "strictNullChecks": true,
     "allowJs": true
   },
-  "exclude": [
-    "coverage",
-    "dist",
-    "playwright-report",
-    "test-results"
-  ]
+  "exclude": ["coverage", "dist", "playwright-report", "test-results"]
 }

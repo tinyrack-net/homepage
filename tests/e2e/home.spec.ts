@@ -4,37 +4,25 @@ async function getBodyFontFamily(page: Page) {
   return page.evaluate(() => getComputedStyle(document.body).fontFamily);
 }
 
-test("root route redirects to the English home page", async ({ page }) => {
+test("root route renders the Tinyrack home page", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page).toHaveURL("/en/");
+  await expect(page).toHaveURL("/");
+  await expect(page).toHaveTitle(/타이니랙/i);
   await expect(
-    page.getByText("Hello! I'm a front-end developer from South Korea."),
+    page.getByRole("heading", { name: "타이니랙", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /또 다른 작은 오픈소스 KVM, Openterface/i }),
   ).toBeVisible();
 
   await page.reload();
 
-  await expect(page).toHaveURL("/en/");
-});
-
-test("English home page renders with the main intro content", async ({
-  page,
-}) => {
-  await page.goto("/en/");
-
-  await expect(page).toHaveTitle(/winetree94/i);
-  await expect(
-    page.getByText("Hello! I'm a front-end developer from South Korea."),
-  ).toBeVisible();
-  await expect(page.getByRole("link", { name: "한국어" })).toBeVisible();
+  await expect(page).toHaveURL("/");
 });
 
 test("pages apply the language-specific font stack", async ({ page }) => {
-  await page.goto("/en/");
-
-  await expect.poll(() => getBodyFontFamily(page)).toContain("Agave");
-
-  await page.goto("/ko/");
+  await page.goto("/");
 
   await expect
     .poll(() => getBodyFontFamily(page))
@@ -44,20 +32,7 @@ test("pages apply the language-specific font stack", async ({ page }) => {
 test("pages render the expected language-specific font links", async ({
   page,
 }) => {
-  await page.goto("/en/");
-
-  await expect(
-    page.locator(
-      'head link[rel="preload"][href="/fonts/Agave-Regular.ttf"][as="font"][type="font/woff"][crossorigin="anonymous"]',
-    ),
-  ).toHaveCount(1);
-  await expect(
-    page.locator(
-      'head link[rel="preload"][href="/fonts/Agave-Bold.ttf"][as="font"][type="font/woff"][crossorigin="anonymous"]',
-    ),
-  ).toHaveCount(1);
-
-  await page.goto("/ko/");
+  await page.goto("/");
 
   await expect(
     page.locator(

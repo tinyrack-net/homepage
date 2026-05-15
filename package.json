@@ -1,5 +1,5 @@
 {
-  "name": "winetree94-com",
+  "name": "tinyrack-homepage",
   "packageManager": "pnpm@10.33.0",
   "type": "module",
   "version": "0.0.1",
@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "deploy": "wrangler deploy",
+    "import:ghost": "node scripts/import-ghost-content.mjs",
     "test": "vitest",
     "test:unit": "vitest run --project unit",
     "test:component": "vitest run --project browser",
@@ -28,6 +29,7 @@
     "daisyui": "^5.5.19",
     "remixicon": "^4.9.1",
     "tailwindcss": "4.1.16",
+    "turndown": "^7.2.4",
     "typescript": "^6.0.2"
   },
   "devDependencies": {

@@ -1,18 +1,18 @@
 import { expect, test } from "@playwright/test";
 
 test("theme choice persists after reload", async ({ page }) => {
-  await page.goto("/en/");
+  await page.goto("/");
   await page.locator("#global-drawer").evaluate((element) => {
     const input = element as HTMLInputElement;
     input.checked = true;
     input.dispatchEvent(new Event("input", { bubbles: true }));
     input.dispatchEvent(new Event("change", { bubbles: true }));
   });
-  const themeButton = page.getByRole("button", { name: /theme/i });
+  const themeButton = page.getByRole("button", { name: /theme|테마/i });
 
   await expect(themeButton).toBeVisible();
   await themeButton.click();
-  await page.getByRole("button", { name: "Dark" }).click();
+  await page.getByRole("button", { name: /Dark|어두운 색상/ }).click();
 
   await expect(page.locator("html")).toHaveAttribute("data-theme", "black");
   await expect
@@ -34,7 +34,7 @@ test.describe("auto theme", () => {
       localStorage.setItem("theme-preference", "auto");
     });
 
-    await page.goto("/en/");
+    await page.goto("/");
 
     await expect(page.locator("html")).toHaveAttribute("data-theme", "black");
   });

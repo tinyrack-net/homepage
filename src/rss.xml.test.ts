@@ -15,11 +15,11 @@ const getAllArticlesMock = vi.mocked(getAllArticles);
 const rssMock = vi.mocked(rss);
 
 describe("GET /rss.xml", () => {
-  it("builds an RSS feed from English articles only", async () => {
+  it("builds an RSS feed from Korean articles on Ghost-compatible routes", async () => {
     getAllArticlesMock.mockResolvedValue([
       {
         data: {
-          lang: "en",
+          lang: "ko",
           title: "Browser Testing in Astro",
           excerpt: "Using Vitest browser mode",
           publishedAt: "2025-01-05",
@@ -28,7 +28,7 @@ describe("GET /rss.xml", () => {
       },
       {
         data: {
-          lang: "ko",
+          lang: "en",
           title: "브라우저 테스트",
           excerpt: "한국어 포스트",
           publishedAt: "2025-01-06",
@@ -38,17 +38,17 @@ describe("GET /rss.xml", () => {
     ] as never);
 
     const result = await GET({
-      site: new URL("https://winetree94.com"),
+      site: new URL("https://tinyrack.net"),
     } as never);
 
     expect(rssMock).toHaveBeenCalledOnce();
     expect(result).toMatchObject({
-      site: new URL("https://winetree94.com"),
+      site: new URL("https://tinyrack.net"),
       items: [
         {
           title: "Browser Testing in Astro",
           description: "Using Vitest browser mode",
-          link: "/en/article/browser-testing-in-astro/",
+          link: "/browser-testing-in-astro/",
           pubDate: new Date("2025-01-05"),
         },
       ],

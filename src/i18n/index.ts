@@ -1,9 +1,11 @@
 import type { SupportedLanguageCodes } from "@/lib/language";
 import en from "./translations/en.json";
+import ja from "./translations/ja.json";
 import ko from "./translations/ko.json";
 
 const translations: Record<SupportedLanguageCodes, Record<string, string>> = {
   en,
+  ja,
   ko,
 };
 
@@ -42,6 +44,26 @@ export const LANGUAGE_HEAD_LINKS: Record<
       as: "font",
       type: "font/woff",
       crossorigin: true,
+    },
+  ],
+  ja: [
+    {
+      rel: "preconnect",
+      href: "https://fonts.googleapis.com",
+    },
+    {
+      rel: "preconnect",
+      href: "https://fonts.gstatic.com",
+      crossorigin: true,
+    },
+    {
+      rel: "preload",
+      href: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=block",
+      as: "style",
+    },
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=block",
     },
   ],
   ko: [
