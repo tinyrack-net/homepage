@@ -21,41 +21,12 @@ test("root route renders the Tinyrack home page", async ({ page }) => {
   await expect(page).toHaveURL("/");
 });
 
-test("home page renders product links with descriptions", async ({ page }) => {
+test("home page does not render a Products section", async ({ page }) => {
   await page.goto("/");
 
-  const products = page.locator("section", {
-    has: page.getByRole("heading", { name: "Products" }),
-  });
+  const main = page.locator("main");
 
-  await expect(
-    products.getByText(
-      "Git 기반으로 개발 환경 설정과 dotfiles를 여러 기기에서 동기화하는 CLI 도구입니다.",
-    ),
-  ).toBeVisible();
-  await expect(
-    products.getByText(
-      "로컬 개발 서버를 안전하게 외부에 공유하는 리버스 터널링 도구입니다.",
-    ),
-  ).toBeVisible();
-
-  const dotweaveLink = products.getByRole("link", {
-    name: /Dotweave/,
-  });
-  await expect(dotweaveLink).toBeVisible();
-  await expect(dotweaveLink).toHaveAttribute(
-    "href",
-    "https://dotweave.tinyrack.net",
-  );
-
-  const proxerLink = products.getByRole("link", {
-    name: /Proxer/,
-  });
-  await expect(proxerLink).toBeVisible();
-  await expect(proxerLink).toHaveAttribute(
-    "href",
-    "https://proxer.tinyrack.net",
-  );
+  await expect(main.getByRole("heading", { name: "Products" })).toHaveCount(0);
 });
 
 test("pages apply the language-specific font stack", async ({ page }) => {
