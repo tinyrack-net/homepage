@@ -8,17 +8,35 @@ test("root route renders the Tinyrack home page", async ({ page }) => {
   await page.goto("/");
 
   await expect(page).toHaveURL("/");
-  await expect(page).toHaveTitle(/타이니랙/i);
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page).toHaveTitle(/Tinyrack/i);
+  await expect(
+    page.getByRole("heading", { name: "Tinyrack", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Homelab hardware and software reviews, news"),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", {
+      name: /Another Tiny Open-Source KVM: Openterface/i,
+    }),
+  ).toBeVisible();
+
+  await page.reload();
+
+  await expect(page).toHaveURL("/");
+});
+
+test("prefixed Korean home page renders Korean content", async ({ page }) => {
+  await page.goto("/ko/");
+
+  await expect(page.locator("html")).toHaveAttribute("lang", "ko");
   await expect(
     page.getByRole("heading", { name: "타이니랙", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("link", { name: /또 다른 작은 오픈소스 KVM, Openterface/i }),
   ).toBeVisible();
-
-  await page.reload();
-
-  await expect(page).toHaveURL("/");
 });
 
 test("home page does not render a Products section", async ({ page }) => {
@@ -32,9 +50,7 @@ test("home page does not render a Products section", async ({ page }) => {
 test("pages apply the language-specific font stack", async ({ page }) => {
   await page.goto("/");
 
-  await expect
-    .poll(() => getBodyFontFamily(page))
-    .toContain("IBM Plex Sans KR");
+  await expect.poll(() => getBodyFontFamily(page)).toContain("Agave");
 });
 
 test("pages render the expected language-specific font links", async ({
@@ -44,20 +60,15 @@ test("pages render the expected language-specific font links", async ({
 
   await expect(
     page.locator(
-      'head link[rel="preconnect"][href="https://fonts.googleapis.com"]',
+      'head link[rel="preload"][as="font"][href="/fonts/Agave-Regular.ttf"]',
     ),
   ).toHaveCount(1);
   await expect(
     page.locator(
-      'head link[rel="preconnect"][href="https://fonts.gstatic.com"][crossorigin="anonymous"]',
+      'head link[rel="preload"][as="font"][href="/fonts/Agave-Bold.ttf"]',
     ),
   ).toHaveCount(1);
-  await expect(
-    page.locator(
-      'head link[rel="preload"][as="style"][href*="IBM+Plex+Sans+KR"]',
-    ),
-  ).toHaveCount(1);
-  await expect(
-    page.locator('head link[rel="stylesheet"][href*="IBM+Plex+Sans+KR"]'),
-  ).toHaveCount(1);
+  await expect(page.locator('head link[href*="IBM+Plex+Sans+KR"]')).toHaveCount(
+    0,
+  );
 });

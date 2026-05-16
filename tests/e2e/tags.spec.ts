@@ -8,7 +8,7 @@ test("Ghost-compatible tag page lists articles and navigates to detail", async (
   await expect(page.getByRole("heading", { name: "Hardware" })).toBeVisible();
 
   const articleLink = page.getByRole("link", {
-    name: /또 다른 작은 오픈소스 KVM, Openterface/i,
+    name: /Another Tiny Open-Source KVM: Openterface/i,
   });
 
   await expect(articleLink).toBeVisible();
@@ -17,7 +17,7 @@ test("Ghost-compatible tag page lists articles and navigates to detail", async (
   await expect(page).toHaveURL("/openterface-mini-kvm/");
   await expect(
     page.getByRole("heading", {
-      name: "또 다른 작은 오픈소스 KVM, Openterface",
+      name: "Another Tiny Open-Source KVM: Openterface",
     }),
   ).toBeVisible();
 });
@@ -25,15 +25,15 @@ test("Ghost-compatible tag page lists articles and navigates to detail", async (
 test("translated tag pages list language-matched articles", async ({
   page,
 }) => {
-  await page.goto("/en/tag/hardware/");
+  await page.goto("/ko/tag/hardware/");
 
   await expect(page.getByRole("heading", { name: "Hardware" })).toBeVisible();
-  const englishArticleLink = page.getByRole("link", {
-    name: /Another Tiny Open-Source KVM: Openterface/i,
+  const koreanArticleLink = page.getByRole("link", {
+    name: /또 다른 작은 오픈소스 KVM, Openterface/i,
   });
-  await expect(englishArticleLink).toBeVisible();
-  await englishArticleLink.click();
-  await expect(page).toHaveURL("/en/openterface-mini-kvm/");
+  await expect(koreanArticleLink).toBeVisible();
+  await koreanArticleLink.click();
+  await expect(page).toHaveURL("/ko/openterface-mini-kvm/");
 
   await page.goto("/ja/tag/hardware/");
   await expect(

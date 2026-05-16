@@ -15,11 +15,11 @@ const getAllArticlesMock = vi.mocked(getAllArticles);
 const rssMock = vi.mocked(rss);
 
 describe("GET /rss.xml", () => {
-  it("builds an RSS feed from Korean articles on Ghost-compatible routes", async () => {
+  it("builds an RSS feed from English articles on canonical routes", async () => {
     getAllArticlesMock.mockResolvedValue([
       {
         data: {
-          lang: "ko",
+          lang: "en",
           title: "Browser Testing in Astro",
           excerpt: "Using Vitest browser mode",
           publishedAt: "2025-01-05",
@@ -28,7 +28,7 @@ describe("GET /rss.xml", () => {
       },
       {
         data: {
-          lang: "en",
+          lang: "ko",
           title: "브라우저 테스트",
           excerpt: "한국어 포스트",
           publishedAt: "2025-01-06",

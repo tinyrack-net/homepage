@@ -6,26 +6,31 @@ import Footer from "@/components/Footer.astro";
 import Gtm from "@/components/Gtm.astro";
 import TextDate from "@/components/TextDate.astro";
 import { getAllArticles } from "@/lib/content";
+import { defaultLangCode } from "@/lib/language";
 import { getContentPath } from "@/lib/routes";
-import { SITE_DESCRIPTION, SITE_TITLE } from "@/libs/constants";
+import { SITE_DESCRIPTIONS, SITE_TITLES } from "@/libs/constants";
 
-const posts = (await getAllArticles()).filter((post) => post.data.lang === "ko");
+const posts = (await getAllArticles()).filter(
+  (post) => post.data.lang === defaultLangCode,
+);
+const siteTitle = SITE_TITLES[defaultLangCode];
+const siteDescription = SITE_DESCRIPTIONS[defaultLangCode];
 ---
 
 <!doctype html>
-<html lang="ko">
+<html lang={defaultLangCode}>
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} lang="ko" />
+    <BaseHead title={siteTitle} description={siteDescription} lang={defaultLangCode} />
   </head>
   <body>
     <Gtm />
-    <BlogHeader lang="ko" />
+    <BlogHeader lang={defaultLangCode} />
     <main class="mx-auto flex w-full max-w-[920px] flex-col gap-10 px-4 py-16">
       <section class="text-center">
         <p class="text-sm font-semibold tracking-[0.3em] text-primary uppercase">Tinyrack</p>
-        <h1 class="mt-4 text-4xl font-bold">타이니랙</h1>
+        <h1 class="mt-4 text-4xl font-bold">{siteTitle}</h1>
         <p class="mx-auto mt-4 max-w-[640px] text-lg text-neutral-500">
-          홈랩 하드웨어/소프트웨어 리뷰, 뉴스
+          {siteDescription}
         </p>
       </section>
       <section>
@@ -33,7 +38,7 @@ const posts = (await getAllArticles()).filter((post) => post.data.lang === "ko")
         <ul class="mt-6 grid gap-8 md:grid-cols-2">
           {posts.map((post) => (
             <li>
-              <a class="group flex flex-col" href={getContentPath("ko", post.data.routeSlug)}>
+              <a class="group flex flex-col" href={getContentPath(defaultLangCode, post.data.routeSlug)}>
                 {post.data.featureImage && (
                   <ContentImage
                     class="aspect-video w-full rounded-2xl object-cover transition group-hover:opacity-90"
@@ -47,7 +52,7 @@ const posts = (await getAllArticles()).filter((post) => post.data.lang === "ko")
                 <h3 class="mt-4 text-xl font-bold group-hover:underline">
                   {post.data.title}
                 </h3>
-                <TextDate class="mt-2" lang="ko" date={post.data.publishedAt} />
+                <TextDate class="mt-2" lang={defaultLangCode} date={post.data.publishedAt} />
                 <p class="mt-3 line-clamp-3 text-neutral-500">{post.data.excerpt}</p>
               </a>
             </li>

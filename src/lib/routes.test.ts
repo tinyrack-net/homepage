@@ -3,18 +3,22 @@ import type { SupportedLanguageCodes } from "./language";
 import { getEquivalentLanguagePath } from "./routes";
 
 const cases = [
-  ["/", "ko", "/"],
-  ["/", "en", "/en/"],
+  ["/", "en", "/"],
+  ["/", "ko", "/ko/"],
   ["/", "ja", "/ja/"],
-  ["/about/", "en", "/en/about/"],
-  ["/en/about/", "ko", "/about/"],
+  ["/about/", "en", "/about/"],
+  ["/about/", "ko", "/ko/about/"],
+  ["/en/about/", "en", "/about/"],
+  ["/en/about/", "ko", "/ko/about/"],
   ["/en/about/", "ja", "/ja/about/"],
-  ["/openterface-mini-kvm/", "en", "/en/openterface-mini-kvm/"],
-  ["/en/openterface-mini-kvm/", "ko", "/openterface-mini-kvm/"],
-  ["/ja/openterface-mini-kvm/", "en", "/en/openterface-mini-kvm/"],
-  ["/tag/news/", "en", "/en/tag/news/"],
-  ["/en/tag/news/", "ko", "/tag/news/"],
-  ["/ja/tag/news/", "en", "/en/tag/news/"],
+  ["/openterface-mini-kvm/", "en", "/openterface-mini-kvm/"],
+  ["/openterface-mini-kvm/", "ko", "/ko/openterface-mini-kvm/"],
+  ["/en/openterface-mini-kvm/", "ko", "/ko/openterface-mini-kvm/"],
+  ["/ja/openterface-mini-kvm/", "en", "/openterface-mini-kvm/"],
+  ["/tag/news/", "en", "/tag/news/"],
+  ["/tag/news/", "ko", "/ko/tag/news/"],
+  ["/en/tag/news/", "ko", "/ko/tag/news/"],
+  ["/ja/tag/news/", "en", "/tag/news/"],
 ] satisfies Array<[string, SupportedLanguageCodes, string]>;
 
 describe("getEquivalentLanguagePath", () => {

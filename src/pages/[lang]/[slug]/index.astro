@@ -4,6 +4,10 @@ import type { GetStaticPaths } from "astro";
 import BlogArticle from "@/components/BlogArticle.astro";
 import TextDate from "@/components/TextDate.astro";
 import {
+  type AlternativeLanguageLink,
+  getAlternativeLanguageLinks,
+} from "@/lib/alternative-language-links";
+import {
   type ArticleEntry,
   getAllArticles,
   getAllPages,
@@ -11,24 +15,36 @@ import {
 } from "@/lib/content";
 import { defaultLangCode } from "@/lib/language";
 
-type Props =
+type Props = (
   | { kind: "article"; entry: ArticleEntry }
-  | { kind: "page"; entry: PageEntry };
+  | { kind: "page"; entry: PageEntry }
+) & {
+  alternativeLanguageLinks: AlternativeLanguageLink[];
+};
 
 export const getStaticPaths = (async () => {
   const [articles, pages] = await Promise.all([getAllArticles(), getAllPages()]);
+  const entries = [...articles, ...pages];
   const paths = [
     ...articles
       .filter((entry) => entry.data.lang !== defaultLangCode)
       .map((entry) => ({
         params: { lang: entry.data.lang, slug: entry.data.routeSlug },
-        props: { kind: "article", entry } as Props,
+        props: {
+          kind: "article",
+          entry,
+          alternativeLanguageLinks: getAlternativeLanguageLinks(entry, entries),
+        } as Props,
       })),
     ...pages
       .filter((entry) => entry.data.lang !== defaultLangCode)
       .map((entry) => ({
         params: { lang: entry.data.lang, slug: entry.data.routeSlug },
-        props: { kind: "page", entry } as Props,
+        props: {
+          kind: "page",
+          entry,
+          alternativeLanguageLinks: getAlternativeLanguageLinks(entry, entries),
+        } as Props,
       })),
   ];
   const slugs = new Set<string>();
@@ -45,7 +61,7 @@ export const getStaticPaths = (async () => {
   return paths;
 }) satisfies GetStaticPaths;
 
-const { kind, entry } = Astro.props as Props;
+const { kind, entry, alternativeLanguageLinks } = Astro.props as Props;
 const { Content } = await render(entry);
 ---
 
@@ -54,6 +70,7 @@ const { Content } = await render(entry);
   title={entry.data.title}
   description={entry.data.excerpt || entry.data.title}
   featureImage={entry.data.featureImage}
+  alternativeLanguageLinks={alternativeLanguageLinks}
 >
   {kind === "article" && (
     <div slot="headerMeta" class="mt-2">

@@ -10,7 +10,7 @@ describe("language constants", () => {
   it("keeps the supported language codes stable", () => {
     expect(SUPPORTED_LANGUAGES).toEqual({ EN: "en", JA: "ja", KO: "ko" });
     expect(SUPPORTED_LANGUAGE_CODES).toEqual(["en", "ja", "ko"]);
-    expect(defaultLangCode).toBe("ko");
+    expect(defaultLangCode).toBe("en");
   });
 
   it("exposes locale labels for each language", () => {

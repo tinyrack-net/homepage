@@ -15,4 +15,4 @@ export const LOCALE_INFO: Record<SupportedLanguageCodes, string> = {
   ko: "한국어",
 };
 
-export const defaultLangCode = SUPPORTED_LANGUAGES.KO as SupportedLanguageCodes;
+export const defaultLangCode = SUPPORTED_LANGUAGES.EN as SupportedLanguageCodes;
