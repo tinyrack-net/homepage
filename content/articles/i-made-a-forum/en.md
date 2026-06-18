@@ -4,7 +4,7 @@ excerpt: "One of my goals was to create a forum where people who enjoy homelabs 
 lang: "en"
 routeSlug: "i-made-a-forum"
 translationKey: "i-made-a-forum"
-featureImage: "./images/screenshot-from-2025-05-16-08-52-47.png"
+featureImage: "./attachments/screenshot-from-2025-05-16-08-52-47.png"
 updatedAt: "2025-05-20T03:02:14.000+09:00"
 publishedAt: "2025-05-20T02:00:00.000+09:00"
 commentsTerm: "682379548bc8bb0001e480fc"
@@ -37,7 +37,7 @@ I also realized that many forums I already knew or had visited were based on `Di
 
 # Installation
 
-![](./images/image-8.png)
+![](./attachments/image-8.png)
 
 `Discourse` provides an [official self-hosting guide](https://github.com/discourse/discourse/blob/main/docs/INSTALL-cloud.md?ref=tinyrack.net). The installation itself was not very difficult, but there were two disappointing points.
 
@@ -61,7 +61,7 @@ After some trial and error, the installation itself finished without much troubl
 
 # Configuration
 
-![](./images/image-9.png)
+![](./attachments/image-9.png)
 
 After installation, I noticed a few missing features. I looked through the [official forum plugin page](https://meta.discourse.org/c/plugin/22?ref=tinyrack.net), installed and tested several plugins, and eventually chose these:
 
@@ -74,7 +74,7 @@ After installation, I noticed a few missing features. I looked through the [offi
 
 My favorite feature was the integration with the blog. By combining Discourse Embed and the RSS Polling plugin, blog posts can be imported into Discourse automatically, and the blog can display comments from the linked Discourse topic. I found this kind of bidirectional integration fascinating.
 
-![](./images/image-11.png)
+![](./attachments/image-11.png)
 
 After configuring plugins, I changed the options I needed:
 
@@ -94,7 +94,7 @@ One downside was that, because it was made overseas, many Korean translations we
 
 # Done!
 
-![](./images/image-10.png)
+![](./attachments/image-10.png)
 
 The forum is now mostly ready. There are still many posts left to write, but I think it will become a better forum as it fills up. Based on my experience so far, these are the strengths of Discourse:
 

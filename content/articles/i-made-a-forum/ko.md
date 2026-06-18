@@ -4,7 +4,7 @@ excerpt: "제 목표 중 하나는 홈랩을 좋아하는 사람들이 서로 �
 lang: "ko"
 routeSlug: "i-made-a-forum"
 translationKey: "i-made-a-forum"
-featureImage: "./images/screenshot-from-2025-05-16-08-52-47.png"
+featureImage: "./attachments/screenshot-from-2025-05-16-08-52-47.png"
 updatedAt: "2025-05-20T03:02:14.000+09:00"
 publishedAt: "2025-05-20T02:00:00.000+09:00"
 commentsTerm: "682379548bc8bb0001e480fc"
@@ -37,7 +37,7 @@ tags:
 
 # 설치 과정
 
-![](./images/image-8.png)
+![](./attachments/image-8.png)
 
 `Discourse`는 셀프 호스팅을 위한 [공식 가이드 문서](https://github.com/discourse/discourse/blob/main/docs/INSTALL-cloud.md?ref=tinyrack.net)를 제공하고 있어요. 설치 방법 자체는 그다지 어렵지 않았지만 두 가지 아쉬운 점이 있었어요.
 
@@ -61,7 +61,7 @@ tags:
 
 # 설정하기
 
-![](./images/image-9.png)
+![](./attachments/image-9.png)
 
 설치를 마치고 좀 둘러보니 몇가지 기능적으로 아쉬운 것들이 있었어요. 그래서 먼저 [공식 포럼의 플러그인 페이지](https://meta.discourse.org/c/plugin/22?ref=tinyrack.net)를 보며 이것저것 설치해보고 테스트하기 시작했는데요. 제가 최종적으로 선택한 플러그인들과 그 이유는 다음과 같아요.
 
@@ -74,7 +74,7 @@ tags:
 
 가장 마음에 들었던 것은 블로그와의 연동 기능이에요. Discourse 의 Embed 기능과 RSS Polling 플러그인을 결합해 사용할 수 있었는데, 이러면 블로그 글을 Discourse 로 자동으로 가져올 수 있게 되고 블로그에는 Discourse 에 연동된 글의 댓글을 보여줄 수 있게 돼요. 두 사이트가 이렇게 상호적으로 연동될 수 있다는게 신기하더라고요.
 
-![](./images/image-11.png)
+![](./attachments/image-11.png)
 
 플러그인 설정 이후에는 다음과 같이 제게 필요한 옵션들을 변경했어요.
 
@@ -94,7 +94,7 @@ Discourse 의 거의 모든 옵션들은 어드민 페이지에서 조정할 수
 
 # 완성!
 
-![](./images/image-10.png)
+![](./attachments/image-10.png)
 
 이제 마무리가 좀 됐어요😄 아직 작성해야 할 글이 산더미지만 하나씩 채워나가다 보면 더 멋진 포럼이 될 거라 생각해요. 여기까지 진행하고 사용해보면서 제가 느낀 Discourse의 장점을 정리해보면 다음과 같아요.
 

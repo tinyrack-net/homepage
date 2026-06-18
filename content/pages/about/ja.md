@@ -4,7 +4,7 @@ excerpt: "tinyrack.net はホームラボのニュースとレビューを提供
 lang: "ja"
 routeSlug: "about"
 translationKey: "about"
-featureImage: "./images/imgix-klwuhr-wpj8-unsplash-1.jpg"
+featureImage: "./attachments/imgix-klwuhr-wpj8-unsplash-1.jpg"
 updatedAt: "2025-04-28T02:14:59.000+09:00"
 ---
 > tinyrack.net はホームラボのニュースとレビューを提供するサイトです。
@@ -36,7 +36,7 @@ updatedAt: "2025-04-28T02:14:59.000+09:00"
 
 ## 私について
 
-![](./images/crop.jpg)
+![](./attachments/crop.jpg)
 
 私(tinyrack)は韓国の開発者で、普通のおじさんです。開発者ではありますが、専門家というよりオタクに近いタイプです。仕事が終わると、家でもコンピューターを触りながら時間を過ごすことがよくあります。主にやっていることは次のとおりです。
 

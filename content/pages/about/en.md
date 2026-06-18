@@ -4,7 +4,7 @@ excerpt: "tinyrack.net provides homelab news and reviews. A homelab is a lab at 
 lang: "en"
 routeSlug: "about"
 translationKey: "about"
-featureImage: "./images/imgix-klwuhr-wpj8-unsplash-1.jpg"
+featureImage: "./attachments/imgix-klwuhr-wpj8-unsplash-1.jpg"
 updatedAt: "2025-04-28T02:14:59.000+09:00"
 ---
 > tinyrack.net provides homelab news and reviews.
@@ -36,7 +36,7 @@ A homelab is a hobby that makes computers fun again. You can start with an old d
 
 ## About Me
 
-![](./images/crop.jpg)
+![](./attachments/crop.jpg)
 
 I, tinyrack, am a Korean developer and an ordinary middle-aged guy. Although I work as a developer, I am closer to an enthusiast than a specialist. After work I often spend more time tinkering with computers at home. These are the things I usually do there:
 

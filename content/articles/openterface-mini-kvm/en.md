@@ -4,7 +4,7 @@ excerpt: "This product was loaned to me free of charge by the manufacturer. This
 lang: "en"
 routeSlug: "openterface-mini-kvm"
 translationKey: "openterface-mini-kvm"
-featureImage: "./images/1013207.JPG"
+featureImage: "./attachments/1013207.JPG"
 updatedAt: "2025-06-09T01:54:52.000+09:00"
 publishedAt: "2025-05-19T16:38:16.000+09:00"
 commentsTerm: "6828d3c2b90f9500013b4d02"
@@ -25,13 +25,13 @@ TecxArtisan had made an open-source USB KVM called Openterface and asked whether
 
 # Packaging and Exterior
 
-![](./images/1013194.JPG)
+![](./attachments/1013194.JPG)
 
 The package I received looked like this. It was divided into the main kit, which includes Openterface and cables, and a separately sold VGA-to-HDMI converter kit. The converter kit can be useful for older equipment without HDMI, but I do not own such equipment, so I used only the main kit.
 
-![](./images/1013197.JPG)
+![](./attachments/1013197.JPG)
 
-![](./images/1013199.JPG)
+![](./attachments/1013199.JPG)
 
 The Openterface main kit includes:
 
@@ -49,13 +49,13 @@ USB KVMs inevitably involve many cables, so I liked that everything could be car
 
 The host cable is a 20Gbps high-bandwidth cable. That much bandwidth does not seem necessary, so it felt a little odd. Still, having it is better than not having it.
 
-![](./images/1013200.JPG)
+![](./attachments/1013200.JPG)
 
-![](./images/1013201.JPG)
+![](./attachments/1013201.JPG)
 
 The Openterface body is made of metal and includes certification marks and a diagram. The orange cable guides on the top and bottom appear to be 3D-printed parts, but they were printed cleanly enough that I had no complaints. It is not especially beautiful, but considering its purpose, the design feels appropriate.
 
-![](./images/1013204.JPG)
+![](./attachments/1013204.JPG)
 
 This is what it looks like when connected for use. USB adapters are included so it can be used with both Type-C and Type-A ports.
 
@@ -63,7 +63,7 @@ This is what it looks like when connected for use. USB adapters are included so 
 
 # Price
 
-![](./images/image-4.png)
+![](./attachments/image-4.png)
 
 Openterface is currently sold through crowdfunding, which is not my favorite method. The downside of crowdfunding is well known: products may not be completed properly, or shipping may be delayed repeatedly.
 
@@ -83,7 +83,7 @@ The competing [NanoKVM USB](https://wiki.sipeed.com/hardware/en/kvm/NanoKVM_USB/
 
 # Open Source
 
-![](./images/image-5.png)
+![](./attachments/image-5.png)
 
 Openterface aims to be fully open-source hardware and software. Anyone can contribute improvements, and people can also use the design files to make their own product. All sources are available on [GitHub](https://github.com/TechxArtisanStudio?ref=tinyrack.net).
 
@@ -99,7 +99,7 @@ I have not yet used Openterface's software deeply, but development activity look
 
 # Software
 
-![](./images/image-6.png)
+![](./attachments/image-6.png)
 
 Now it is time to try it. Openterface provides software for macOS, Windows, and Linux. My Mac is actually the machine I need to fix with this Openterface, so this time I will talk only about Windows and Linux.
 
@@ -107,15 +107,15 @@ Now it is time to try it. Openterface provides software for macOS, Windows, and 
 
 For Windows, both portable and installer versions are provided. I used the installer.
 
-![](./images/screenshot-2025-05-18-035247.png)
+![](./attachments/screenshot-2025-05-18-035247.png)
 
 The first disappointment was that the installer did not have an appropriate certificate, so the SmartScreen warning appeared. These days a warning can still appear even with a certificate until reputation builds up, but I think the installer should at least be signed.
 
-![](./images/screenshot-2025-05-18-111033-1.png)
+![](./attachments/screenshot-2025-05-18-111033-1.png)
 
 After installation, the first launch installed drivers. After rebooting and running it again, it worked without any special steps. I could view the FHD display, send keyboard and mouse input immediately, and enter the BIOS without issues.
 
-![](./images/screenshot-2025-05-18-111638.png)
+![](./attachments/screenshot-2025-05-18-111638.png)
 
 The settings include a firmware update feature for the device, and that also worked well.
 
@@ -169,7 +169,7 @@ sudo udevadm trigger
 
 The disappointing part is that after installing the package, users still need to modify the system in several ways. I wanted the software to be easy enough to run right after installation.
 
-![](./images/image-7.png)
+![](./attachments/image-7.png)
 
 After trying several things, I eventually gave up using Openterface on Linux. It connected briefly at times, but most situations had problems that made real use difficult.
 
@@ -184,11 +184,11 @@ At this point, I do not think Linux support is in good shape. This area needs a 
 
 # Conclusion
 
-![](./images/1013206.JPG)
+![](./attachments/1013206.JPG)
 
 Based on what I have seen so far, Openterface captures the value of a KVM well. In my tests, connection reliability was good, and at least on Windows it provided proper software. If it works well on macOS too, I expect it can be used without major problems across the major host operating systems.
 
-![](./images/screenshot-2025-05-19-161527-1.png)
+![](./attachments/screenshot-2025-05-19-161527-1.png)
 
 There are still many things to improve. There were small bugs such as the screen being cut off in full-screen mode, and the Linux software was not usable in a normal way. These may improve over time, but it would have been better to solve them before consumers received the product.
 

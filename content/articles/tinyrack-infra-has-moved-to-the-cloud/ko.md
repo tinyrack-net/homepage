@@ -4,7 +4,7 @@ excerpt: "원래 타이니랙의 모든 서비스는 제 집에서 직접 운영
 lang: "ko"
 routeSlug: "tinyrack-infra-has-moved-to-the-cloud"
 translationKey: "tinyrack-infra-has-moved-to-the-cloud"
-featureImage: "./images/2fd8ca67dd8f68ce6673f5557f361436ca59a7f1-2-690x397.jpeg"
+featureImage: "./attachments/2fd8ca67dd8f68ce6673f5557f361436ca59a7f1-2-690x397.jpeg"
 updatedAt: "2025-06-30T01:27:06.000+09:00"
 publishedAt: "2025-06-30T01:23:06.000+09:00"
 commentsTerm: "685fa13e3a6f090064951b6d"
@@ -23,21 +23,21 @@ tags:
 
 가장 먼저 한 고민은 어느 클라우드 서비스를 사용할 것인가에요. 개발자 분들이라면 아마 아마존(AWS), 애저(Azure), 구글 클라우드 플랫폼(GCP) 같은 메이저 클라우드 업체를 사용하실텐데, 저는 아직까진 서비스의 수익화를 고려하지 않았기 때문에 이런 대형 클라우드는 금전적으로 부담이 컸어요. 이들은 시작은 무료로 할 수 있을지라도 서비스 성장에 따라 지출 비용이 가파르게 상승하는 구조거든요.
 
-![](./images/image-1.png)
+![](./attachments/image-1.png)
 
 그래서 이런 저런 서비스를 찾아보다가 최종적으로 결정한 서비스는 독일 업체인 헤츠너(Hetzner)에요. 이 업체는 매우 저렴한 서버 임대 비용과 혜자스러운 사용량 정책이라는 아주 큰 장점을 가지고 있었어요.
 
-![](./images/image.png)
+![](./attachments/image.png)
 
 헤츠너에서 가장 저렴한 공유 서버는 4달러 정도에 임대할 수 있었는데 컴퓨팅 자원과 트래픽 제한도 타사 대비 압도적이었어요.
 
-![](./images/image-2.png)
+![](./attachments/image-2.png)
 
 이건 [Vurtr](https://www.vultr.com/pricing/?ref=tinyrack.net) 이라는 업체의 공유 서버 임대 가격표에요. 최저가는 좀 더 낮기는 하지만 자원 할당량을 보면 헤츠너가 엄청나게 저렴한 편이라는 걸 알 수 있어요.
 
 이렇게 저렴하면 보통 두가지가 걱정되는데, **서비스 안정성과 연결 속도**에요. 먼저 서비스 안정성의 경우 여러 커뮤니티를 돌며 평가를 보니 큰 문제가 없다는 의견이 많았어요. 저는 이미 헤츠너에서 메일 서버를 안정적으로 운영중이였기 때문에 이 부분은 큰 걱정이 되지 않았어요.
 
-![](./images/image-5.png)
+![](./attachments/image-5.png)
 
 다음 연결 속도의 경우는 서버가 유럽에 있다 보니 크게 걱정됐던 부분이에요. 웹 페이지 로딩이 오래걸리면 사용자의 이탈률이 높아질 수 있거든요.
 
@@ -63,7 +63,7 @@ tags:
 
 # 서비스 구축
 
-![](./images/image-4.png)
+![](./attachments/image-4.png)
 
 ## 도커의 한계
 
@@ -73,7 +73,7 @@ tags:
 
 **재해 복구성**이란 서버가 고장나거나 인프라를 이전해야 하는 상황이 발생했을 때, 신속히 서버 구성과 데이터를 복원할 수 있는가에요. 도커는 별도의 자체 백업 솔루션이 없어서 서비스마다 일일히 백업과 복구를 구성해야 했기 때문에 많은 불편함이 있었어요.
 
-![](./images/image-3.png)
+![](./attachments/image-3.png)
 
 ## 쿠버네티스의 도입
 
@@ -85,7 +85,7 @@ tags:
 
 두번째는 **쿠버네티스에 적용하기 까다로운 소프트웨어도 있다는 점**이에요. 대표적으로는 제가 운영하는 포럼 엔진인 Discourse 였는데, 이를 쿠버네티스에 적용할 방법을 찾느라 많은 삽질이 필요했어요. 결국은 [별도의 프로젝트를 구축](https://github.com/tinyrack-net/discourse?ref=tinyrack.net)해서 문제를 해결했지만 관리 포인트가 늘어난 느낌이라 언젠가 다시 한번 개선할 필요가 있다고 생각해요.
 
-![](./images/screenshot-from-2025-06-29-23-28-24.png)
+![](./attachments/screenshot-from-2025-06-29-23-28-24.png)
 
 Headlamp Kubernetes Dashboard
 
@@ -99,7 +99,7 @@ Headlamp Kubernetes Dashboard
 
 # 보안 전략
 
-![](./images/image-6.png)
+![](./attachments/image-6.png)
 
 최근에 이런 저런 서버 해킹 사건이 자주 발생하고 있어요. 그래서 서버를 다시 구축하는 과정에서 보안성을 점검하고 개선하는 작업도 진행했는데요.
 

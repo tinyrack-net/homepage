@@ -4,7 +4,7 @@ excerpt: "tinyrack.net 은 홈랩에 대한 뉴스와 리뷰 컨텐츠를 제공
 lang: "ko"
 routeSlug: "about"
 translationKey: "about"
-featureImage: "./images/imgix-klwuhr-wpj8-unsplash-1.jpg"
+featureImage: "./attachments/imgix-klwuhr-wpj8-unsplash-1.jpg"
 updatedAt: "2025-04-28T02:14:59.000+09:00"
 ---
 > tinyrack.net 은 홈랩에 대한 뉴스와 리뷰 컨텐츠를 제공하는 사이트입니다.
@@ -37,7 +37,7 @@ updatedAt: "2025-04-28T02:14:59.000+09:00"
 
 ## 저에 대해
 
-![](./images/crop.jpg)
+![](./attachments/crop.jpg)
 
 저(tinyrack)는 한국의 개발자이면서 평범한 아저씨입니다. 제가 개발자이긴 하지만 전문가보다는 덕후에 더 가까워요. 그래서 회사 업무가 끝나면 집에서도 컴퓨터를 만지작거리며 시간을 축내곤 합니다. 집에서 주로 하는 것들은 다음과 같아요.
 

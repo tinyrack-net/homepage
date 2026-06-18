@@ -4,7 +4,7 @@ excerpt: "もともとTinyrackのすべてのサービスは自宅で直接運�
 lang: "ja"
 routeSlug: "tinyrack-infra-has-moved-to-the-cloud"
 translationKey: "tinyrack-infra-has-moved-to-the-cloud"
-featureImage: "./images/2fd8ca67dd8f68ce6673f5557f361436ca59a7f1-2-690x397.jpeg"
+featureImage: "./attachments/2fd8ca67dd8f68ce6673f5557f361436ca59a7f1-2-690x397.jpeg"
 updatedAt: "2025-06-30T01:27:06.000+09:00"
 publishedAt: "2025-06-30T01:23:06.000+09:00"
 commentsTerm: "685fa13e3a6f090064951b6d"
@@ -23,21 +23,21 @@ tags:
 
 最初に悩んだのは、どのクラウドサービスを使うかです。開発者であればAmazon AWS、Microsoft Azure、Google Cloud Platformのような大手クラウドを思い浮かべるでしょう。しかし私はまだサービスの収益化を考えていないため、こうした大手クラウドは金銭的な負担が大きく感じられました。最初は無料で始められても、サービスの成長に伴って費用が急激に増える構造だからです。
 
-![](./images/image-1.png)
+![](./attachments/image-1.png)
 
 いろいろ探した結果、最終的に選んだのはドイツのHetznerです。この会社には、非常に安いサーバーレンタル費用と、寛大な利用量ポリシーという大きな利点がありました。
 
-![](./images/image.png)
+![](./attachments/image.png)
 
 Hetznerの最も安い共有サーバーは4ドル程度で借りられますが、コンピューティング資源とトラフィック制限は他社と比べて圧倒的でした。
 
-![](./images/image-2.png)
+![](./attachments/image-2.png)
 
 これは [Vultr](https://www.vultr.com/pricing/?ref=tinyrack.net) という会社の共有サーバー料金表です。最低価格は少し低いものの、割り当てられる資源を見るとHetznerが非常に安いことがわかります。
 
 ここまで安いと、通常は二つの点が心配になります。サービスの安定性と接続速度です。まず安定性については、いくつかのコミュニティで評判を見たところ、大きな問題はないという意見が多くありました。私はすでにHetznerでメールサーバーを安定運用していたため、この点は大きな心配にはなりませんでした。
 
-![](./images/image-5.png)
+![](./attachments/image-5.png)
 
 次に接続速度ですが、サーバーがヨーロッパにあるため特に心配でした。Webページの読み込みが遅いと、ユーザーの離脱率が高くなる可能性があるからです。
 
@@ -63,7 +63,7 @@ Hetznerの最も安い共有サーバーは4ドル程度で借りられますが
 
 # サービス構築
 
-![](./images/image-4.png)
+![](./attachments/image-4.png)
 
 ## Dockerの限界
 
@@ -73,7 +73,7 @@ Hetznerの最も安い共有サーバーは4ドル程度で借りられますが
 
 災害復旧性とは、サーバーが故障したりインフラを移転しなければならない状況で、サーバー構成とデータを素早く復元できるかどうかです。Dockerには独自のバックアップソリューションがないため、サービスごとにバックアップと復旧を個別に構成する必要があり、とても不便でした。
 
-![](./images/image-3.png)
+![](./attachments/image-3.png)
 
 ## Kubernetesの導入
 
@@ -85,7 +85,7 @@ Hetznerの最も安い共有サーバーは4ドル程度で借りられますが
 
 二つ目は、Kubernetesに適用しにくいソフトウェアもあることです。代表的な例は、私が運用しているフォーラムエンジンのDiscourseでした。Kubernetesで動かす方法を探すのにかなり苦労しました。最終的には[別プロジェクト](https://github.com/tinyrack-net/discourse?ref=tinyrack.net)を作って解決しましたが、管理ポイントが増えた感じがするので、いつか改善したいです。
 
-![](./images/screenshot-from-2025-06-29-23-28-24.png)
+![](./attachments/screenshot-from-2025-06-29-23-28-24.png)
 
 Headlamp Kubernetes Dashboard
 
@@ -99,7 +99,7 @@ Headlamp Kubernetes Dashboard
 
 # セキュリティ戦略
 
-![](./images/image-6.png)
+![](./attachments/image-6.png)
 
 最近はサーバーのハッキング事件をよく見かけます。そこでサーバーを再構築する過程で、セキュリティを点検し改善する作業も行いました。
 

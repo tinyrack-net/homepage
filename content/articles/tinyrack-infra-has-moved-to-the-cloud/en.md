@@ -4,7 +4,7 @@ excerpt: "Originally, every Tinyrack service ran from my home. Then I had to mov
 lang: "en"
 routeSlug: "tinyrack-infra-has-moved-to-the-cloud"
 translationKey: "tinyrack-infra-has-moved-to-the-cloud"
-featureImage: "./images/2fd8ca67dd8f68ce6673f5557f361436ca59a7f1-2-690x397.jpeg"
+featureImage: "./attachments/2fd8ca67dd8f68ce6673f5557f361436ca59a7f1-2-690x397.jpeg"
 updatedAt: "2025-06-30T01:27:06.000+09:00"
 publishedAt: "2025-06-30T01:23:06.000+09:00"
 commentsTerm: "685fa13e3a6f090064951b6d"
@@ -23,21 +23,21 @@ In the end, I rented a virtual machine from Hetzner Cloud and rebuilt the infras
 
 The first question was which cloud service to use. Developers usually think of major providers such as Amazon AWS, Microsoft Azure, or Google Cloud Platform. Because I am not planning to monetize the service yet, those large clouds felt financially burdensome. They can be free at the start, but costs rise steeply as a service grows.
 
-![](./images/image-1.png)
+![](./attachments/image-1.png)
 
 After looking at several services, I chose Hetzner, a German provider. It has two big advantages: very low server rental prices and generous usage policies.
 
-![](./images/image.png)
+![](./attachments/image.png)
 
 Hetzner's cheapest shared servers can be rented for around four dollars, and the compute resources and traffic allowance are outstanding compared with other providers.
 
-![](./images/image-2.png)
+![](./attachments/image-2.png)
 
 This is the shared server pricing table from [Vultr](https://www.vultr.com/pricing/?ref=tinyrack.net). The lowest price is slightly lower, but when you compare the allocated resources, you can see that Hetzner is extremely inexpensive.
 
 When something is this cheap, two concerns usually come up: service stability and connection speed. For stability, I looked through several communities and found many opinions saying there were no serious problems. I was already running a mail server on Hetzner reliably, so I was not too worried.
 
-![](./images/image-5.png)
+![](./attachments/image-5.png)
 
 Connection speed was a bigger concern because the servers are in Europe. If web pages load slowly, users may leave.
 
@@ -63,7 +63,7 @@ The current specification is a little higher than my requirements, but Hetzner s
 
 # Building the Service
 
-![](./images/image-4.png)
+![](./attachments/image-4.png)
 
 ## The Limits of Docker
 
@@ -73,7 +73,7 @@ Horizontal scalability means whether you can easily distribute the service acros
 
 Disaster recovery means whether server configuration and data can be restored quickly when a server fails or infrastructure must be moved. Docker has no built-in backup solution, so I had to configure backup and recovery for each service manually, which was inconvenient.
 
-![](./images/image-3.png)
+![](./attachments/image-3.png)
 
 ## Adopting Kubernetes
 
@@ -85,7 +85,7 @@ It was not all positive, though. The biggest problem was the steep learning curv
 
 The second issue was that some software is difficult to run on Kubernetes. A representative example was Discourse, the forum engine I operate. I had to struggle quite a bit to find a way to run it on Kubernetes. I eventually solved it by creating a [separate project](https://github.com/tinyrack-net/discourse?ref=tinyrack.net), but it feels like one more thing to manage, so I want to improve it someday.
 
-![](./images/screenshot-from-2025-06-29-23-28-24.png)
+![](./attachments/screenshot-from-2025-06-29-23-28-24.png)
 
 Headlamp Kubernetes Dashboard
 
@@ -99,7 +99,7 @@ I thought it would be useful to leave the process as open source so others could
 
 # Security Strategy
 
-![](./images/image-6.png)
+![](./attachments/image-6.png)
 
 Recently, server hacking incidents seem to happen frequently. While rebuilding the server, I also reviewed and improved security.
 

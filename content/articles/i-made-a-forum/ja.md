@@ -4,7 +4,7 @@ excerpt: "私の目標のひとつは、ホームラボが好きな人たちが�
 lang: "ja"
 routeSlug: "i-made-a-forum"
 translationKey: "i-made-a-forum"
-featureImage: "./images/screenshot-from-2025-05-16-08-52-47.png"
+featureImage: "./attachments/screenshot-from-2025-05-16-08-52-47.png"
 updatedAt: "2025-05-20T03:02:14.000+09:00"
 publishedAt: "2025-05-20T02:00:00.000+09:00"
 commentsTerm: "682379548bc8bb0001e480fc"
@@ -37,7 +37,7 @@ tags:
 
 # インストール
 
-![](./images/image-8.png)
+![](./attachments/image-8.png)
 
 `Discourse` にはセルフホスト用の[公式ガイド](https://github.com/discourse/discourse/blob/main/docs/INSTALL-cloud.md?ref=tinyrack.net)があります。インストール自体はそれほど難しくありませんでしたが、惜しい点が二つありました。
 
@@ -61,7 +61,7 @@ tags:
 
 # 設定
 
-![](./images/image-9.png)
+![](./attachments/image-9.png)
 
 インストール後に少し触ってみると、機能面でいくつか惜しい点がありました。そこで[公式フォーラムのプラグインページ](https://meta.discourse.org/c/plugin/22?ref=tinyrack.net)を見ながら、いろいろインストールして試しました。最終的に選んだプラグインと理由は次のとおりです。
 
@@ -74,7 +74,7 @@ tags:
 
 特に気に入ったのはブログとの連携機能です。DiscourseのEmbed機能とRSS Pollingプラグインを組み合わせると、ブログ記事を自動でDiscourseに取り込め、ブログ側には連携されたDiscourseトピックのコメントを表示できます。二つのサイトが相互に連携できるのは面白いと感じました。
 
-![](./images/image-11.png)
+![](./attachments/image-11.png)
 
 プラグイン設定後は、必要なオプションを次のように変更しました。
 
@@ -94,7 +94,7 @@ Discourseのほぼすべての設定は管理画面から変更できるので�
 
 # 完成!
 
-![](./images/image-10.png)
+![](./attachments/image-10.png)
 
 これでひとまず形になりました。まだ書くべき記事は山ほどありますが、少しずつ埋めていけばもっと良いフォーラムになると思います。ここまで使ってみて感じたDiscourseの長所は次のとおりです。
 
