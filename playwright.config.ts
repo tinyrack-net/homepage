@@ -13,6 +13,6 @@ export default defineConfig({
   webServer: {
     command: "pnpm build && pnpm astro preview --host 127.0.0.1 --port 4511",
     port: 4511,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
   },
 });

@@ -25,7 +25,7 @@
 - Browser Vitest tests: `pnpm test:component`
 - E2E tests: `pnpm test:e2e`
 - Full CI order is `pnpm test:unit && pnpm test:component && pnpm test:e2e && pnpm build` before deploy. Mirror that order for broad verification.
-- Run a single Vitest file with `pnpm test:unit -- <path>` or `pnpm test:component -- <path>`.
+- Run a single Vitest file with `pnpm exec vitest run --project unit <path>` or `pnpm exec vitest run --project browser <path>`.
 - Run a single Playwright spec with `pnpm test:e2e -- tests/e2e/<file>.spec.ts`.
 - Playwright uses a `webServer` that runs `pnpm build` and then `pnpm astro preview --host 127.0.0.1 --port 4511`. Expect e2e runs to rebuild the site first.
 - First-time Playwright setup may require `pnpm exec playwright install --with-deps chromium`.
