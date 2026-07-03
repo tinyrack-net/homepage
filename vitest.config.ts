@@ -1,6 +1,5 @@
 import { fileURLToPath, URL } from "node:url";
 import { playwright } from "@vitest/browser-playwright";
-import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
 
 const resolve = {
@@ -20,7 +19,6 @@ export default defineConfig({
     },
     projects: [
       {
-        plugins: [tsconfigPaths()],
         resolve,
         test: {
           name: "unit",
@@ -31,7 +29,6 @@ export default defineConfig({
         },
       },
       {
-        plugins: [tsconfigPaths()],
         resolve,
         test: {
           name: "browser",
