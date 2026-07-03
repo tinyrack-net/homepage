@@ -59,7 +59,11 @@ const languageLinks = SUPPORTED_LANGUAGE_CODES.map((targetLang) => {
 <div class="drawer">
   <input id="global-drawer" type="checkbox" class="drawer-toggle" />
   <div class="fixed top-4 left-4 z-10">
-    <label for="global-drawer" class="btn drawer-button btn-circle">
+    <label
+      for="global-drawer"
+      class="btn drawer-button btn-circle"
+      aria-label="open sidebar"
+    >
       <i class="ri-menu-line"></i>
     </label>
   </div>

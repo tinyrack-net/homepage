@@ -1,5 +1,4 @@
-overrides:
-  sharp: 0.35.1
+minimumReleaseAge: 0
 
 allowBuilds:
   '@parcel/watcher': true
