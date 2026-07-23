@@ -26,11 +26,14 @@
   "files": {
     "includes": [
       "**",
-      "!.astro",
+      "!build",
+      "!.react-router",
       "!coverage",
       "!dist",
       "!node_modules",
-      "!test-results"
+      "!playwright-report",
+      "!test-results",
+      "!content/**/*.mdx"
     ]
   },
   "css": {
@@ -41,18 +44,6 @@
   "html": {
     "experimentalFullSupportEnabled": true
   },
-  "overrides": [
-    {
-      "includes": ["**/*.astro"],
-      "linter": {
-        "rules": {
-          "correctness": {
-            "useJsxKeyInIterable": "off"
-          }
-        }
-      }
-    }
-  ],
   "javascript": {
     "formatter": {
       "trailingCommas": "all"

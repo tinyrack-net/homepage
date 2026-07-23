@@ -74,13 +74,13 @@ async function writeEntry(entry, type) {
   const mapped = mapGhostEntryToContent(entry, type);
   const converted = convertGhostHtmlToMarkdown(entry.html ?? "", siteUrl);
   const outputDir = path.join("content", mapped.collection, mapped.slug);
-  const imageDir = path.join(outputDir, "images");
+  const imageDir = path.join(outputDir, "attachments");
   const featureImage = entry.feature_image
     ? (converted.images.find(
         (image) => image.sourceUrl === entry.feature_image,
       ) ?? {
         sourceUrl: entry.feature_image,
-        filename: mapped.frontmatter.featureImage.replace("./images/", ""),
+        filename: mapped.frontmatter.featureImage.replace("./attachments/", ""),
       })
     : undefined;
   const images = [...converted.images];
@@ -93,7 +93,7 @@ async function writeEntry(entry, type) {
   }
 
   if (featureImage) {
-    mapped.frontmatter.featureImage = `./images/${featureImage.filename}`;
+    mapped.frontmatter.featureImage = `./attachments/${featureImage.filename}`;
   }
 
   if (dryRun) {
@@ -103,7 +103,7 @@ async function writeEntry(entry, type) {
   await mkdir(outputDir, { recursive: true });
   await Promise.all(images.map((image) => downloadImage(image, imageDir)));
   await writeFile(
-    path.join(outputDir, "ko.md"),
+    path.join(outputDir, "ko.mdx"),
     `${formatFrontmatter(mapped.frontmatter)}${converted.markdown}\n`,
     "utf8",
   );
@@ -121,6 +121,10 @@ async function writeTags(tags) {
       order: index + 1,
       translations: {
         en: {
+          title: tag.name || tag.slug,
+          description: tag.description || "",
+        },
+        ja: {
           title: tag.name || tag.slug,
           description: tag.description || "",
         },

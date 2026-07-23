@@ -3,6 +3,8 @@
   "compatibility_date": "2025-11-10",
   "workers_dev": false,
   "assets": {
-    "directory": "./dist"
+    "directory": "./build/client",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
   }
 }

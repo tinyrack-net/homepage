@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@import "@fontsource/ibm-plex-sans/latin-400.css";
+@import "@fontsource/ibm-plex-sans/latin-500.css";
+@import "@fontsource/ibm-plex-sans/latin-600.css";
+@import "@fontsource/ibm-plex-sans/latin-700.css";
+@import "@fontsource/ibm-plex-sans-kr/korean-400.css";
+@import "@fontsource/ibm-plex-sans-kr/korean-500.css";
+@import "@fontsource/ibm-plex-sans-kr/korean-600.css";
+@import "@fontsource/ibm-plex-sans-kr/korean-700.css";
+@import "@fontsource/ibm-plex-sans-jp/japanese-400.css";
+@import "@fontsource/ibm-plex-sans-jp/japanese-500.css";
+@import "@fontsource/ibm-plex-sans-jp/japanese-600.css";
+@import "@fontsource/ibm-plex-sans-jp/japanese-700.css";
+
+@import "@tinyrack/ui/core.css";
+@import "@tinyrack/ui/mdx.css";
+@import "@tinyrack/ui/components/badge.css";
+@import "@tinyrack/ui/components/button.css";
+@import "@tinyrack/ui/components/code.css";
+@import "@tinyrack/ui/components/code-block.css";
+@import "@tinyrack/ui/components/copy-button.css";
+@import "@tinyrack/ui/components/icon-button.css";
+@import "@tinyrack/ui/components/language-select.css";
+@import "@tinyrack/ui/components/link.css";
+@import "@tinyrack/ui/components/select.css";
+@import "@tinyrack/ui/components/separator.css";
+
+@source "../**/*.{ts,tsx,mdx}";
+
+@theme {
+  /* App layout widths, layered on the design-system tokens. */
+  --container-content: 57.5rem;
+  --container-prose: 45rem;
+  --container-hero: 40rem;
+  --container-article: 44rem;
+  /* Page-level vertical rhythm. */
+  --spacing-page-y: 3rem;
+}
+
+:root {
+  --tinyrack-font-body:
+    "IBM Plex Sans", "IBM Plex Sans KR", "IBM Plex Sans JP", sans-serif;
+  --tinyrack-font-heading:
+    "IBM Plex Sans", "IBM Plex Sans KR", "IBM Plex Sans JP", sans-serif;
+  --tinyrack-font-mono:
+    "IBM Plex Sans", "IBM Plex Sans KR", "IBM Plex Sans JP", sans-serif;
+}
+
+:root:lang(ja) {
+  --tinyrack-font-body:
+    "IBM Plex Sans", "IBM Plex Sans JP", "IBM Plex Sans KR", sans-serif;
+  --tinyrack-font-heading:
+    "IBM Plex Sans", "IBM Plex Sans JP", "IBM Plex Sans KR", sans-serif;
+}
+
+html,
+body {
+  background: var(--tinyrack-canvas);
+  color: var(--tinyrack-text);
+}
+
+body {
+  font-family: var(--tinyrack-font-body);
+  margin: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Article body renders as a plain reading column on the page background,
+   not the design-system's boxed surface "page". */
+.tr-mdx {
+  min-height: 0;
+  background: transparent;
+}

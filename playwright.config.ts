@@ -11,8 +11,10 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   webServer: {
-    command: "pnpm build && pnpm astro preview --host 127.0.0.1 --port 4511",
+    command:
+      "pnpm build && pnpm exec vite preview --host 127.0.0.1 --port 4511 --strictPort",
     port: 4511,
-    reuseExistingServer: false,
+    reuseExistingServer: !process.env.CI,
+    timeout: 180000,
   },
 });

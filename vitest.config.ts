@@ -4,7 +4,7 @@ import { defineConfig } from "vitest/config";
 
 const resolve = {
   alias: {
-    "@": fileURLToPath(new URL("./src", import.meta.url)),
+    "@": fileURLToPath(new URL("./app", import.meta.url)),
   },
 };
 
@@ -13,8 +13,8 @@ export default defineConfig({
   test: {
     coverage: {
       provider: "v8",
-      include: ["src/**/*.{ts,js}"],
-      exclude: ["src/**/*.test.ts"],
+      include: ["app/**/*.{ts,tsx}"],
+      exclude: ["app/**/*.test.{ts,tsx}", "app/**/*.browser.test.{ts,tsx}"],
       reporter: ["text", "html", "lcov"],
     },
     projects: [
@@ -24,8 +24,8 @@ export default defineConfig({
           name: "unit",
           environment: "node",
           setupFiles: ["./vitest.setup.ts"],
-          include: ["src/**/*.test.ts", "scripts/**/*.test.mjs"],
-          exclude: ["src/**/*.browser.test.ts", "tests/**"],
+          include: ["app/**/*.test.ts", "scripts/**/*.test.mjs"],
+          exclude: ["app/**/*.browser.test.ts", "tests/**"],
         },
       },
       {
@@ -33,7 +33,7 @@ export default defineConfig({
         test: {
           name: "browser",
           setupFiles: ["./vitest.setup.ts"],
-          include: ["src/**/*.browser.test.ts"],
+          include: ["app/**/*.browser.test.ts", "app/**/*.browser.test.tsx"],
           browser: {
             enabled: true,
             provider: playwright(),

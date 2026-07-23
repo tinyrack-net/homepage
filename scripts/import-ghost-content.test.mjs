@@ -93,7 +93,7 @@ describe("Ghost content importer helpers", () => {
       "Hello [Tinyrack](https://tinyrack.net).",
     );
     expect(result.markdown).toContain("- One");
-    expect(result.markdown).toContain("![Device](./images/device.png)");
+    expect(result.markdown).toContain("![Device](./attachments/device.png)");
     expect(result.markdown).toContain("Device caption");
     expect(result.images).toEqual([
       {

@@ -1,13 +1,25 @@
 {
-  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "baseUrl": "./",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "types": ["node", "vite/client"],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./app/*"]
     },
-    "strictNullChecks": true,
-    "allowJs": true
+    "rootDirs": [".", "./.react-router/types"]
   },
-  "exclude": ["coverage", "dist", "playwright-report", "test-results"]
+  "include": ["app", "scripts", "tests", ".react-router/types", "*.ts"],
+  "exclude": ["coverage", "dist", "build", "playwright-report", "test-results"]
 }
