@@ -1,7 +1,7 @@
-# build output
-dist/
-build/
-coverage/
+# build output (anchored to repo root so app/build/ is NOT ignored)
+/dist/
+/build/
+/coverage/
 .playwright-cli/
 playwright-report/
 test-results/
