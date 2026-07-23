@@ -1,11 +1,14 @@
 # build output
 dist/
+build/
 coverage/
 .playwright-cli/
 playwright-report/
 test-results/
+dev-server.log
 # generated types
 .astro/
+.react-router/
 
 # dependencies
 node_modules/

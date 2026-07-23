@@ -106,7 +106,7 @@ export function convertGhostHtmlToMarkdown(
     const escaped = image.sourceUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     rewrittenHtml = rewrittenHtml.replace(
       new RegExp(escaped, "g"),
-      `./images/${image.filename}`,
+      `./attachments/${image.filename}`,
     );
   }
 
@@ -154,7 +154,7 @@ export function mapGhostEntryToContent(entry, type) {
   };
 
   if (entry.feature_image) {
-    frontmatter.featureImage = `./images/${uniqueImageFilename(
+    frontmatter.featureImage = `./attachments/${uniqueImageFilename(
       entry.feature_image,
       new Set(),
     )}`;
