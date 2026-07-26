@@ -12,12 +12,12 @@
 
 ---
 
-This repository contains the Tinyrack homepage, built with Astro and populated from Tinyrack's Ghost content.
+This repository contains the Tinyrack homepage, built with React Router and populated from the content files under `content/`.
 
 ## Features
 
 - Korean canonical routes with English and Japanese translations
-- Ghost-compatible article, page, tag, RSS, and sitemap output
+- Article, page, tag, RSS, and sitemap output
 - Localized navigation, theme switching, and sidebar links
 - Cloudflare deployment via GitHub Actions
 
@@ -34,10 +34,4 @@ pnpm dev
 pnpm biome
 pnpm test:ci
 pnpm build
-```
-
-## Content Import
-
-```bash
-pnpm import:ghost
 ```

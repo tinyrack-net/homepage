@@ -6,8 +6,6 @@
 playwright-report/
 test-results/
 dev-server.log
-# local screenshot matrices from scripts/shoot.mjs
-.screenshots/
 # generated types
 .astro/
 .react-router/

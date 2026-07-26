@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import { defineConfig } from "vite";
 import { remarkMedia } from "./app/content/remark-media.ts";
 import { blogContent } from "./app/vite/blog-content.ts";
+import { brandAssets } from "./app/vite/brand-assets.ts";
 
 const appDir = fileURLToPath(new URL("./app", import.meta.url));
 
@@ -21,6 +22,7 @@ export default defineConfig({
     port: 8432,
   },
   plugins: [
+    brandAssets(),
     blogContent(),
     mdx({
       providerImportSource: "@mdx-js/react",
