@@ -3,6 +3,8 @@
 import { TRIconButton } from "@tinyrack/ui/components/icon-button";
 import { type LucideIcon, Monitor, Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+import { t } from "@/i18n/index.ts";
+import type { SupportedLanguageCodes } from "@/lib/language.ts";
 import {
   applyTheme,
   getThemePreference,
@@ -13,19 +15,13 @@ import {
   THEME_MEDIA_QUERY,
 } from "@/lib/theme.ts";
 
-export type ThemeSwitcherLabels = {
-  auto: string;
-  light: string;
-  dark: string;
-};
-
 const ICONS: Record<SupportedTheme, LucideIcon> = {
   [THEME.AUTO]: Monitor,
   [THEME.LIGHT]: Sun,
   [THEME.DARK]: Moon,
 };
 
-export function ThemeSwitcher({ labels }: { labels: ThemeSwitcherLabels }) {
+export function ThemeSwitcher({ lang }: { lang: SupportedLanguageCodes }) {
   const [preference, setPreference] = useState<SupportedTheme>(THEME.AUTO);
 
   useEffect(() => {
@@ -34,9 +30,9 @@ export function ThemeSwitcher({ labels }: { labels: ThemeSwitcherLabels }) {
   }, []);
 
   const options: { value: SupportedTheme; label: string }[] = [
-    { value: THEME.AUTO, label: labels.auto },
-    { value: THEME.LIGHT, label: labels.light },
-    { value: THEME.DARK, label: labels.dark },
+    { value: THEME.AUTO, label: t(lang, "theme.auto") },
+    { value: THEME.LIGHT, label: t(lang, "theme.light") },
+    { value: THEME.DARK, label: t(lang, "theme.dark") },
   ];
 
   function handleSelect(value: SupportedTheme) {

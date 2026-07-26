@@ -90,6 +90,9 @@ ${items}
 function writeSitemap(root: string, clientDir: string): void {
   const manifest = scanContent(root);
   const urls = planRoutes(manifest)
+    // Listing pages past the first hold no unique content of their own, so
+    // only the canonical first page is submitted.
+    .filter((entry) => (entry.page ?? 1) === 1)
     .map(
       (entry) => `  <url><loc>${escapeXml(`${SITE}${entry.path}`)}</loc></url>`,
     )

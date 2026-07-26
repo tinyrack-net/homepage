@@ -17,14 +17,18 @@
 @import "@tinyrack/ui/mdx.css";
 @import "@tinyrack/ui/components/badge.css";
 @import "@tinyrack/ui/components/button.css";
+@import "@tinyrack/ui/components/card.css";
 @import "@tinyrack/ui/components/code.css";
 @import "@tinyrack/ui/components/code-block.css";
 @import "@tinyrack/ui/components/copy-button.css";
+@import "@tinyrack/ui/components/drawer.css";
 @import "@tinyrack/ui/components/icon-button.css";
-@import "@tinyrack/ui/components/language-select.css";
 @import "@tinyrack/ui/components/link.css";
+@import "@tinyrack/ui/components/link-button.css";
+@import "@tinyrack/ui/components/pagination.css";
 @import "@tinyrack/ui/components/select.css";
 @import "@tinyrack/ui/components/separator.css";
+@import "@tinyrack/ui/components/steps.css";
 
 @source "../**/*.{ts,tsx,mdx}";
 
@@ -52,6 +56,13 @@
     "IBM Plex Sans", "IBM Plex Sans JP", "IBM Plex Sans KR", sans-serif;
   --tinyrack-font-heading:
     "IBM Plex Sans", "IBM Plex Sans JP", "IBM Plex Sans KR", sans-serif;
+}
+
+/* Korean has spaces between words but browsers still break inside one. Keeping
+   words whole matters most in headings, where a mid-word break is obvious. */
+:root:lang(ko) {
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 html,

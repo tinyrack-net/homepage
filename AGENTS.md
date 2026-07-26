@@ -10,11 +10,14 @@
 - `app/content/scan.ts` scans the filesystem (frontmatter via gray-matter) into a manifest exposed to runtime as the virtual module `virtual:blog/manifest` (see `app/vite/blog-content.ts`). `app/lib/content.ts` is the query layer over it — update it for sorting, draft filtering, or tag navigation.
 - Routing depends on frontmatter `lang`, `routeSlug`, `translationKey` (articles also need `publishedAt`, `commentsTerm`). Tags with slug `en`/`ja`/`ko` are reserved language tags and are filtered out of navigation.
 - `app/content/routes-plan.ts` (`planRoutes`) is the single source for which URLs exist; it drives `app/routes.ts`, the prerender list (`react-router.config.ts`), and the sitemap. A unit test locks the "no `/en/`, root = English" contract.
+- Listing pages are split statically at `ARTICLES_PER_PAGE` (`app/lib/pagination.ts`). Page one keeps the unpaginated URL (`/blog/`, `/tag/<slug>/`); later pages are `/blog/page/2/`. Only page one goes in the sitemap. Every locale gets `/blog/` even with zero articles, because the header links to it unconditionally.
 
 ## App Wiring
-- `app/root.tsx` owns `<html>/<head>/<body>` (SEO meta from `app/lib/seo.ts`, GTM, no-flash theme script, font preloads) and mounts the `MDXProvider` + `SiteShell`.
+- `app/root.tsx` owns `<html>/<head>/<body>` (SEO meta from `app/lib/seo.ts`, GTM, no-flash theme script, font preloads) and mounts the `MDXProvider`, `SiteHeader`, `<main>`, and `Footer`.
 - Article/page routes ARE the MDX files (`app/routes.ts` maps them via `relative("content")`). The MDX `wrapper` is overridden to `app/components/BlogArticleFrame.tsx`, which reads the manifest by pathname to render the article chrome. Prose is styled by `@tinyrack/ui/mdx`; code blocks by `TRCodeBlock`.
-- Home and tag pages are `app/routes/{home,tag}.tsx`, reading the manifest by pathname.
+- Home, blog and tag pages are `app/routes/{home,blog,tag}.tsx`, reading the manifest by pathname. There are no loaders anywhere; `app/lib/site-page.ts` (`resolveSitePage`) turns a pathname into the page kind, locale, and listing page number.
+- `/` is a marketing landing page. Its copy lives in `app/content/landing-copy.ts` (paragraph-level, per locale); `app/i18n/translations/*.json` stays for short UI labels only. Product claims there must be checkable against each project's README — do not invent capabilities or numbers.
+- `app/components/ArticleList.tsx` is the shared paginated card grid behind both `/blog/` and tag pages.
 - Theme is 3-state (auto/light/dark) mapped to `data-theme="tinyrack-light|dark"` (`app/lib/theme.ts` + `app/components/ThemeSwitcher.tsx`).
 - `rss.xml`, `robots.txt`, `sitemap.xml`, `404.html`, and `media/` are emitted at build time in `app/build/finalize.ts` (`buildEnd`), NOT as runtime routes (`ssr: false`).
 
@@ -24,9 +27,11 @@
 - `pnpm biome` / `pnpm biome:fix` — lint/format (Biome, not ESLint/Prettier).
 
 ## Tests
+- Types: `pnpm typecheck` — `react-router typegen && tsc --noEmit`.
 - Unit (Vitest, node): `pnpm test:unit` — `app/**/*.test.ts` + `scripts/**/*.test.mjs`.
 - E2E (Playwright): `pnpm test:e2e` — `tests/e2e/*.spec.ts`; the `webServer` runs `pnpm build` then `vite preview` on `:4511`.
-- CI order: `pnpm test:ci` (= `test:unit && test:e2e`) then `pnpm build`.
+- CI order: `pnpm test:ci` (= `typecheck && test:unit && test:e2e`) then `pnpm build`.
+- Screenshot matrix: `node scripts/shoot.mjs <label>` against a running dev server writes `.screenshots/<label>/` across viewport × theme.
 - First-time Playwright: `pnpm exec playwright install --with-deps chromium`.
 
 ## Deployment

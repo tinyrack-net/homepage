@@ -12,7 +12,8 @@ import {
   useLocation,
 } from "react-router";
 import { BlogArticleFrame } from "./components/BlogArticleFrame.tsx";
-import { SiteShell } from "./components/SiteShell.tsx";
+import { Footer } from "./components/Footer.tsx";
+import { SiteHeader } from "./components/SiteHeader.tsx";
 import { GTM_ID } from "./lib/constants.ts";
 import { getFontPreloadLinks } from "./lib/font-preloads.ts";
 import { buildMeta } from "./lib/seo.ts";
@@ -39,10 +40,8 @@ export function Layout({ children }: { children: ReactNode }) {
         {/** biome-ignore lint/security/noDangerouslySetInnerHtml: GTM bootstrap */}
         <script dangerouslySetInnerHTML={{ __html: gtmHeadScript }} />
         <meta charSet="utf-8" />
-        <meta
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-          name="viewport"
-        />
+        {/* No maximum-scale or user-scalable: blocking zoom fails WCAG 1.4.4. */}
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <link href="/sitemap.xml" rel="sitemap" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
         <Meta />
@@ -72,11 +71,18 @@ export function Layout({ children }: { children: ReactNode }) {
 }
 
 export default function App() {
+  const location = useLocation();
+  const lang = langFromPath(location.pathname);
+
   return (
     <MDXProvider components={mdxComponents}>
-      <SiteShell>
-        <Outlet />
-      </SiteShell>
+      <div className="flex min-h-screen flex-col bg-tinyrack-canvas text-tinyrack-text">
+        <SiteHeader />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <Footer lang={lang} />
+      </div>
     </MDXProvider>
   );
 }

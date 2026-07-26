@@ -9,7 +9,8 @@ declare module "*.mdx" {
 }
 
 declare module "virtual:blog/manifest" {
-  import type { BlogManifest } from "./lib/content-types.ts";
-
-  export const manifest: BlogManifest;
+  // Inline import: a top-level `import type` inside an ambient module block
+  // does not resolve here, and `skipLibCheck` hides that failure, which
+  // silently degraded the manifest to `any`.
+  export const manifest: import("./lib/content-types.ts").BlogManifest;
 }
