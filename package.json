@@ -5,7 +5,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "react-router dev",
-    "build": "react-router typegen && react-router build",
+    "build": "node scripts/sync-brand.mjs --check && react-router typegen && react-router build",
+    "sync:brand": "node scripts/sync-brand.mjs",
     "preview": "vite preview",
     "typegen": "react-router typegen",
     "typecheck": "react-router typegen && tsc --noEmit",
@@ -23,7 +24,7 @@
   },
   "dependencies": {
     "@mdx-js/react": "3.1.1",
-    "@tinyrack/ui": "^0.11.0",
+    "@tinyrack/ui": "0.12.0",
     "isbot": "^5",
     "lucide-react": "1.25.0",
     "react": "19.2.7",

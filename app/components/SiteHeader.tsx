@@ -15,6 +15,7 @@ import { getBlogPath, getContentPath, getHomePath } from "@/lib/routes.ts";
 // Products are reachable from the footer only: the header stays site navigation.
 import { SOCIAL_LINKS } from "@/lib/site-links.ts";
 import { getLanguageSwitchPath, resolveSitePage } from "@/lib/site-page.ts";
+import { BrandLockup } from "./BrandLockup.tsx";
 import { type LanguageLink, LanguageSelect } from "./LanguageSelect.tsx";
 import { ThemeSwitcher } from "./ThemeSwitcher.tsx";
 
@@ -59,11 +60,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-tinyrack-dropdown border-b border-tinyrack-border bg-tinyrack-canvas/95 backdrop-blur">
       <div className="mx-auto flex h-16 w-full max-w-content items-center gap-tinyrack-lg px-tinyrack-lg">
-        <Link
-          className="text-tinyrack-lg font-bold text-tinyrack-text no-underline"
-          to={getHomePath(lang)}
-        >
-          {t(lang, "nav.site")}
+        <Link className="no-underline" to={getHomePath(lang)}>
+          <BrandLockup lang={lang} />
         </Link>
 
         <nav
@@ -107,8 +105,8 @@ export function SiteHeader() {
             <TRDrawer.Popup>
               <TRDrawer.Content>
                 <div className="flex items-center justify-between gap-tinyrack-md p-tinyrack-lg">
-                  <TRDrawer.Title className="text-tinyrack-lg font-bold">
-                    {t(lang, "nav.site")}
+                  <TRDrawer.Title render={<span />}>
+                    <BrandLockup lang={lang} />
                   </TRDrawer.Title>
                   <TRDrawer.Close
                     render={

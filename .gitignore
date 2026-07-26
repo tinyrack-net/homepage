@@ -56,3 +56,5 @@ content/.obsidian/*
 
 # Hermes agent workspace
 .hermes/
+
+paseo.json

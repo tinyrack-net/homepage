@@ -69,6 +69,13 @@
   overflow-wrap: break-word;
 }
 
+/* Japanese has no spaces, so a browser will break between any two characters —
+   including inside a compound like 電源. `auto-phrase` breaks at phrase
+   boundaries instead. Browsers without it fall back to the default break. */
+:root:lang(ja) {
+  word-break: auto-phrase;
+}
+
 html,
 body {
   background: var(--tinyrack-canvas);
@@ -84,6 +91,21 @@ body {
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* The lockup ships as two approved files rather than one recoloured file, so
+   both are in the DOM and the theme picks one. Only one is ever exposed to
+   assistive tech (the dark copy is aria-hidden). */
+.tr-brand-lockup-dark {
+  display: none;
+}
+
+[data-theme="tinyrack-dark"] .tr-brand-lockup-light {
+  display: none;
+}
+
+[data-theme="tinyrack-dark"] .tr-brand-lockup-dark {
+  display: block;
 }
 
 /* Article body renders as a plain reading column on the page background,

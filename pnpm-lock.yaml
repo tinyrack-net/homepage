@@ -12,8 +12,8 @@ importers:
         specifier: 3.1.1
         version: 3.1.1(@types/react@19.2.17)(react@19.2.7)
       '@tinyrack/ui':
-        specifier: ^0.11.0
-        version: 0.11.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)
+        specifier: 0.12.0
+        version: 0.12.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)
       isbot:
         specifier: ^5
         version: 5.2.0
@@ -1307,8 +1307,8 @@ packages:
     resolution: {integrity: sha512-zIcONa+hVtVSSep9UT3jZ5rizo2BsxgyDYU7WFD5eICBE7no3881HGeb/QkGfsJs6JTkY1aQhT7rIPC7e+0nnA==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
 
-  '@tinyrack/ui@0.11.0':
-    resolution: {integrity: sha512-/UmaEcMFDiOakAtdf0oxLthudnxEP8yP/0KEuYDR+VdlJesGTyBtI+zl0lvNOFIJ/bU267cYhdsgwRuaXboMaA==}
+  '@tinyrack/ui@0.12.0':
+    resolution: {integrity: sha512-8cGvmRmw22Iu1xE5kaiYSRRtyDU6ovDqZSsiA4L5DkUo6oZKRPsjGkRXlNJrVPsuiAIyMk/iMU3t7rhYhni3mg==}
     engines: {node: '>=24.0.0'}
     peerDependencies:
       react: '>=19.0.0'
@@ -3498,7 +3498,7 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@tinyrack/ui@0.11.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)':
+  '@tinyrack/ui@0.12.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(tailwindcss@4.3.2)':
     dependencies:
       '@base-ui/react': 1.6.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       lucide-react: 1.25.0(react@19.2.7)

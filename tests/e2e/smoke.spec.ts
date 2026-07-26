@@ -28,6 +28,69 @@ test("landing page names no product or licence", async ({ page }) => {
   await expect(main).not.toContainText("Proxer");
 });
 
+test("header shows the official lockup for the page language", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const latin = page.locator('header img[src="/brand/tinyrack-lockup.svg"]');
+  await expect(latin).toBeVisible();
+  await expect(latin).toHaveAccessibleName("Tinyrack");
+
+  await page.goto("/ko/");
+  const korean = page.locator(
+    'header img[src="/brand/tinyrack-lockup-ko.svg"]',
+  );
+  await expect(korean).toBeVisible();
+  await expect(korean).toHaveAccessibleName("타이니랙");
+
+  // Japanese uses the Latin lockup; only Korean has approved localized artwork.
+  await page.goto("/ja/");
+  await expect(
+    page.locator('header img[src="/brand/tinyrack-lockup.svg"]'),
+  ).toBeVisible();
+});
+
+test("brand artwork and icons are served", async ({ request }) => {
+  for (const path of [
+    "/favicon.svg",
+    "/apple-touch-icon.png",
+    "/brand/tinyrack-lockup.svg",
+    "/brand/tinyrack-lockup-ko.svg",
+    "/brand/tinyrack-lockup-inverse.svg",
+    "/brand/tinyrack-lockup-ko-inverse.svg",
+  ]) {
+    const response = await request.get(path);
+    expect(response.status(), path).toBe(200);
+  }
+});
+
+test("every locale gets a social image that exists", async ({
+  page,
+  request,
+}) => {
+  for (const path of ["/", "/ko/", "/ja/"]) {
+    await page.goto(path);
+    const image = await page
+      .locator('meta[property="og:image"]')
+      .getAttribute("content");
+    expect(image, path).toBeTruthy();
+    const response = await request.get(new URL(image as string).pathname);
+    expect(response.status(), `${path} -> ${image}`).toBe(200);
+  }
+});
+
+test("publishes Organization structured data pointing at the logo", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const raw = await page
+    .locator('script[type="application/ld+json"]')
+    .textContent();
+  const data = JSON.parse(raw ?? "{}");
+  expect(data["@type"]).toBe("Organization");
+  expect(data.logo).toBe("https://tinyrack.net/brand/tinyrack-lockup.svg");
+});
+
 test("localized home renders under its prefix", async ({ page }) => {
   await page.goto("/ko/");
   await expect(page.locator("html")).toHaveAttribute("lang", "ko");

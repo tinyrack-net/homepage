@@ -74,12 +74,19 @@ function writeRss(root: string, clientDir: string): void {
     })
     .join("\n");
 
+  // Feed readers show the channel image beside the feed name.
+  const channelImage = `${SITE}/brand/tinyrack-app-icon.svg`;
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
     <title>${escapeXml(SITE_TITLES[defaultLangCode])}</title>
     <description>${escapeXml(SITE_DESCRIPTIONS[defaultLangCode])}</description>
     <link>${SITE}/</link>
+    <image>
+      <url>${escapeXml(channelImage)}</url>
+      <title>${escapeXml(SITE_TITLES[defaultLangCode])}</title>
+      <link>${SITE}/</link>
+    </image>
 ${items}
   </channel>
 </rss>
