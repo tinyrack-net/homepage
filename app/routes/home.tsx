@@ -39,7 +39,10 @@ export default function Home() {
         <TRText
           aria-label={copy.hero.headline.join(" ")}
           as="h1"
-          className="m-0 max-w-[20ch] text-balance [&>span]:block"
+          // No `ch` max-width: it is calibrated to Latin figures and squeezes
+          // CJK hard enough to break words mid-character. The line breaks are
+          // authored per locale, so the container is the only bound needed.
+          className="m-0 text-balance [&>span]:block"
           variant="display"
           weight="bold"
         >

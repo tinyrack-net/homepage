@@ -17,10 +17,16 @@ if (!label) {
 const ROUTES = [
   ["home", "/"],
   ["home-ko", "/ko/"],
+  ["home-ja", "/ja/"],
   ["blog", "/blog/"],
+  ["blog-ko", "/ko/blog/"],
   ["about", "/about/"],
+  ["about-ko", "/ko/about/"],
   ["article", "/openterface-mini-kvm/"],
+  ["article-ko", "/ko/openterface-mini-kvm/"],
   ["tag", "/tag/hardware/"],
+  ["tag-news", "/tag/news/"],
+  ["notfound", "/does-not-exist/"],
 ];
 
 const VIEWPORTS = [
@@ -82,7 +88,10 @@ for (const [vpName, width, height] of VIEWPORTS) {
 
 await browser.close();
 
-const failed = results.filter((r) => r.error || (r.status && r.status >= 400));
+// The 404 route is expected to answer 404; everything else must be under 400.
+const failed = results.filter(
+  (r) => r.error || (r.status && r.status >= 400 && r.routeName !== "notfound"),
+);
 for (const r of failed) {
   console.error(
     `FAIL ${r.routeName} ${r.vpName} ${r.theme}: ${r.error ?? `HTTP ${r.status}`}`,

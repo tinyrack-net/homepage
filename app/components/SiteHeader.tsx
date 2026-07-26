@@ -12,7 +12,8 @@ import { getAlternativeLanguageLinks } from "@/lib/alternative-language-links.ts
 import { getAllArticles, getAllPages } from "@/lib/content.ts";
 import { LOCALE_INFO, SUPPORTED_LANGUAGE_CODES } from "@/lib/language.ts";
 import { getBlogPath, getContentPath, getHomePath } from "@/lib/routes.ts";
-import { PRODUCT_LINKS, SOCIAL_LINKS } from "@/lib/site-links.ts";
+// Products are reachable from the footer only: the header stays site navigation.
+import { SOCIAL_LINKS } from "@/lib/site-links.ts";
 import { getLanguageSwitchPath, resolveSitePage } from "@/lib/site-page.ts";
 import { type LanguageLink, LanguageSelect } from "./LanguageSelect.tsx";
 import { ThemeSwitcher } from "./ThemeSwitcher.tsx";
@@ -79,18 +80,6 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          {PRODUCT_LINKS.map((item) => (
-            <TRLink
-              className="text-tinyrack-sm font-medium"
-              href={item.href}
-              key={item.href}
-              rel="noopener noreferrer"
-              target="_blank"
-              variant="muted"
-            >
-              {item.label}
-            </TRLink>
-          ))}
         </nav>
 
         <div className="ms-auto flex items-center gap-tinyrack-sm md:ms-0">
@@ -148,20 +137,6 @@ export function SiteHeader() {
                     >
                       {item.label}
                     </Link>
-                  ))}
-
-                  <p className="mt-tinyrack-md text-tinyrack-sm font-semibold text-tinyrack-text-muted">
-                    {t(lang, "nav.products")}
-                  </p>
-                  {PRODUCT_LINKS.map((item) => (
-                    <TRLink
-                      href={item.href}
-                      key={item.href}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      {item.label}
-                    </TRLink>
                   ))}
 
                   <p className="mt-tinyrack-md text-tinyrack-sm font-semibold text-tinyrack-text-muted">
