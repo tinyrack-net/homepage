@@ -24,18 +24,16 @@
 
 ## Commands
 - `pnpm dev` — React Router dev server on `:8432`.
-- `pnpm build` — `react-router typegen && react-router build` (prerenders all routes, then runs `finalizeBuild`).
+- `pnpm build` — the Vite brand-assets plugin syncs stable brand files, then `react-router typegen` and `tsc --noEmit` run before building and prerendering all routes.
 - `pnpm biome` / `pnpm biome:fix` — lint/format (Biome, not ESLint/Prettier).
 
 ## Tests
 - Types: `pnpm typecheck` — `react-router typegen && tsc --noEmit`.
-- Unit (Vitest, node): `pnpm test:unit` — `app/**/*.test.ts` + `scripts/**/*.test.mjs`.
+- Unit (Vitest, node): `pnpm test:unit` — `app/**/*.test.ts`.
 - E2E (Playwright): `pnpm test:e2e` — `tests/e2e/*.spec.ts`; the `webServer` runs `pnpm build` then `vite preview` on `:4511`.
 - CI order: `pnpm test:ci` (= `typecheck && test:unit && test:e2e`) then `pnpm build`.
-- Screenshot matrix: `node scripts/shoot.mjs <label>` against a running dev server writes `.screenshots/<label>/` across viewport × theme.
 - First-time Playwright: `pnpm exec playwright install --with-deps chromium`.
 
 ## Deployment
 - CI deploys from `main` via `.github/workflows/deployment.yaml`.
 - `pnpm deploy` runs `wrangler deploy`; Wrangler serves static assets from `build/client` (`html_handling: auto-trailing-slash`, `not_found_handling: 404-page`).
-- Content re-import: `pnpm import:ghost` (emits `.mdx` into `content/**/attachments/`).

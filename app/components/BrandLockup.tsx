@@ -14,7 +14,7 @@ import type { SupportedLanguageCodes } from "@/lib/language.ts";
  * copy is exposed to assistive tech.
  *
  * Files are served from `/brand/`, synced out of `@tinyrack/ui` by
- * `scripts/sync-brand.mjs`, so the URLs stay stable for structured data.
+ * `app/vite/brand-assets.ts`, so the URLs stay stable for structured data.
  */
 export function BrandLockup({ lang }: { lang: SupportedLanguageCodes }) {
   const korean = lang === "ko";
