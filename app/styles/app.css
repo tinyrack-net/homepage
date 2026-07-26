@@ -35,13 +35,32 @@
 @source "../**/*.{ts,tsx,mdx}";
 
 @theme {
-  /* App layout widths, layered on the design-system tokens. */
-  --container-content: 57.5rem;
+  /* The measure for a lead paragraph, narrower than the column holding it. */
   --container-prose: 45rem;
-  --container-hero: 40rem;
-  --container-article: 44rem;
-  /* Page-level vertical rhythm. */
-  --spacing-page-y: 3rem;
+}
+
+/* Every page sits in one of two frames, so they are defined once here rather
+   than as a container string copy-pasted into each route.
+
+   `page-shell` is the site frame: the header, the landing, the listings and the
+   footer all share it, so their content lines up down the page. `reading-shell`
+   is the long-form column — narrower, because a line of prose stops being
+   readable long before it runs out of screen.
+
+   Both take their width and their gutter from the design system, so the gutter
+   opens up on a wide viewport instead of running the content into the edge. */
+@utility page-shell {
+  inline-size: 100%;
+  margin-inline: auto;
+  max-inline-size: var(--tinyrack-page-width-md);
+  padding-inline: var(--tinyrack-page-gutter);
+}
+
+@utility reading-shell {
+  inline-size: 100%;
+  margin-inline: auto;
+  max-inline-size: var(--tinyrack-reading-width-md);
+  padding-inline: var(--tinyrack-page-gutter);
 }
 
 :root {

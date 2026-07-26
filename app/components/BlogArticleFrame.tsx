@@ -6,7 +6,12 @@ import type { CSSProperties, ReactNode } from "react";
 import { useLocation } from "react-router";
 import { t } from "@/i18n/index.ts";
 import { getAlternativeLanguageLinks } from "@/lib/alternative-language-links.ts";
-import { getAllArticles, getAllPages } from "@/lib/content.ts";
+import {
+  getAllArticles,
+  getAllPages,
+  getNavigationTags,
+} from "@/lib/content.ts";
+import { getTagPath } from "@/lib/routes.ts";
 import { resolveSitePage } from "@/lib/site-page.ts";
 import { RouterLink } from "./RouterLink.tsx";
 import { TextDate } from "./TextDate.tsx";
@@ -27,7 +32,7 @@ export function BlogArticleFrame({ children }: { children?: ReactNode }) {
 
   if (page.kind !== "content") {
     return (
-      <div className="mx-auto w-full max-w-article px-tinyrack-lg py-tinyrack-2xl">
+      <div className="reading-shell py-tinyrack-3xl">
         <div className="tr-mdx" style={MDX_VARS}>
           {children}
         </div>
@@ -42,23 +47,50 @@ export function BlogArticleFrame({ children }: { children?: ReactNode }) {
     ...getAllPages(),
   ]);
   const altAvailable = t(lang, "article.alternative-language-available");
+  // `data.tags` holds slugs, and the reserved language tags are navigation
+  // plumbing rather than subjects, so resolve through the navigable set.
+  const articleTags =
+    entry.collection === "articles"
+      ? getNavigationTags().filter((tag) => entry.data.tags.includes(tag.slug))
+      : [];
 
   return (
-    <article className="mx-auto w-full max-w-article px-tinyrack-lg py-tinyrack-2xl">
+    <article className="reading-shell py-tinyrack-3xl">
       {entry.data.featureImage ? (
         <img
           alt={entry.data.title}
-          className="aspect-video max-h-80 w-full rounded-tinyrack-lg object-cover"
+          className="mb-tinyrack-2xl aspect-video max-h-80 w-full rounded-tinyrack-lg object-cover"
           src={entry.data.featureImage}
         />
       ) : null}
-      <header className="mt-tinyrack-xl flex flex-col gap-tinyrack-sm">
-        <h1 className="text-tinyrack-4xl font-bold">{entry.data.title}</h1>
+      {/* Three tiers, not one flat gap: the title, then what was published and
+          when, then the translations on offer. Spacing is what says they are
+          three separate things — at 8px under a 36px heading they read as one
+          collided block. */}
+      <header>
+        {/* No `text-balance`: titles are not authored per locale, and balancing
+            happily splits a hyphenated compound across the two lines. */}
+        <h1 className="text-tinyrack-4xl font-bold leading-tight">
+          {entry.data.title}
+        </h1>
         {entry.collection === "articles" ? (
-          <TextDate date={entry.data.publishedAt} lang={lang} />
+          <div className="mt-tinyrack-lg flex flex-wrap items-center gap-x-tinyrack-md gap-y-tinyrack-sm">
+            <TextDate date={entry.data.publishedAt} lang={lang} />
+            {articleTags.map((tag) => (
+              <RouterLink
+                key={tag.slug}
+                to={getTagPath(lang, tag.slug)}
+                underline="none"
+              >
+                <TRBadge>
+                  {tag.translations[lang]?.title || tag.name || tag.slug}
+                </TRBadge>
+              </RouterLink>
+            ))}
+          </div>
         ) : null}
         {altLinks.length > 0 ? (
-          <div className="mt-tinyrack-xs flex flex-wrap items-center gap-tinyrack-sm text-tinyrack-sm">
+          <div className="mt-tinyrack-md flex flex-wrap items-center gap-tinyrack-sm text-tinyrack-sm">
             <span className="text-tinyrack-text-muted">{altAvailable}</span>
             {altLinks.map((link) => (
               <RouterLink
@@ -74,7 +106,7 @@ export function BlogArticleFrame({ children }: { children?: ReactNode }) {
           </div>
         ) : null}
       </header>
-      <TRSeparator className="my-tinyrack-xl" />
+      <TRSeparator className="my-tinyrack-2xl" />
       <div className="tr-mdx" style={MDX_VARS}>
         {children}
       </div>

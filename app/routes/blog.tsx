@@ -16,10 +16,10 @@ export default function BlogIndex() {
   const totalPages = getPageCount(posts.length);
 
   return (
-    <div className="mx-auto flex w-full max-w-content flex-col gap-tinyrack-2xl px-tinyrack-lg py-page-y">
+    <div className="page-shell flex flex-col gap-tinyrack-2xl py-tinyrack-3xl">
       <header>
         <h1 className="text-tinyrack-4xl font-bold">{t(lang, "blog.title")}</h1>
-        <p className="mt-tinyrack-md max-w-prose text-tinyrack-lg text-tinyrack-text-muted">
+        <p className="mt-tinyrack-lg max-w-prose text-tinyrack-lg text-tinyrack-text-muted">
           {t(lang, "blog.description")}
         </p>
       </header>

@@ -47,9 +47,11 @@ export function SiteHeader() {
     };
   });
 
+  // About first: it says what this place is, which is what a first-time
+  // visitor needs before a list of posts means anything.
   const navItems = [
-    { href: getBlogPath(lang), label: t(lang, "nav.blog") },
     { href: getContentPath(lang, "about"), label: t(lang, "nav.about") },
+    { href: getBlogPath(lang), label: t(lang, "nav.blog") },
   ];
 
   const isActive = (href: string) =>
@@ -59,14 +61,17 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-tinyrack-dropdown border-b border-tinyrack-border bg-tinyrack-canvas/95 backdrop-blur">
-      <div className="mx-auto flex h-16 w-full max-w-content items-center gap-tinyrack-lg px-tinyrack-lg">
-        <Link className="no-underline" to={getHomePath(lang)}>
+      <div className="page-shell flex h-16 items-center gap-tinyrack-lg">
+        {/* `flex`, not the default block: a block anchor wraps the lockup in an
+            inline box whose descender gap makes the artwork sit three pixels
+            above the nav text beside it. */}
+        <Link className="flex items-center no-underline" to={getHomePath(lang)}>
           <BrandLockup lang={lang} />
         </Link>
 
         <nav
           aria-label={t(lang, "nav.site")}
-          className="hidden flex-1 items-center gap-tinyrack-lg md:flex"
+          className="hidden items-center gap-tinyrack-lg md:flex"
         >
           {navItems.map((item) => (
             <Link
@@ -80,25 +85,23 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ms-auto flex items-center gap-tinyrack-sm md:ms-0">
-          <div className="hidden items-center gap-tinyrack-sm md:flex">
-            <ThemeSwitcher lang={lang} />
-            <LanguageSelect lang={lang} links={languageLinks} />
-          </div>
-          <TRIconButton
-            appearance="ghost"
-            aria-label={t(lang, "nav.menu.open")}
-            className="md:hidden"
-            onClick={() => setOpen(true)}
-            uiSize="sm"
-          >
-            <Menu aria-hidden="true" />
-          </TRIconButton>
-        </div>
+        {/* Theme and language live in the drawer at every breakpoint. They are
+            settings, not navigation, and duplicating them in the bar bought a
+            crowded header for two controls a reader touches once. */}
+        <TRIconButton
+          appearance="ghost"
+          aria-label={t(lang, "nav.menu.open")}
+          className="ms-auto"
+          onClick={() => setOpen(true)}
+          uiSize="sm"
+        >
+          <Menu aria-hidden="true" />
+        </TRIconButton>
       </div>
 
-      {/* Anchored to the trailing edge: the panel opens by swiping left. */}
-      <TRDrawer.Root onOpenChange={setOpen} open={open} swipeDirection="left">
+      {/* Anchored to the trailing edge, under the button that opens it — the
+          panel is dismissed by swiping back out the way it came. */}
+      <TRDrawer.Root onOpenChange={setOpen} open={open} swipeDirection="right">
         <TRDrawer.Portal>
           <TRDrawer.Backdrop />
           <TRDrawer.Viewport>
@@ -152,7 +155,7 @@ export function SiteHeader() {
                   ))}
                 </nav>
                 <TRSeparator />
-                <div className="flex flex-col gap-tinyrack-md p-tinyrack-lg">
+                <div className="flex flex-col gap-tinyrack-lg p-tinyrack-lg">
                   <ThemeSwitcher lang={lang} />
                   <LanguageSelect
                     lang={lang}

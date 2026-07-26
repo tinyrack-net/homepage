@@ -21,11 +21,11 @@ export default function TagPage() {
   const totalPages = getPageCount(posts.length);
 
   return (
-    <div className="mx-auto flex w-full max-w-content flex-col gap-tinyrack-2xl px-tinyrack-lg py-page-y">
+    <div className="page-shell flex flex-col gap-tinyrack-2xl py-tinyrack-3xl">
       <header>
         <h1 className="text-tinyrack-3xl font-bold">{tagTitle}</h1>
         {tagDescription ? (
-          <p className="mt-tinyrack-md max-w-prose text-tinyrack-text-muted">
+          <p className="mt-tinyrack-lg max-w-prose text-tinyrack-text-muted">
             {tagDescription}
           </p>
         ) : null}

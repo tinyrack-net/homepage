@@ -19,7 +19,7 @@ export default function Home() {
     .slice(0, TEASER_COUNT);
 
   return (
-    <div className="mx-auto w-full max-w-content px-tinyrack-lg">
+    <div className="page-shell">
       {/* The statement is the visual. No mock, no illustration — the page
           should still stand when the product lineup changes. */}
       <section className="flex min-h-[max(24rem,68dvh)] flex-col justify-center py-[clamp(3rem,10vw,7rem)]">
