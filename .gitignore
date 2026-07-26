@@ -56,3 +56,6 @@ content/.obsidian/*
 .hermes/
 
 paseo.json
+
+# Output of scripts/shoot.mjs
+.screenshots/
