@@ -45,7 +45,7 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
 
   return (
     <footer className="mt-tinyrack-2xl border-t border-tinyrack-border">
-      <div className="mx-auto flex w-full max-w-content flex-col gap-tinyrack-xl px-tinyrack-lg py-tinyrack-2xl">
+      <div className="page-shell flex flex-col gap-tinyrack-xl py-tinyrack-2xl">
         <div className="grid gap-tinyrack-xl sm:grid-cols-2 lg:grid-cols-4">
           <Column title={t(lang, "nav.site")}>
             <li>
