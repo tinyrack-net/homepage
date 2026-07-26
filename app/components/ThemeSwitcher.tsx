@@ -1,49 +1,31 @@
 "use client";
 
 import { TRIconButton } from "@tinyrack/ui/components/icon-button";
+import {
+  type TinyrackColorSchemePreference,
+  useTinyrackColorScheme,
+} from "@tinyrack/ui/providers/color-scheme";
 import { type LucideIcon, Monitor, Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
 import { t } from "@/i18n/index.ts";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
-import {
-  applyTheme,
-  getThemePreference,
-  type SupportedTheme,
-  setThemePreference,
-  setupTheme,
-  THEME,
-  THEME_MEDIA_QUERY,
-} from "@/lib/theme.ts";
 
-const ICONS: Record<SupportedTheme, LucideIcon> = {
-  [THEME.AUTO]: Monitor,
-  [THEME.LIGHT]: Sun,
-  [THEME.DARK]: Moon,
+const ICONS: Record<TinyrackColorSchemePreference, LucideIcon> = {
+  auto: Monitor,
+  light: Sun,
+  dark: Moon,
 };
 
 export function ThemeSwitcher({ lang }: { lang: SupportedLanguageCodes }) {
-  const [preference, setPreference] = useState<SupportedTheme>(THEME.AUTO);
+  const { preference, setPreference } = useTinyrackColorScheme();
 
-  useEffect(() => {
-    setPreference(getThemePreference(window.localStorage));
-    return setupTheme();
-  }, []);
-
-  const options: { value: SupportedTheme; label: string }[] = [
-    { value: THEME.AUTO, label: t(lang, "theme.auto") },
-    { value: THEME.LIGHT, label: t(lang, "theme.light") },
-    { value: THEME.DARK, label: t(lang, "theme.dark") },
+  const options: {
+    value: TinyrackColorSchemePreference;
+    label: string;
+  }[] = [
+    { value: "auto", label: t(lang, "theme.auto") },
+    { value: "light", label: t(lang, "theme.light") },
+    { value: "dark", label: t(lang, "theme.dark") },
   ];
-
-  function handleSelect(value: SupportedTheme) {
-    setThemePreference(window.localStorage, value);
-    applyTheme(
-      document.documentElement,
-      value,
-      window.matchMedia(THEME_MEDIA_QUERY).matches,
-    );
-    setPreference(value);
-  }
 
   return (
     <div className="flex items-center gap-tinyrack-xs">
@@ -57,7 +39,7 @@ export function ThemeSwitcher({ lang }: { lang: SupportedLanguageCodes }) {
             aria-label={label}
             aria-pressed={active}
             intent={active ? "primary" : "neutral"}
-            onClick={() => handleSelect(value)}
+            onClick={() => setPreference(value)}
             uiSize="sm"
           >
             <Icon aria-hidden="true" size={16} />

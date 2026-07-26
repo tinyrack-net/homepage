@@ -34,6 +34,7 @@ export function getSiteImage(lang: string): string {
 export const OWNER_NAME = "tinyrack";
 
 export const GTM_ID = "GTM-5NJV8H34";
+export const THEME_STORAGE_KEY = "theme-preference";
 
 export const LINKS = {
   GITHUB: "https://github.com/tinyrack-net",

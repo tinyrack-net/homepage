@@ -2,6 +2,10 @@ import "./styles/app.css";
 
 import { MDXProvider } from "@mdx-js/react";
 import { createTinyrackMdxComponents } from "@tinyrack/ui/mdx";
+import {
+  createTinyrackColorSchemeScript,
+  TRColorSchemeProvider,
+} from "@tinyrack/ui/providers/color-scheme";
 import type { ReactNode } from "react";
 import {
   Links,
@@ -14,17 +18,19 @@ import {
 import { BlogArticleFrame } from "./components/BlogArticleFrame.tsx";
 import { Footer } from "./components/Footer.tsx";
 import { SiteHeader } from "./components/SiteHeader.tsx";
-import { GTM_ID } from "./lib/constants.ts";
+import { GTM_ID, SITE_TITLES, THEME_STORAGE_KEY } from "./lib/constants.ts";
 import { getFontPreloadLinks } from "./lib/font-preloads.ts";
 import { buildMeta, buildOrganizationJsonLd } from "./lib/seo.ts";
 import { langFromPath } from "./lib/site-page.ts";
-import { themeScript } from "./lib/theme.ts";
 
 const mdxComponents = createTinyrackMdxComponents({
   components: { wrapper: BlogArticleFrame },
 });
 
 const gtmHeadScript = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`;
+const themeScript = createTinyrackColorSchemeScript({
+  storageKey: THEME_STORAGE_KEY,
+});
 
 export function meta({ location }: { location: { pathname: string } }) {
   return buildMeta(location.pathname);
@@ -43,6 +49,12 @@ export function Layout({ children }: { children: ReactNode }) {
         {/* No maximum-scale or user-scalable: blocking zoom fails WCAG 1.4.4. */}
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <link href="/sitemap.xml" rel="sitemap" />
+        <link
+          href="/rss.xml"
+          rel="alternate"
+          title={`${SITE_TITLES[lang]} RSS`}
+          type="application/rss+xml"
+        />
         {/* The app icon is a dark tile with a light mark, so it reads on both
             tab backgrounds without needing a per-scheme variant. */}
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
@@ -97,14 +109,16 @@ export default function App() {
   const lang = langFromPath(location.pathname);
 
   return (
-    <MDXProvider components={mdxComponents}>
-      <div className="flex min-h-screen flex-col bg-tinyrack-canvas text-tinyrack-text">
-        <SiteHeader />
-        <main className="flex-1">
-          <Outlet />
-        </main>
-        <Footer lang={lang} />
-      </div>
-    </MDXProvider>
+    <TRColorSchemeProvider storageKey={THEME_STORAGE_KEY}>
+      <MDXProvider components={mdxComponents}>
+        <div className="flex min-h-screen flex-col bg-tinyrack-canvas text-tinyrack-text">
+          <SiteHeader />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <Footer lang={lang} />
+        </div>
+      </MDXProvider>
+    </TRColorSchemeProvider>
   );
 }

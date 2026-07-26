@@ -91,6 +91,30 @@ test("publishes Organization structured data pointing at the logo", async ({
   expect(data.logo).toBe("https://tinyrack.net/brand/tinyrack-lockup.svg");
 });
 
+test("publishes canonical, locale, article and Twitter metadata", async ({
+  page,
+}) => {
+  await page.goto("/openterface-mini-kvm/");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://tinyrack.net/openterface-mini-kvm/",
+  );
+  await expect(
+    page.locator('link[rel="alternate"][hreflang="ko"]'),
+  ).toHaveAttribute("href", "https://tinyrack.net/ko/openterface-mini-kvm/");
+  await expect(page.locator('meta[property="og:type"]')).toHaveAttribute(
+    "content",
+    "article",
+  );
+  await expect(
+    page.locator('meta[property="article:published_time"]'),
+  ).toHaveCount(1);
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
+    "content",
+    "summary_large_image",
+  );
+});
+
 test("localized home renders under its prefix", async ({ page }) => {
   await page.goto("/ko/");
   await expect(page.locator("html")).toHaveAttribute("lang", "ko");
@@ -194,6 +218,16 @@ test("feeds and crawler files are served", async ({ request }) => {
   const body = await sitemap.text();
   expect(body).toContain("<urlset");
   expect(body).toContain("<loc>https://tinyrack.net/blog/</loc>");
+  expect(body).not.toContain("https://tinyrack.net/en/");
   // Paginated listings are deliberately left out of the sitemap.
   expect(body).not.toContain("/blog/page/");
+});
+
+test("pages advertise the default RSS feed", async ({ page }) => {
+  await page.goto("/");
+  await expect(
+    page.locator(
+      'link[rel="alternate"][type="application/rss+xml"][href="/rss.xml"]',
+    ),
+  ).toHaveCount(1);
 });

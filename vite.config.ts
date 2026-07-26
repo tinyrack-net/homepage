@@ -2,10 +2,17 @@ import { fileURLToPath } from "node:url";
 import mdx from "@mdx-js/rollup";
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
+import { tinyrackSiteAssets } from "@tinyrack/docs/vite";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { defineConfig } from "vite";
 import { remarkMedia } from "./app/content/remark-media.ts";
+import { scanContent } from "./app/content/scan.ts";
+import {
+  createHomepageFeed,
+  createHomepagePageDescriptors,
+  siteSeoConfig,
+} from "./app/lib/site-assets.ts";
 import { blogContent } from "./app/vite/blog-content.ts";
 import { brandAssets } from "./app/vite/brand-assets.ts";
 
@@ -23,6 +30,11 @@ export default defineConfig({
   },
   plugins: [
     brandAssets(),
+    tinyrackSiteAssets({
+      feeds: () => [createHomepageFeed(scanContent(process.cwd()))],
+      pages: () => createHomepagePageDescriptors(scanContent(process.cwd())),
+      site: siteSeoConfig,
+    }),
     blogContent(),
     mdx({
       providerImportSource: "@mdx-js/react",
