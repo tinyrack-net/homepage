@@ -23,6 +23,10 @@ const routes: RouteConfig = planRoutes(manifest).map((entry) => {
     return content.route(path, entry.routeFile as string, { id: entry.id });
   }
 
+  if (entry.kind === "blog") {
+    return route(path, "routes/blog.tsx", { id: entry.id });
+  }
+
   if (entry.kind === "tag") {
     return route(path, "routes/tag.tsx", { id: entry.id });
   }

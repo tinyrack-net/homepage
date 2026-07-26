@@ -12,19 +12,25 @@
 @import "@fontsource/ibm-plex-sans-jp/japanese-500.css";
 @import "@fontsource/ibm-plex-sans-jp/japanese-600.css";
 @import "@fontsource/ibm-plex-sans-jp/japanese-700.css";
+@import "@fontsource/ibm-plex-mono/latin-400.css";
+@import "@fontsource/ibm-plex-mono/latin-500.css";
 
 @import "@tinyrack/ui/core.css";
 @import "@tinyrack/ui/mdx.css";
 @import "@tinyrack/ui/components/badge.css";
 @import "@tinyrack/ui/components/button.css";
+@import "@tinyrack/ui/components/card.css";
 @import "@tinyrack/ui/components/code.css";
 @import "@tinyrack/ui/components/code-block.css";
 @import "@tinyrack/ui/components/copy-button.css";
+@import "@tinyrack/ui/components/drawer.css";
 @import "@tinyrack/ui/components/icon-button.css";
-@import "@tinyrack/ui/components/language-select.css";
 @import "@tinyrack/ui/components/link.css";
+@import "@tinyrack/ui/components/link-button.css";
+@import "@tinyrack/ui/components/pagination.css";
 @import "@tinyrack/ui/components/select.css";
 @import "@tinyrack/ui/components/separator.css";
+@import "@tinyrack/ui/components/text.css";
 
 @source "../**/*.{ts,tsx,mdx}";
 
@@ -43,8 +49,10 @@
     "IBM Plex Sans", "IBM Plex Sans KR", "IBM Plex Sans JP", sans-serif;
   --tinyrack-font-heading:
     "IBM Plex Sans", "IBM Plex Sans KR", "IBM Plex Sans JP", sans-serif;
+  /* CJK has no Plex Mono cut, so the sans CJK families cover those glyphs
+     while Latin code stays fixed-width. */
   --tinyrack-font-mono:
-    "IBM Plex Sans", "IBM Plex Sans KR", "IBM Plex Sans JP", sans-serif;
+    "IBM Plex Mono", "IBM Plex Sans KR", "IBM Plex Sans JP", monospace;
 }
 
 :root:lang(ja) {
@@ -52,6 +60,20 @@
     "IBM Plex Sans", "IBM Plex Sans JP", "IBM Plex Sans KR", sans-serif;
   --tinyrack-font-heading:
     "IBM Plex Sans", "IBM Plex Sans JP", "IBM Plex Sans KR", sans-serif;
+}
+
+/* Korean has spaces between words but browsers still break inside one. Keeping
+   words whole matters most in headings, where a mid-word break is obvious. */
+:root:lang(ko) {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* Japanese has no spaces, so a browser will break between any two characters —
+   including inside a compound like 電源. `auto-phrase` breaks at phrase
+   boundaries instead. Browsers without it fall back to the default break. */
+:root:lang(ja) {
+  word-break: auto-phrase;
 }
 
 html,
@@ -69,6 +91,21 @@ body {
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* The lockup ships as two approved files rather than one recoloured file, so
+   both are in the DOM and the theme picks one. Only one is ever exposed to
+   assistive tech (the dark copy is aria-hidden). */
+.tr-brand-lockup-dark {
+  display: none;
+}
+
+[data-theme="tinyrack-dark"] .tr-brand-lockup-light {
+  display: none;
+}
+
+[data-theme="tinyrack-dark"] .tr-brand-lockup-dark {
+  display: block;
 }
 
 /* Article body renders as a plain reading column on the page background,

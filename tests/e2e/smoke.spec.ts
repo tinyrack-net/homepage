@@ -1,19 +1,128 @@
 import { expect, test } from "@playwright/test";
 
-test("English home renders at the unprefixed root", async ({ page }) => {
+test("landing page renders at the unprefixed root", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Tinyrack");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(
     page.getByRole("heading", { level: 2, name: "Latest" }),
   ).toBeVisible();
+});
+
+test("landing page stays to two sections", async ({ page }) => {
+  await page.goto("/");
+  // Scoped to main: the footer's column headings are also h2. The hero has no
+  // h2, so Latest is the only one left.
   await expect(
-    page.getByRole("link", { name: /I Made a Forum/ }),
+    page.locator("main").getByRole("heading", { level: 2 }),
+  ).toHaveCount(1);
+});
+
+test("landing page names no product or licence", async ({ page }) => {
+  await page.goto("/");
+  // The landing states the idea; products and licensing live elsewhere, so it
+  // keeps holding up when the lineup changes.
+  const main = page.locator("main");
+  await expect(main).not.toContainText("MIT");
+  await expect(main).not.toContainText("Dotweave");
+  await expect(main).not.toContainText("Proxer");
+});
+
+test("header shows the official lockup for the page language", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const latin = page.locator('header img[src="/brand/tinyrack-lockup.svg"]');
+  await expect(latin).toBeVisible();
+  await expect(latin).toHaveAccessibleName("Tinyrack");
+
+  await page.goto("/ko/");
+  const korean = page.locator(
+    'header img[src="/brand/tinyrack-lockup-ko.svg"]',
+  );
+  await expect(korean).toBeVisible();
+  await expect(korean).toHaveAccessibleName("타이니랙");
+
+  // Japanese uses the Latin lockup; only Korean has approved localized artwork.
+  await page.goto("/ja/");
+  await expect(
+    page.locator('header img[src="/brand/tinyrack-lockup.svg"]'),
   ).toBeVisible();
+});
+
+test("brand artwork and icons are served", async ({ request }) => {
+  for (const path of [
+    "/favicon.svg",
+    "/apple-touch-icon.png",
+    "/brand/tinyrack-lockup.svg",
+    "/brand/tinyrack-lockup-ko.svg",
+    "/brand/tinyrack-lockup-inverse.svg",
+    "/brand/tinyrack-lockup-ko-inverse.svg",
+  ]) {
+    const response = await request.get(path);
+    expect(response.status(), path).toBe(200);
+  }
+});
+
+test("every locale gets a social image that exists", async ({
+  page,
+  request,
+}) => {
+  for (const path of ["/", "/ko/", "/ja/"]) {
+    await page.goto(path);
+    const image = await page
+      .locator('meta[property="og:image"]')
+      .getAttribute("content");
+    expect(image, path).toBeTruthy();
+    const response = await request.get(new URL(image as string).pathname);
+    expect(response.status(), `${path} -> ${image}`).toBe(200);
+  }
+});
+
+test("publishes Organization structured data pointing at the logo", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const raw = await page
+    .locator('script[type="application/ld+json"]')
+    .textContent();
+  const data = JSON.parse(raw ?? "{}");
+  expect(data["@type"]).toBe("Organization");
+  expect(data.logo).toBe("https://tinyrack.net/brand/tinyrack-lockup.svg");
 });
 
 test("localized home renders under its prefix", async ({ page }) => {
   await page.goto("/ko/");
   await expect(page.locator("html")).toHaveAttribute("lang", "ko");
+});
+
+test("header links the blog and marks it active", async ({ page }) => {
+  await page.goto("/");
+  await page
+    .getByRole("navigation")
+    .getByRole("link", { name: "Blog" })
+    .first()
+    .click();
+  await expect(page).toHaveURL("/blog/");
+  await expect(
+    page.getByRole("link", { name: /I Made a Forum/ }),
+  ).toBeVisible();
+});
+
+test("blog index lists articles for its locale", async ({ page }) => {
+  await page.goto("/blog/");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Blog" }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: /Openterface/ })).toBeVisible();
+});
+
+test("every locale has a reachable blog index", async ({ page }) => {
+  for (const path of ["/blog/", "/ko/blog/", "/ja/blog/"]) {
+    const response = await page.goto(path);
+    expect(response?.status(), path).toBeLessThan(400);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  }
 });
 
 test("article renders with content and alternate-language links", async ({
@@ -35,6 +144,26 @@ test("article renders with content and alternate-language links", async ({
 test("tag listing renders", async ({ page }) => {
   await page.goto("/tag/hardware/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+});
+
+test("switching language from the blog stays on a real page", async ({
+  page,
+}) => {
+  await page.goto("/blog/");
+  const response = await page.goto("/ko/blog/");
+  expect(response?.status()).toBeLessThan(400);
+  await expect(page.locator("html")).toHaveAttribute("lang", "ko");
+});
+
+test("mobile menu opens and closes", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open menu" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("link", { name: "About" })).toBeVisible();
+  await page.getByRole("button", { name: "Close menu" }).click();
+  await expect(dialog).toBeHidden();
 });
 
 test("theme preference persists across reloads", async ({ page }) => {
@@ -62,5 +191,9 @@ test("feeds and crawler files are served", async ({ request }) => {
 
   const sitemap = await request.get("/sitemap.xml");
   expect(sitemap.ok()).toBeTruthy();
-  expect(await sitemap.text()).toContain("<urlset");
+  const body = await sitemap.text();
+  expect(body).toContain("<urlset");
+  expect(body).toContain("<loc>https://tinyrack.net/blog/</loc>");
+  // Paginated listings are deliberately left out of the sitemap.
+  expect(body).not.toContain("/blog/page/");
 });
