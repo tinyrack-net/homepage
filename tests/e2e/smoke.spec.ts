@@ -4,13 +4,28 @@ test("landing page renders at the unprefixed root", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Tinyrack");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  // The brand sections, not an article list.
-  await expect(
-    page.getByRole("heading", { level: 2, name: "Open-source tools" }),
-  ).toBeVisible();
   await expect(
     page.getByRole("heading", { level: 2, name: "Latest" }),
   ).toBeVisible();
+});
+
+test("landing page stays to two sections", async ({ page }) => {
+  await page.goto("/");
+  // Scoped to main: the footer's column headings are also h2. The hero has no
+  // h2, so Latest is the only one left.
+  await expect(
+    page.locator("main").getByRole("heading", { level: 2 }),
+  ).toHaveCount(1);
+});
+
+test("landing page names no product or licence", async ({ page }) => {
+  await page.goto("/");
+  // The landing states the idea; products and licensing live elsewhere, so it
+  // keeps holding up when the lineup changes.
+  const main = page.locator("main");
+  await expect(main).not.toContainText("MIT");
+  await expect(main).not.toContainText("Dotweave");
+  await expect(main).not.toContainText("Proxer");
 });
 
 test("localized home renders under its prefix", async ({ page }) => {
