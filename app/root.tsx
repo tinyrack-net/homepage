@@ -6,7 +6,7 @@ import {
   createTinyrackColorSchemeScript,
   TRColorSchemeProvider,
 } from "@tinyrack/ui/providers/color-scheme";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import {
   Links,
   Meta,
@@ -31,6 +31,19 @@ const gtmHeadScript = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start'
 const themeScript = createTinyrackColorSchemeScript({
   storageKey: THEME_STORAGE_KEY,
 });
+
+function HydrationMarker() {
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.hydrated = "true";
+
+    return () => {
+      delete root.dataset.hydrated;
+    };
+  }, []);
+
+  return null;
+}
 
 export function meta({ location }: { location: { pathname: string } }) {
   return buildMeta(location.pathname);
@@ -110,6 +123,7 @@ export default function App() {
 
   return (
     <TRColorSchemeProvider storageKey={THEME_STORAGE_KEY}>
+      <HydrationMarker />
       <MDXProvider components={mdxComponents}>
         <div className="flex min-h-screen flex-col bg-tinyrack-canvas text-tinyrack-text">
           <SiteHeader />

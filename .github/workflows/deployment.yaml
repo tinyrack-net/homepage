@@ -41,8 +41,16 @@ jobs:
       - name: Run test suite
         run: pnpm run test:ci
 
-      - name: Build web
-        run: pnpm run build
+      - name: Upload Playwright diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-diagnostics-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Deploy to Cloudflare
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
