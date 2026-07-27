@@ -3,13 +3,11 @@ import type { SupportedLanguageCodes } from "@/lib/language.ts";
 /**
  * Landing page copy.
  *
- * The landing page states what this place believes and then gets out of the
- * way, so this module is deliberately tiny: a hero and the latest-articles
- * heading. There is no slot for a section description — a section that needs a
- * paragraph to justify itself belongs on /about/.
+ * The landing page introduces the workshop in the operator's own voice, then
+ * gets visitors into the writing. Products are not named here: the copy should
+ * stay useful as the lineup changes.
  *
- * Products are not named here. The landing should hold up when the product
- * lineup changes, and licensing is a per-product matter, not a brand value.
+ * Licensing remains a per-product matter, not a landing-page message.
  */
 
 export type LandingHeadlineSegment = {
@@ -28,7 +26,10 @@ export type LandingCopy = {
     /** Hidden below `md` — the headline has to carry the page on its own. */
     subhead: string;
   };
-  latest: {
+  featured: {
+    label: string;
+  };
+  recent: {
     empty: string;
     linkLabel: string;
     title: string;
@@ -38,61 +39,64 @@ export type LandingCopy = {
 export const landingCopy: Record<SupportedLanguageCodes, LandingCopy> = {
   en: {
     hero: {
-      eyebrow: ["Self-hosted", "Homelab"],
+      eyebrow: ["Notes from a homelab"],
       headline: [
-        [{ text: "Your data ", tone: "inverse" }, { text: "belongs on" }],
-        [{ text: "a machine " }, { text: "you can unplug.", tone: "muted" }],
+        [
+          { text: "I run ", tone: "inverse" },
+          { text: "what I use.", tone: "muted" },
+        ],
       ],
-      subhead: "Hardware and software for running your own, written from one.",
-      primaryCtaLabel: "Read the blog",
-      secondaryCtaLabel: "About",
+      subhead:
+        "A homelab where I run servers, build tools, and write down what I learn.",
+      primaryCtaLabel: "Read the latest",
+      secondaryCtaLabel: "About Tinyrack",
     },
-    latest: {
-      title: "Latest",
+    featured: { label: "Latest note" },
+    recent: {
+      title: "More notes",
       linkLabel: "Read the blog",
-      empty: "No posts yet.",
+      empty: "There are no notes yet.",
     },
   },
 
   ko: {
     hero: {
-      eyebrow: ["셀프호스팅", "홈랩"],
+      eyebrow: ["홈랩에서 보낸 기록"],
       headline: [
-        [{ text: "내 데이터는" }],
         [
-          { text: "내가 ", tone: "inverse" },
-          { text: "전원을 뽑을 수 있는", tone: "muted" },
+          { text: "필요한 건 ", tone: "inverse" },
+          { text: "직접 돌려봐요.", tone: "muted" },
         ],
-        [{ text: "기계에." }],
       ],
       subhead:
-        "직접 운영하기 위한 하드웨어와 소프트웨어를, 직접 운영하면서 써요.",
-      primaryCtaLabel: "블로그 보기",
-      secondaryCtaLabel: "소개",
+        "집에서 서버를 돌리고, 직접 만든 도구를 써보면서 알게 된 것들을 기록해요.",
+      primaryCtaLabel: "최근 글 읽어보기",
+      secondaryCtaLabel: "Tinyrack 소개",
     },
-    latest: {
-      title: "최신 글",
+    featured: { label: "최근 기록" },
+    recent: {
+      title: "더 읽어보기",
       linkLabel: "블로그 보기",
-      empty: "아직 올라온 글이 없어요.",
+      empty: "아직 기록한 글이 없어요.",
     },
   },
 
   ja: {
     hero: {
-      eyebrow: ["セルフホスト", "ホームラボ"],
+      eyebrow: ["ホームラボの記録"],
       headline: [
-        [{ text: "自分で" }, { text: "電源を抜ける", tone: "muted" }],
-        [{ text: "マシンに、" }, { text: "自分のデータを。", tone: "inverse" }],
+        [{ text: "使うものは、" }, { text: "自分で動かす。", tone: "muted" }],
       ],
       subhead:
-        "自分で動かすためのハードとソフトを、自分で動かしながら書いています。",
-      primaryCtaLabel: "ブログを読む",
-      secondaryCtaLabel: "概要",
+        "家でサーバーを動かし、つくった道具を使いながら、わかったことを書いています。",
+      primaryCtaLabel: "最新の記事を読む",
+      secondaryCtaLabel: "Tinyrackについて",
     },
-    latest: {
-      title: "最新の記事",
+    featured: { label: "最近の記録" },
+    recent: {
+      title: "もっと読む",
       linkLabel: "ブログを読む",
-      empty: "まだ記事がありません。",
+      empty: "まだ記録がありません。",
     },
   },
 };
