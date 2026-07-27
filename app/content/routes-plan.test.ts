@@ -36,6 +36,17 @@ describe("route plan (URL contract)", () => {
     expect(paths).toContain("/ko/blog/");
     expect(paths).toContain("/ja/blog/");
   });
+
+  it("gives every locale an open-source showcase", () => {
+    expect(paths).toContain("/open-source/");
+    expect(paths).toContain("/ko/open-source/");
+    expect(paths).toContain("/ja/open-source/");
+
+    const entries = planRoutes(scanContent(process.cwd())).filter(
+      (entry) => entry.kind === "openSource",
+    );
+    expect(entries).toHaveLength(3);
+  });
 });
 
 describe("listing pagination", () => {

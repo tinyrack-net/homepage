@@ -67,6 +67,21 @@ describe("resolveSitePage", () => {
     });
   });
 
+  it("resolves the open-source showcase for every locale", () => {
+    expect(resolveSitePage("/open-source/")).toEqual({
+      kind: "openSource",
+      lang: "en",
+    });
+    expect(resolveSitePage("/ko/open-source/")).toEqual({
+      kind: "openSource",
+      lang: "ko",
+    });
+    expect(resolveSitePage("/ja/open-source")).toEqual({
+      kind: "openSource",
+      lang: "ja",
+    });
+  });
+
   it("resolves tag listings with their page number", () => {
     expect(resolveSitePage("/tag/hardware/")).toEqual({
       kind: "tag",
@@ -121,5 +136,8 @@ describe("getLanguageSwitchPath", () => {
   it("maps other pages straight across", () => {
     expect(getLanguageSwitchPath("/kvm-review/", "ko")).toBe("/ko/kvm-review/");
     expect(getLanguageSwitchPath("/", "ja")).toBe("/ja/");
+    expect(getLanguageSwitchPath("/open-source/", "ko")).toBe(
+      "/ko/open-source/",
+    );
   });
 });

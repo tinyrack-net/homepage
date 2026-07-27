@@ -6,7 +6,12 @@ import { t } from "@/i18n/index.ts";
 import { LINKS, OWNER_NAME } from "@/lib/constants.ts";
 import { getNavigationTags } from "@/lib/content.ts";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
-import { getBlogPath, getContentPath, getTagPath } from "@/lib/routes.ts";
+import {
+  getBlogPath,
+  getContentPath,
+  getOpenSourcePath,
+  getTagPath,
+} from "@/lib/routes.ts";
 import { AUTHOR_LINK, PRODUCT_LINKS, SOCIAL_LINKS } from "@/lib/site-links.ts";
 
 const ITEM_CLASS =
@@ -56,6 +61,11 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
             <li>
               <Link className={ITEM_CLASS} to={getContentPath(lang, "about")}>
                 {t(lang, "nav.about")}
+              </Link>
+            </li>
+            <li>
+              <Link className={ITEM_CLASS} to={getOpenSourcePath(lang)}>
+                {t(lang, "nav.openSource")}
               </Link>
             </li>
             <li>

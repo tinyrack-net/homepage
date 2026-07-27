@@ -9,11 +9,13 @@ import {
   getBlogPath,
   getEquivalentLanguagePath,
   getHomePath,
+  getOpenSourcePath,
   getTagPath,
 } from "./routes.ts";
 
 export type SitePage =
   | { kind: "home"; lang: SupportedLanguageCodes }
+  | { kind: "openSource"; lang: SupportedLanguageCodes }
   | { kind: "content"; lang: SupportedLanguageCodes; entry: ContentEntry }
   | { kind: "blog"; lang: SupportedLanguageCodes; page: number }
   | {
@@ -64,6 +66,9 @@ export function resolveSitePage(pathname: string): SitePage {
   for (const code of SUPPORTED_LANGUAGE_CODES) {
     if (path === getHomePath(code)) {
       return { kind: "home", lang: code };
+    }
+    if (path === getOpenSourcePath(code)) {
+      return { kind: "openSource", lang: code };
     }
   }
 

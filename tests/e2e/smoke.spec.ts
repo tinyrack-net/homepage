@@ -99,6 +99,126 @@ test("landing page names no product or licence", async ({ page }) => {
   await expect(main).not.toContainText("Proxer");
 });
 
+test("open-source showcase lists each curated project exactly once", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1024 });
+  await gotoHydrated(page, "/open-source/");
+
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "Open source, close to home.",
+    }),
+  ).toBeVisible();
+  await expect(page.locator("[data-open-source-project]")).toHaveCount(5);
+
+  for (const name of [
+    "Dotweave",
+    "Proxer",
+    "Tinyauth",
+    "Tinyrack Design",
+    "Dart Packages",
+  ]) {
+    await expect(
+      page.getByRole("heading", { level: 3, name }),
+      `${name} should appear in one project card`,
+    ).toHaveCount(1);
+  }
+
+  await expect(
+    page.locator(
+      '[data-open-source-project="dotweave"] a[href="https://github.com/tinyrack-net/dotweave"]',
+    ),
+  ).toHaveCount(1);
+  await expect(
+    page.locator(
+      '[data-open-source-project="proxer"] a[href="https://github.com/tinyrack-net/proxer"]',
+    ),
+  ).toHaveCount(1);
+
+  const firstProjectLink = page.locator(
+    '[data-open-source-project="dotweave"] a',
+  );
+  await expect(firstProjectLink).toHaveAttribute("target", "_blank");
+  await expect(firstProjectLink).toHaveAttribute("rel", /noopener/);
+  await firstProjectLink.focus();
+  await expect(firstProjectLink).toBeFocused();
+
+  const desktopColumns = await page
+    .locator("[data-open-source-project-grid]")
+    .evaluate(
+      (grid) =>
+        getComputedStyle(grid).gridTemplateColumns.split(" ").filter(Boolean)
+          .length,
+    );
+  expect(desktopColumns).toBe(3);
+});
+
+test("open-source showcase is localized and responsive", async ({ page }) => {
+  for (const locale of [
+    {
+      path: "/ko/open-source/",
+      lang: "ko",
+      title: "가까이에서 만드는 오픈소스.",
+    },
+    {
+      path: "/ja/open-source/",
+      lang: "ja",
+      title: "手元で育てる、オープンソース。",
+    },
+  ]) {
+    const response = await page.goto(locale.path);
+    expect(response?.status(), locale.path).toBeLessThan(400);
+    await expect(page.locator("html")).toHaveAttribute("lang", locale.lang);
+    await expect(
+      page.getByRole("heading", { level: 1, name: locale.title }),
+    ).toBeVisible();
+    await expect(page.locator("[data-open-source-project]")).toHaveCount(5);
+  }
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await gotoHydrated(page, "/open-source/");
+  const heading = page.getByRole("heading", { level: 1 });
+  expect(
+    await heading.evaluate(
+      (element) => element.scrollWidth <= element.clientWidth,
+    ),
+  ).toBe(true);
+  const mobileColumns = await page
+    .locator("[data-open-source-project-grid]")
+    .evaluate(
+      (grid) =>
+        getComputedStyle(grid).gridTemplateColumns.split(" ").filter(Boolean)
+          .length,
+    );
+  expect(mobileColumns).toBe(1);
+});
+
+test("open-source navigation and metadata follow the locale contract", async ({
+  page,
+}) => {
+  await gotoHydrated(page, "/");
+  await page
+    .getByRole("navigation", { name: "Tinyrack" })
+    .getByRole("link", { name: "Open Source" })
+    .click();
+  await expect(page).toHaveURL("/open-source/");
+  await expect(
+    page
+      .getByRole("navigation", { name: "Tinyrack" })
+      .getByRole("link", { name: "Open Source" }),
+  ).toHaveAttribute("aria-current", "page");
+  await expect(page).toHaveTitle("Open Source - Tinyrack");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://tinyrack.net/open-source/",
+  );
+  await expect(
+    page.locator('link[rel="alternate"][hreflang="ko"]'),
+  ).toHaveAttribute("href", "https://tinyrack.net/ko/open-source/");
+});
+
 test("header shows the official lockup for the page language", async ({
   page,
 }) => {
