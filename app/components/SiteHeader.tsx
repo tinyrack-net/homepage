@@ -1,5 +1,6 @@
 "use client";
 
+import { TRButton } from "@tinyrack/ui/components/button";
 import { TRDrawer } from "@tinyrack/ui/components/drawer";
 import { TRIconButton } from "@tinyrack/ui/components/icon-button";
 import { TRLink } from "@tinyrack/ui/components/link";
@@ -61,7 +62,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-tinyrack-dropdown border-b border-tinyrack-border bg-tinyrack-canvas/95 backdrop-blur">
-      <div className="page-shell flex h-16 items-center gap-tinyrack-lg">
+      <div className="wide-shell flex items-center gap-tinyrack-lg py-tinyrack-md md:py-tinyrack-lg">
         {/* `flex`, not the default block: a block anchor wraps the lockup in an
             inline box whose descender gap makes the artwork sit three pixels
             above the nav text beside it. */}
@@ -76,7 +77,7 @@ export function SiteHeader() {
           {navItems.map((item) => (
             <Link
               aria-current={isActive(item.href) ? "page" : undefined}
-              className="text-tinyrack-sm font-medium text-tinyrack-text-muted no-underline transition-colors hover:text-tinyrack-text aria-[current]:text-tinyrack-text"
+              className="text-tinyrack-sm font-medium text-tinyrack-text-muted no-underline underline-offset-tinyrack-md transition-colors hover:text-tinyrack-text aria-[current]:text-tinyrack-text aria-[current]:underline"
               key={item.href}
               to={item.href}
             >
@@ -85,18 +86,31 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        {/* Theme and language live in the drawer at every breakpoint. They are
-            settings, not navigation, and duplicating them in the bar bought a
-            crowded header for two controls a reader touches once. */}
         <TRIconButton
           appearance="ghost"
           aria-label={t(lang, "nav.menu.open")}
-          className="ms-auto"
+          className="ms-auto md:hidden"
           onClick={() => setOpen(true)}
           uiSize="sm"
         >
           <Menu aria-hidden="true" />
         </TRIconButton>
+        <div
+          className="ms-auto hidden items-center gap-tinyrack-md md:flex"
+          data-desktop-header-utilities
+        >
+          <ThemeSwitcher lang={lang} />
+          <LanguageSelect lang={lang} links={languageLinks} />
+          <TRButton
+            appearance="ghost"
+            aria-label={t(lang, "nav.menu.open")}
+            onClick={() => setOpen(true)}
+            uiSize="sm"
+          >
+            <Menu aria-hidden="true" />
+            {t(lang, "nav.menu.label")}
+          </TRButton>
+        </div>
       </div>
 
       {/* Anchored to the trailing edge, under the button that opens it — the
@@ -105,9 +119,9 @@ export function SiteHeader() {
         <TRDrawer.Portal>
           <TRDrawer.Backdrop />
           <TRDrawer.Viewport>
-            <TRDrawer.Popup>
+            <TRDrawer.Popup className="site-nav-drawer">
               <TRDrawer.Content>
-                <div className="flex items-center justify-between gap-tinyrack-md p-tinyrack-lg">
+                <div className="flex items-center justify-between gap-tinyrack-md">
                   <TRDrawer.Title render={<span />}>
                     <BrandLockup lang={lang} />
                   </TRDrawer.Title>
@@ -126,7 +140,7 @@ export function SiteHeader() {
                 <TRSeparator />
                 <nav
                   aria-label={t(lang, "nav.site")}
-                  className="flex flex-col gap-tinyrack-md p-tinyrack-lg"
+                  className="flex flex-col gap-tinyrack-md md:hidden"
                 >
                   {navItems.map((item) => (
                     <Link
@@ -139,8 +153,9 @@ export function SiteHeader() {
                       {item.label}
                     </Link>
                   ))}
-
-                  <p className="mt-tinyrack-md text-tinyrack-sm font-semibold text-tinyrack-text-muted">
+                </nav>
+                <div className="flex flex-col gap-tinyrack-md">
+                  <p className="m-0 text-tinyrack-sm font-semibold text-tinyrack-text-muted">
                     {t(lang, "nav.community")}
                   </p>
                   {SOCIAL_LINKS.map((item) => (
@@ -153,9 +168,9 @@ export function SiteHeader() {
                       {item.label}
                     </TRLink>
                   ))}
-                </nav>
+                </div>
                 <TRSeparator />
-                <div className="flex flex-col gap-tinyrack-lg p-tinyrack-lg">
+                <div className="flex flex-col gap-tinyrack-lg md:hidden">
                   <ThemeSwitcher lang={lang} />
                   <LanguageSelect
                     lang={lang}

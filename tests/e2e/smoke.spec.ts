@@ -18,6 +18,77 @@ test("landing page stays to two sections", async ({ page }) => {
   ).toHaveCount(1);
 });
 
+test("home editorials keep three equal 16:9 cover images", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1024 });
+  await page.goto("/");
+
+  await expect(page.locator("[data-home-article-teaser]")).toHaveCount(3);
+  const links = page.locator("[data-home-article-link]");
+  await expect(links).toHaveCount(3);
+  const images = page.locator("[data-home-article-image]");
+  await expect(images).toHaveCount(3);
+
+  const frames = await images.evaluateAll((elements) =>
+    elements.map((element) => {
+      const image = element as HTMLImageElement;
+      const bounds = image.getBoundingClientRect();
+      const link = image.closest("[data-home-article-link]");
+      const linkBounds = link?.getBoundingClientRect();
+      return {
+        width: bounds.width,
+        height: bounds.height,
+        objectFit: getComputedStyle(image).objectFit,
+        imageInsideLink:
+          linkBounds !== undefined &&
+          linkBounds.left <= bounds.left &&
+          linkBounds.top <= bounds.top &&
+          linkBounds.right >= bounds.right &&
+          linkBounds.bottom >= bounds.bottom,
+      };
+    }),
+  );
+  const firstFrame = frames[0];
+  expect(firstFrame).toBeDefined();
+  if (!firstFrame) {
+    throw new Error("Expected at least one home editorial image.");
+  }
+
+  for (const frame of frames) {
+    expect(frame.objectFit).toBe("cover");
+    expect(frame.imageInsideLink).toBe(true);
+    expect(Math.abs(frame.width / frame.height - 16 / 9)).toBeLessThan(0.02);
+    expect(Math.abs(frame.width - firstFrame.width)).toBeLessThan(1);
+    expect(Math.abs(frame.height - firstFrame.height)).toBeLessThan(1);
+  }
+
+  const firstHref = await links.first().getAttribute("href");
+  if (!firstHref) {
+    throw new Error("Expected the first home editorial link to have an href.");
+  }
+  await images.first().click();
+  await expect(page).toHaveURL(new RegExp(`${firstHref}$`));
+});
+
+test("authored hero lines do not overflow in any locale", async ({ page }) => {
+  for (const viewport of [
+    { width: 1440, height: 1024 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    for (const path of ["/", "/ko/", "/ja/"]) {
+      await page.goto(path);
+      const headline = page.getByRole("heading", { level: 1 });
+      await expect(headline).toBeVisible();
+      expect(
+        await headline.evaluate(
+          (element) => element.scrollWidth <= element.clientWidth,
+        ),
+        `${path} at ${viewport.width}px`,
+      ).toBe(true);
+    }
+  }
+});
+
 test("landing page names no product or licence", async ({ page }) => {
   await page.goto("/");
   // The landing states the idea; products and licensing live elsewhere, so it
@@ -186,8 +257,59 @@ test("mobile menu opens and closes", async ({ page }) => {
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("link", { name: "About" })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Auto" })).toBeVisible();
+  await expect(
+    dialog.getByRole("combobox", { name: "Language" }),
+  ).toBeVisible();
+  const geometry = await dialog.evaluate((popup) => {
+    const viewport = popup.closest(".tr-drawer-viewport");
+    const popupRect = popup.getBoundingClientRect();
+    const viewportRect = viewport?.getBoundingClientRect();
+    const style = getComputedStyle(popup);
+    const widthProbe = document.createElement("div");
+    widthProbe.style.position = "fixed";
+    widthProbe.style.width = "var(--tinyrack-overlay-width-sm)";
+    document.body.append(widthProbe);
+    const expectedWidth = widthProbe.getBoundingClientRect().width;
+    widthProbe.remove();
+    return {
+      borderWidths: [
+        style.borderTopWidth,
+        style.borderRightWidth,
+        style.borderBottomWidth,
+        style.borderLeftWidth,
+      ],
+      expectedWidth,
+      innerWidth: window.innerWidth,
+      popupWidth: popupRect.width,
+      popupRight: popupRect.right,
+      viewportRight: viewportRect?.right,
+    };
+  });
+  expect(geometry.borderWidths).toEqual(["0px", "0px", "0px", "0px"]);
+  expect(geometry.popupWidth).toBeCloseTo(geometry.expectedWidth, 0);
+  expect(geometry.popupWidth).toBeLessThan(geometry.innerWidth);
+  expect(geometry.viewportRight).toBeCloseTo(geometry.innerWidth, 0);
+  await expect
+    .poll(() => dialog.evaluate((popup) => popup.getBoundingClientRect().right))
+    .toBeCloseTo(geometry.innerWidth, 0);
   await page.getByRole("button", { name: "Close menu" }).click();
   await expect(dialog).toBeHidden();
+});
+
+test("desktop header exposes settings and a labeled menu", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1024 });
+  await page.goto("/");
+
+  const utilities = page.locator("[data-desktop-header-utilities]");
+  await expect(utilities).toBeVisible();
+  await expect(utilities.getByRole("button", { name: "Auto" })).toBeVisible();
+  await expect(
+    utilities.getByRole("combobox", { name: "Language" }),
+  ).toBeVisible();
+  await expect(
+    utilities.getByRole("button", { name: "Open menu" }),
+  ).toContainText("Menu");
 });
 
 test("theme preference persists across reloads", async ({ page }) => {
