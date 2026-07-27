@@ -1,11 +1,13 @@
 import "./styles/app.css";
 
 import { MDXProvider } from "@mdx-js/react";
+import { trShikiWebHighlighter } from "@tinyrack/ui/highlighters/shiki-web";
 import { createTinyrackMdxComponents } from "@tinyrack/ui/mdx";
 import {
   createTinyrackColorSchemeScript,
   TRColorSchemeProvider,
 } from "@tinyrack/ui/providers/color-scheme";
+import { TRCodeHighlighterProvider } from "@tinyrack/ui/providers/highlighter";
 import { type ReactNode, useEffect } from "react";
 import {
   Links,
@@ -123,16 +125,18 @@ export default function App() {
 
   return (
     <TRColorSchemeProvider storageKey={THEME_STORAGE_KEY}>
-      <HydrationMarker />
-      <MDXProvider components={mdxComponents}>
-        <div className="flex min-h-screen flex-col bg-tinyrack-canvas text-tinyrack-text">
-          <SiteHeader />
-          <main className="flex-1">
-            <Outlet />
-          </main>
-          <Footer lang={lang} />
-        </div>
-      </MDXProvider>
+      <TRCodeHighlighterProvider highlighter={trShikiWebHighlighter}>
+        <HydrationMarker />
+        <MDXProvider components={mdxComponents}>
+          <div className="flex min-h-screen flex-col bg-tinyrack-canvas text-tinyrack-text">
+            <SiteHeader />
+            <main className="flex-1">
+              <Outlet />
+            </main>
+            <Footer lang={lang} />
+          </div>
+        </MDXProvider>
+      </TRCodeHighlighterProvider>
     </TRColorSchemeProvider>
   );
 }
