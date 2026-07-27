@@ -12,7 +12,12 @@ import { t } from "@/i18n/index.ts";
 import { getAlternativeLanguageLinks } from "@/lib/alternative-language-links.ts";
 import { getAllArticles, getAllPages } from "@/lib/content.ts";
 import { LOCALE_INFO, SUPPORTED_LANGUAGE_CODES } from "@/lib/language.ts";
-import { getBlogPath, getContentPath, getHomePath } from "@/lib/routes.ts";
+import {
+  getBlogPath,
+  getContentPath,
+  getHomePath,
+  getOpenSourcePath,
+} from "@/lib/routes.ts";
 // Products are reachable from the footer only: the header stays site navigation.
 import { SOCIAL_LINKS } from "@/lib/site-links.ts";
 import { getLanguageSwitchPath, resolveSitePage } from "@/lib/site-page.ts";
@@ -52,6 +57,7 @@ export function SiteHeader() {
   // visitor needs before a list of posts means anything.
   const navItems = [
     { href: getContentPath(lang, "about"), label: t(lang, "nav.about") },
+    { href: getOpenSourcePath(lang), label: t(lang, "nav.openSource") },
     { href: getBlogPath(lang), label: t(lang, "nav.blog") },
   ];
 

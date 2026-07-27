@@ -3,6 +3,7 @@ import type {
   SitePageDescriptor,
   SiteSeoConfig,
 } from "@tinyrack/docs/site";
+import { openSourceCopy } from "../content/open-source.ts";
 import type { RoutePlanEntry } from "../content/routes-plan.ts";
 import { planRoutes } from "../content/routes-plan.ts";
 import {
@@ -64,6 +65,9 @@ function equivalentRouteKey(
   if (route.kind === "blog") {
     return `blog:${route.page ?? 1}`;
   }
+  if (route.kind === "openSource") {
+    return "open-source";
+  }
   return "home";
 }
 
@@ -86,6 +90,10 @@ function routeTitleAndDescription(
       description: translation?.description ?? SITE_DESCRIPTIONS[route.lang],
       title: `${translation?.title ?? tag?.name ?? route.tagSlug} - ${SITE_TITLES[route.lang]}`,
     };
+  }
+
+  if (route.kind === "openSource") {
+    return openSourceCopy[route.lang].meta;
   }
 
   return {

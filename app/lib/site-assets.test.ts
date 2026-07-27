@@ -76,6 +76,36 @@ describe("homepage site descriptors", () => {
     expect(sitemap).not.toContain("/blog/page/2/");
   });
 
+  it("publishes localized open-source metadata and alternates", () => {
+    const pages = createHomepagePageDescriptors(manifest([]));
+    const openSource = pages.find(
+      (page) => page.url === "https://tinyrack.net/open-source/",
+    );
+
+    expect(openSource).toMatchObject({
+      title: "Open Source - Tinyrack",
+      description:
+        "Open-source tools built, run, and relied on from the Tinyrack homelab.",
+    });
+    expect(openSource?.alternates).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          language: "ja",
+          url: "https://tinyrack.net/ja/open-source/",
+        }),
+        expect.objectContaining({
+          language: "ko",
+          url: "https://tinyrack.net/ko/open-source/",
+        }),
+      ]),
+    );
+
+    const sitemap = createSitemap(pages);
+    expect(sitemap).toContain("https://tinyrack.net/open-source/");
+    expect(sitemap).toContain("https://tinyrack.net/ko/open-source/");
+    expect(sitemap).toContain("https://tinyrack.net/ja/open-source/");
+  });
+
   it("builds a newest-first English feed without drafts", () => {
     const feed = createHomepageFeed(
       manifest([

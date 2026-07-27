@@ -12,6 +12,10 @@ export function getHomePath(lang: SupportedLanguageCodes) {
   return `${getLanguagePrefix(lang)}/`;
 }
 
+export function getOpenSourcePath(lang: SupportedLanguageCodes) {
+  return `${getLanguagePrefix(lang)}/open-source/`;
+}
+
 export function getContentPath(
   lang: SupportedLanguageCodes,
   routeSlug: string,

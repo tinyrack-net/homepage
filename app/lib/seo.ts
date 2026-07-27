@@ -1,4 +1,5 @@
 import { createSiteMeta } from "@tinyrack/docs/site";
+import { openSourceCopy } from "../content/open-source.ts";
 import { getAlternativeLanguageLinks } from "./alternative-language-links.ts";
 import {
   getSiteImage,
@@ -65,6 +66,9 @@ export function buildMeta(pathname: string) {
     const info = tagInfo(page.tagSlug, lang);
     title = `${info.title} - ${SITE_TITLES[lang]}`;
     description = info.description;
+  } else if (page.kind === "openSource") {
+    title = openSourceCopy[lang].meta.title;
+    description = openSourceCopy[lang].meta.description;
   }
 
   const alternates =
