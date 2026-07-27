@@ -2,7 +2,7 @@ import { TRLinkButton } from "@tinyrack/ui/components/link-button";
 import { TRText } from "@tinyrack/ui/components/text";
 import { ArrowRight } from "lucide-react";
 import { Link, useLocation } from "react-router";
-import { ArticleCard } from "@/components/ArticleCard.tsx";
+import { HomeArticleTeaser } from "@/components/HomeArticleTeaser.tsx";
 import { landingCopy } from "@/content/landing-copy.ts";
 import { getAllArticles } from "@/lib/content.ts";
 import { getBlogPath, getContentPath } from "@/lib/routes.ts";
@@ -17,12 +17,17 @@ export default function Home() {
   const posts = getAllArticles()
     .filter((post) => post.data.lang === lang)
     .slice(0, TEASER_COUNT);
+  const headlineLabel = copy.hero.headline
+    .map((line) => line.map((segment) => segment.text).join(""))
+    .join(lang === "ja" ? "" : " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
   return (
-    <div className="page-shell">
+    <div className="wide-shell">
       {/* The statement is the visual. No mock, no illustration — the page
           should still stand when the product lineup changes. */}
-      <section className="flex min-h-[max(24rem,68dvh)] flex-col justify-center py-[clamp(3rem,10vw,7rem)]">
+      <section className="flex min-h-[60dvh] flex-col justify-center py-tinyrack-5xl">
         <TRText
           as="p"
           className="m-0 mb-tinyrack-xl flex flex-wrap items-center gap-0 [&>span+span]:before:px-tinyrack-md [&>span+span]:before:text-tinyrack-border-strong [&>span+span]:before:content-['/']"
@@ -37,17 +42,29 @@ export default function Home() {
         </TRText>
 
         <TRText
-          aria-label={copy.hero.headline.join(" ")}
+          aria-label={headlineLabel}
           as="h1"
-          // No `ch` max-width: it is calibrated to Latin figures and squeezes
-          // CJK hard enough to break words mid-character. The line breaks are
-          // authored per locale, so the container is the only bound needed.
-          className="m-0 text-balance [&>span]:block"
-          variant="display"
+          className="m-0 text-balance text-tinyrack-5xl leading-tinyrack-sm md:text-tinyrack-6xl md:leading-tinyrack-xs [&>span]:block"
+          variant="displayLg"
           weight="bold"
         >
           {copy.hero.headline.map((line) => (
-            <span key={line}>{line}</span>
+            <span key={line.map(({ text }) => text).join("")}>
+              {line.map((segment) => (
+                <span
+                  className={
+                    segment.tone === "inverse"
+                      ? "inline-block whitespace-pre-wrap bg-tinyrack-surface-inverse px-tinyrack-sm text-tinyrack-text-inverse"
+                      : segment.tone === "muted"
+                        ? "inline-block whitespace-pre-wrap bg-tinyrack-surface-muted px-tinyrack-sm"
+                        : "whitespace-pre-wrap"
+                  }
+                  key={`${segment.tone ?? "default"}-${segment.text}`}
+                >
+                  {segment.text}
+                </span>
+              ))}
+            </span>
           ))}
         </TRText>
 
@@ -78,22 +95,32 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-tinyrack-xl border-t border-tinyrack-border py-[clamp(3rem,7vw,5.5rem)]">
-        <TRText as="h2" className="m-0" variant="headingLg" weight="heading">
-          {copy.latest.title}
-        </TRText>
+      <section className="flex flex-col gap-tinyrack-2xl border-t border-tinyrack-border py-tinyrack-3xl">
+        <div className="flex items-end justify-between gap-tinyrack-lg">
+          <TRText as="h2" className="m-0" variant="headingLg" weight="heading">
+            {copy.latest.title}
+          </TRText>
+          <TRLinkButton
+            appearance="ghost"
+            className="max-md:hidden"
+            render={<Link to={getBlogPath(lang)} />}
+          >
+            {copy.latest.linkLabel}
+            <ArrowRight aria-hidden="true" />
+          </TRLinkButton>
+        </div>
         {posts.length === 0 ? (
           <TRText as="p" className="m-0" color="muted" variant="body">
             {copy.latest.empty}
           </TRText>
         ) : (
-          <ul className="grid gap-tinyrack-lg md:grid-cols-3">
+          <ul className="grid gap-x-tinyrack-xl gap-y-tinyrack-3xl md:grid-cols-3">
             {posts.map((post) => (
-              <ArticleCard key={post.id} post={post} showExcerpt={false} />
+              <HomeArticleTeaser key={post.id} post={post} />
             ))}
           </ul>
         )}
-        <div>
+        <div className="md:hidden">
           <TRLinkButton
             appearance="outline"
             render={<Link to={getBlogPath(lang)} />}

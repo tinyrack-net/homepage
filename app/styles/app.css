@@ -56,6 +56,15 @@
   padding-inline: var(--tinyrack-page-gutter);
 }
 
+/* The landing and its redesigned navigation use the wider editorial frame.
+   Long-form and listing routes keep the established page/reading measures. */
+@utility wide-shell {
+  inline-size: 100%;
+  margin-inline: auto;
+  max-inline-size: var(--tinyrack-page-width-xl);
+  padding-inline: var(--tinyrack-page-gutter);
+}
+
 @utility reading-shell {
   inline-size: 100%;
   margin-inline: auto;
@@ -125,6 +134,19 @@ body {
 
 [data-theme="tinyrack-dark"] .tr-brand-lockup-dark {
   display: block;
+}
+
+.site-nav-drawer {
+  --tr-drawer-popup-max-width: var(--tinyrack-overlay-width-sm);
+}
+
+.home-article-link {
+  border-radius: var(--tinyrack-radius-md);
+}
+
+.home-article-link:focus-visible {
+  outline: var(--tinyrack-focus-width) solid var(--tinyrack-focus);
+  outline-offset: var(--tinyrack-focus-offset);
 }
 
 /* Article body renders as a plain reading column on the page background,
