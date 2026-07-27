@@ -5,24 +5,25 @@ test("landing page renders at the unprefixed root", async ({ page }) => {
   await expect(page).toHaveTitle("Tinyrack");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(
-    page.getByRole("heading", { level: 2, name: "Latest" }),
+    page.getByRole("heading", { level: 2, name: "More notes" }),
   ).toBeVisible();
 });
 
-test("landing page stays to two sections", async ({ page }) => {
+test("landing page keeps its editorial sections", async ({ page }) => {
   await page.goto("/");
   // Scoped to main: the footer's column headings are also h2. The hero has no
-  // h2, so Latest is the only one left.
+  // h2, so More notes is the only one left.
   await expect(
     page.locator("main").getByRole("heading", { level: 2 }),
   ).toHaveCount(1);
 });
 
-test("home editorials keep three equal 16:9 cover images", async ({ page }) => {
+test("home editorials keep 16:9 cover images", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1024 });
   await page.goto("/");
 
   await expect(page.locator("[data-home-article-teaser]")).toHaveCount(3);
+  await expect(page.locator("[data-home-article-featured]")).toHaveCount(1);
   const links = page.locator("[data-home-article-link]");
   await expect(links).toHaveCount(3);
   const images = page.locator("[data-home-article-image]");
@@ -57,8 +58,6 @@ test("home editorials keep three equal 16:9 cover images", async ({ page }) => {
     expect(frame.objectFit).toBe("cover");
     expect(frame.imageInsideLink).toBe(true);
     expect(Math.abs(frame.width / frame.height - 16 / 9)).toBeLessThan(0.02);
-    expect(Math.abs(frame.width - firstFrame.width)).toBeLessThan(1);
-    expect(Math.abs(frame.height - firstFrame.height)).toBeLessThan(1);
   }
 
   const firstHref = await links.first().getAttribute("href");
