@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { gotoHydrated } from "./helpers.ts";
 
 test("landing page renders at the unprefixed root", async ({ page }) => {
   await page.goto("/");
@@ -20,7 +21,7 @@ test("landing page keeps its editorial sections", async ({ page }) => {
 
 test("home editorials keep 16:9 cover images", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1024 });
-  await page.goto("/");
+  await gotoHydrated(page, "/");
 
   await expect(page.locator("[data-home-article-teaser]")).toHaveCount(3);
   await expect(page.locator("[data-home-article-featured]")).toHaveCount(1);
@@ -191,7 +192,7 @@ test("localized home renders under its prefix", async ({ page }) => {
 });
 
 test("header links the blog and marks it active", async ({ page }) => {
-  await page.goto("/");
+  await gotoHydrated(page, "/");
   await page
     .getByRole("navigation")
     .getByRole("link", { name: "Blog" })
@@ -251,7 +252,7 @@ test("switching language from the blog stays on a real page", async ({
 
 test("mobile menu opens and closes", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await gotoHydrated(page, "/");
   await page.getByRole("button", { name: "Open menu" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
@@ -312,11 +313,12 @@ test("desktop header exposes settings and a labeled menu", async ({ page }) => {
 });
 
 test("theme preference persists across reloads", async ({ page }) => {
-  await page.goto("/");
+  await gotoHydrated(page, "/");
   await page.evaluate(() =>
     window.localStorage.setItem("theme-preference", "dark"),
   );
   await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   await expect(page.locator("html")).toHaveAttribute(
     "data-theme",
     "tinyrack-dark",
