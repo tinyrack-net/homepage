@@ -1,9 +1,10 @@
 import { TRLink } from "@tinyrack/ui/components/link";
 import { TRSeparator } from "@tinyrack/ui/components/separator";
+import { TRText } from "@tinyrack/ui/components/text";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { t } from "@/i18n/index.ts";
-import { LINKS, OWNER_NAME } from "@/lib/constants.ts";
+import { LINKS } from "@/lib/constants.ts";
 import { getNavigationTags } from "@/lib/content.ts";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
 import {
@@ -20,9 +21,9 @@ const ITEM_CLASS =
 function Column({ children, title }: { children: ReactNode; title: string }) {
   return (
     <div className="flex flex-col gap-tinyrack-sm">
-      <h2 className="text-tinyrack-sm font-semibold text-tinyrack-text">
+      <TRText as="h2" className="m-0" variant="bodySm" weight="medium">
         {title}
-      </h2>
+      </TRText>
       <ul className="flex flex-col gap-tinyrack-xs">{children}</ul>
     </div>
   );
@@ -50,9 +51,24 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
 
   return (
     <footer className="mt-tinyrack-2xl border-t border-tinyrack-border">
-      <div className="page-shell flex flex-col gap-tinyrack-xl py-tinyrack-2xl">
+      <div className="wide-shell flex flex-col gap-tinyrack-xl py-tinyrack-2xl">
         <div className="grid gap-tinyrack-xl sm:grid-cols-2 lg:grid-cols-4">
+          <Column title={t(lang, "nav.products")}>
+            {PRODUCT_LINKS.map((link) => (
+              <ExternalItem
+                href={link.href}
+                key={link.href}
+                label={link.label}
+              />
+            ))}
+          </Column>
+
           <Column title={t(lang, "nav.site")}>
+            <li>
+              <Link className={ITEM_CLASS} to={getOpenSourcePath(lang)}>
+                {t(lang, "nav.openSource")}
+              </Link>
+            </li>
             <li>
               <Link className={ITEM_CLASS} to={getBlogPath(lang)}>
                 {t(lang, "nav.blog")}
@@ -64,11 +80,6 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
               </Link>
             </li>
             <li>
-              <Link className={ITEM_CLASS} to={getOpenSourcePath(lang)}>
-                {t(lang, "nav.openSource")}
-              </Link>
-            </li>
-            <li>
               <TRLink
                 className="text-tinyrack-sm"
                 href="/rss.xml"
@@ -77,16 +88,6 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
                 RSS
               </TRLink>
             </li>
-          </Column>
-
-          <Column title={t(lang, "nav.products")}>
-            {PRODUCT_LINKS.map((link) => (
-              <ExternalItem
-                href={link.href}
-                key={link.href}
-                label={link.label}
-              />
-            ))}
           </Column>
 
           <Column title={t(lang, "nav.community")}>
@@ -114,9 +115,7 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
         <TRSeparator />
 
         <div className="flex flex-col gap-tinyrack-sm text-tinyrack-sm text-tinyrack-text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {year} by {OWNER_NAME}
-          </p>
+          <p className="m-0">© {year} Tinyrack</p>
           <TRLink
             className="text-tinyrack-sm"
             href={`mailto:${LINKS.EMAIL}`}

@@ -10,9 +10,9 @@ export const SITE_TITLES = {
 };
 
 export const SITE_DESCRIPTIONS = {
-  en: "Homelab hardware and software reviews, news",
-  ja: "ホームラボのハードウェア/ソフトウェアレビュー、ニュース",
-  ko: "홈랩 하드웨어/소프트웨어 리뷰, 뉴스",
+  en: "Tinyrack builds open-source, self-hosted infrastructure tools — developed in the open.",
+  ja: "Tinyrackは、自分で運用できるオープンソースのインフラツールをオープンに開発しています。",
+  ko: "Tinyrack은 직접 운영할 수 있는 오픈소스 인프라 도구를 공개적으로 개발해요.",
 };
 
 /**

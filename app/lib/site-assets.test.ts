@@ -85,7 +85,7 @@ describe("homepage site descriptors", () => {
     expect(openSource).toMatchObject({
       title: "Open Source - Tinyrack",
       description:
-        "Open-source tools built, run, and relied on from the Tinyrack homelab.",
+        "Open-source tools we build, run in production, and develop in the open.",
     });
     expect(openSource?.alternates).toEqual(
       expect.arrayContaining([

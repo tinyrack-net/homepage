@@ -106,12 +106,13 @@ export const openSourceCopy: Record<SupportedLanguageCodes, OpenSourceCopy> = {
     meta: {
       title: "Open Source - Tinyrack",
       description:
-        "Open-source tools built, run, and relied on from the Tinyrack homelab.",
+        "Open-source tools we build, run in production, and develop in the open.",
     },
     hero: {
       eyebrow: "Open source",
-      title: "Open source, close to home.",
-      description: "Tools we build, run, and rely on from our homelab.",
+      title: "Everything we build is open.",
+      description:
+        "We develop our tools in the open, run them in production, and stand behind them.",
       ctaLabel: "View on GitHub",
     },
     projectsTitle: "Projects",
@@ -122,12 +123,13 @@ export const openSourceCopy: Record<SupportedLanguageCodes, OpenSourceCopy> = {
     meta: {
       title: "오픈소스 - 타이니랙",
       description:
-        "Tinyrack 홈랩에서 만들고, 직접 돌리고, 계속 사용하는 오픈소스 도구를 소개해요.",
+        "Tinyrack이 직접 만들고 운영하는 오픈소스 프로젝트들을 소개해요.",
     },
     hero: {
       eyebrow: "오픈소스",
-      title: "가까이에서 만드는 오픈소스.",
-      description: "홈랩에서 만들고, 직접 돌리고, 계속 쓰는 도구를 공개해요.",
+      title: "만드는 것은 전부 공개해요.",
+      description:
+        "모든 도구를 공개적으로 개발하고, 직접 운영하면서 꾸준히 다듬어 가요.",
       ctaLabel: "GitHub에서 보기",
     },
     projectsTitle: "프로젝트",
@@ -138,13 +140,13 @@ export const openSourceCopy: Record<SupportedLanguageCodes, OpenSourceCopy> = {
     meta: {
       title: "オープンソース - Tinyrack",
       description:
-        "Tinyrackのホームラボでつくり、動かし、使い続けているオープンソースの道具を紹介します。",
+        "Tinyrackが自らつくり、運用しているオープンソースプロジェクトを紹介します。",
     },
     hero: {
       eyebrow: "オープンソース",
-      title: "手元で育てる、オープンソース。",
+      title: "つくるものは、すべてオープンに。",
       description:
-        "ホームラボでつくり、動かし、使い続けている道具を公開しています。",
+        "すべてのツールをオープンに開発し、自分たちで運用しながら育てています。",
       ctaLabel: "GitHubで見る",
     },
     projectsTitle: "プロジェクト",
