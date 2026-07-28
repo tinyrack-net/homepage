@@ -1,0 +1,106 @@
+/* Landing illustration choreography (see app/components/HomeVisuals.tsx).
+
+   Entrances play when the `.hv-stage` svg reports itself in view
+   (`data-inview="true"`, toggled by the `useInView` hook), and each
+   `[data-hv-enter]` group starts after its inline `--hv-delay`. Entrance
+   keyframes only declare where an element comes FROM — its resting style is
+   the finished composition — so prerendered HTML, no-JS and reduced-motion
+   always show completed artwork.
+
+   Loops (flowing dashes, floating) are separate always-on classes and, per
+   the design system's motion foundation, run on linear/standard cycles while
+   entrances use the ease-out token. Everything decorative sits behind
+   prefers-reduced-motion. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .hv-stage[data-inview="true"] [data-hv-enter] {
+    animation: var(--hv-anim, hv-fade-rise) var(--hv-duration, 0.55s)
+      var(--tinyrack-ease-out) both;
+    animation-delay: var(--hv-delay, 0ms);
+    transform-box: fill-box;
+    transform-origin: var(--hv-origin, center);
+  }
+
+  /* Continuous ambience. `transform-box: fill-box` makes transforms pivot on
+     the element itself instead of the SVG canvas origin. */
+  .hv-flow,
+  .hv-flow-slow,
+  .hv-float {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .hv-flow {
+    animation: hv-dash-flow 1.6s var(--tinyrack-ease-linear) infinite;
+  }
+
+  .hv-flow-slow {
+    animation: hv-dash-flow 3.2s var(--tinyrack-ease-linear) infinite;
+  }
+
+  .hv-float {
+    animation: hv-float 4.8s var(--tinyrack-ease-standard) infinite;
+  }
+}
+
+/* --- Entrance keyframes (from-only: resting style = final state). --- */
+
+@keyframes hv-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes hv-fade-rise {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+@keyframes hv-pop {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+
+/* Requires pathLength="100" on the path so the dash math is size-independent. */
+@keyframes hv-draw {
+  from {
+    stroke-dasharray: 100 100;
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dasharray: 100 100;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes hv-iso-rise {
+  from {
+    opacity: 0;
+    translate: 0 22px;
+  }
+}
+
+@keyframes hv-iso-drop {
+  from {
+    opacity: 0;
+    translate: 0 -18px;
+  }
+}
+
+/* --- Loop keyframes. --- */
+
+@keyframes hv-dash-flow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@keyframes hv-float {
+  50% {
+    translate: 0 -4px;
+  }
+}
