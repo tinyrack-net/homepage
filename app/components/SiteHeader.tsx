@@ -5,6 +5,7 @@ import { TRDrawer } from "@tinyrack/ui/components/drawer";
 import { TRIconButton } from "@tinyrack/ui/components/icon-button";
 import { TRLink } from "@tinyrack/ui/components/link";
 import { TRSeparator } from "@tinyrack/ui/components/separator";
+import { TRText } from "@tinyrack/ui/components/text";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
@@ -18,8 +19,7 @@ import {
   getHomePath,
   getOpenSourcePath,
 } from "@/lib/routes.ts";
-// Products are reachable from the footer only: the header stays site navigation.
-import { SOCIAL_LINKS } from "@/lib/site-links.ts";
+import { PRODUCT_LINKS, SOCIAL_LINKS } from "@/lib/site-links.ts";
 import { getLanguageSwitchPath, resolveSitePage } from "@/lib/site-page.ts";
 import { BrandLockup } from "./BrandLockup.tsx";
 import { type LanguageLink, LanguageSelect } from "./LanguageSelect.tsx";
@@ -53,12 +53,12 @@ export function SiteHeader() {
     };
   });
 
-  // About first: it says what this place is, which is what a first-time
-  // visitor needs before a list of posts means anything.
+  // Open Source first: it matches the hero's primary CTA and leads with what
+  // the company builds; About and the blog follow.
   const navItems = [
-    { href: getContentPath(lang, "about"), label: t(lang, "nav.about") },
     { href: getOpenSourcePath(lang), label: t(lang, "nav.openSource") },
     { href: getBlogPath(lang), label: t(lang, "nav.blog") },
+    { href: getContentPath(lang, "about"), label: t(lang, "nav.about") },
   ];
 
   const isActive = (href: string) =>
@@ -161,9 +161,36 @@ export function SiteHeader() {
                   ))}
                 </nav>
                 <div className="flex flex-col gap-tinyrack-md">
-                  <p className="m-0 text-tinyrack-sm font-semibold text-tinyrack-text-muted">
+                  <TRText
+                    as="p"
+                    className="m-0"
+                    color="muted"
+                    variant="bodySm"
+                    weight="medium"
+                  >
+                    {t(lang, "nav.products")}
+                  </TRText>
+                  {PRODUCT_LINKS.map((item) => (
+                    <TRLink
+                      href={item.href}
+                      key={item.href}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {item.label}
+                    </TRLink>
+                  ))}
+                </div>
+                <div className="flex flex-col gap-tinyrack-md">
+                  <TRText
+                    as="p"
+                    className="m-0"
+                    color="muted"
+                    variant="bodySm"
+                    weight="medium"
+                  >
                     {t(lang, "nav.community")}
-                  </p>
+                  </TRText>
                   {SOCIAL_LINKS.map((item) => (
                     <TRLink
                       href={item.href}

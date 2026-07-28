@@ -1,3 +1,4 @@
+import { TRText } from "@tinyrack/ui/components/text";
 import { useLocation } from "react-router";
 import { ArticleList } from "@/components/ArticleList.tsx";
 import { t } from "@/i18n/index.ts";
@@ -18,10 +19,17 @@ export default function BlogIndex() {
   return (
     <div className="page-shell flex flex-col gap-tinyrack-2xl py-tinyrack-3xl">
       <header>
-        <h1 className="text-tinyrack-4xl font-bold">{t(lang, "blog.title")}</h1>
-        <p className="mt-tinyrack-lg max-w-prose text-tinyrack-lg text-tinyrack-text-muted">
+        <TRText as="h1" className="m-0" variant="display" weight="bold">
+          {t(lang, "blog.title")}
+        </TRText>
+        <TRText
+          as="p"
+          className="mt-tinyrack-lg mb-0 max-w-prose"
+          color="muted"
+          variant="body"
+        >
           {t(lang, "blog.description")}
-        </p>
+        </TRText>
       </header>
       <ArticleList
         articles={getPageItems(posts, currentPage)}

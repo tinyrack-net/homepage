@@ -6,25 +6,32 @@ test("landing page renders at the unprefixed root", async ({ page }) => {
   await expect(page).toHaveTitle("Tinyrack");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(
-    page.getByRole("heading", { level: 2, name: "More notes" }),
+    page.getByRole("heading", { level: 2, name: "From the engineering blog" }),
   ).toBeVisible();
 });
 
-test("landing page keeps its editorial sections", async ({ page }) => {
+test("landing page keeps its corporate sections", async ({ page }) => {
   await page.goto("/");
-  // Scoped to main: the footer's column headings are also h2. The hero has no
-  // h2, so More notes is the only one left.
+  // Scoped to main: the footer's column headings are also h2. The landing has
+  // one h2 per section: principles, the open-source band, blog.
+  const main = page.locator("main");
+  await expect(main.getByRole("heading", { level: 2 })).toHaveCount(3);
   await expect(
-    page.locator("main").getByRole("heading", { level: 2 }),
-  ).toHaveCount(1);
+    main.getByRole("heading", { level: 2, name: "What we stand for" }),
+  ).toBeVisible();
+  await expect(
+    main.getByRole("heading", { level: 2, name: "What we make" }),
+  ).toBeVisible();
 });
 
 test("home editorials keep 16:9 cover images", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1024 });
   await gotoHydrated(page, "/");
 
+  // The blog section is deliberately compact: three equal teasers, no
+  // featured card.
   await expect(page.locator("[data-home-article-teaser]")).toHaveCount(3);
-  await expect(page.locator("[data-home-article-featured]")).toHaveCount(1);
+  await expect(page.locator("[data-home-article-featured]")).toHaveCount(0);
   const links = page.locator("[data-home-article-link]");
   await expect(links).toHaveCount(3);
   const images = page.locator("[data-home-article-image]");
@@ -89,14 +96,27 @@ test("authored hero lines do not overflow in any locale", async ({ page }) => {
   }
 });
 
-test("landing page names no product or licence", async ({ page }) => {
+test("landing leads with philosophy, not a product list", async ({ page }) => {
   await page.goto("/");
-  // The landing states the idea; products and licensing live elsewhere, so it
-  // keeps holding up when the lineup changes.
+  // The landing introduces principles with illustrations; the lineup lives on
+  // /open-source/, reached through the CTA band. No product or licence names.
   const main = page.locator("main");
+  await expect(main.locator("[data-home-principle]")).toHaveCount(3);
+  await expect(
+    main.getByRole("link", { name: "Explore the projects" }),
+  ).toHaveAttribute("href", "/open-source/");
   await expect(main).not.toContainText("MIT");
   await expect(main).not.toContainText("Dotweave");
   await expect(main).not.toContainText("Proxer");
+});
+
+test("hero primary CTA leads to the open-source showcase", async ({ page }) => {
+  await gotoHydrated(page, "/");
+  await page
+    .locator("main")
+    .getByRole("link", { name: "Explore our open source" })
+    .click();
+  await expect(page).toHaveURL("/open-source/");
 });
 
 test("open-source showcase lists each curated project exactly once", async ({
@@ -108,7 +128,7 @@ test("open-source showcase lists each curated project exactly once", async ({
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Open source, close to home.",
+      name: "Everything we build is open.",
     }),
   ).toBeVisible();
   await expect(page.locator("[data-open-source-project]")).toHaveCount(5);
@@ -160,12 +180,12 @@ test("open-source showcase is localized and responsive", async ({ page }) => {
     {
       path: "/ko/open-source/",
       lang: "ko",
-      title: "가까이에서 만드는 오픈소스.",
+      title: "만드는 것은 전부 공개해요.",
     },
     {
       path: "/ja/open-source/",
       lang: "ja",
-      title: "手元で育てる、オープンソース。",
+      title: "つくるものは、すべてオープンに。",
     },
   ]) {
     const response = await page.goto(locale.path);

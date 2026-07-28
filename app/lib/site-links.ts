@@ -5,10 +5,11 @@ export type SiteLink = {
   label: string;
 };
 
-/** Open-source products, shown in the header nav and the footer. */
+/** Open-source products, shown on the landing, in the drawer, and the footer. */
 export const PRODUCT_LINKS: readonly SiteLink[] = [
   { label: "Dotweave", href: "https://dotweave.tinyrack.net" },
   { label: "Proxer", href: "https://proxer.tinyrack.net" },
+  { label: "Tinyauth", href: "https://tinyauth.tinyrack.net" },
 ];
 
 /** Where the work happens outside this site. */
