@@ -16,6 +16,7 @@
 @import "@fontsource/ibm-plex-mono/latin-500.css";
 
 @import "@tinyrack/ui/core.css";
+@import "./visuals.css";
 @import "@tinyrack/ui/mdx.css";
 @import "@tinyrack/ui/components/badge.css";
 @import "@tinyrack/ui/components/button.css";
@@ -154,19 +155,4 @@ body {
 .tr-mdx {
   min-height: 0;
   background: transparent;
-}
-
-/* Landing illustrations: dashed strokes "flow" to read as moving data. The
-   animation only nudges stroke-dashoffset, and reduced-motion users get the
-   static dashes. Timing leans on the design system's duration scale. */
-@keyframes home-visual-dash-flow {
-  to {
-    stroke-dashoffset: -20;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .home-visual-flow {
-    animation: home-visual-dash-flow 1.6s linear infinite;
-  }
 }
