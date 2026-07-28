@@ -266,7 +266,7 @@ const POWERED_SLAB = 1;
 const RACK_VENTS = [8, 14, 20] as const;
 
 export function RackVisual({ className }: VisualProps) {
-  const stage = useVisualStage(className, "0 0 320 360");
+  const stage = useVisualStage(className, "15 28 320 360");
   const ghost = isoFaces(150, 194, 110, 56, 26);
 
   return (
@@ -274,7 +274,14 @@ export function RackVisual({ className }: VisualProps) {
       <defs>
         <DotPattern id="iso-rack-dots" />
       </defs>
-      <rect fill="url(#iso-rack-dots)" height="360" opacity="0.5" width="320" />
+      <rect
+        fill="url(#iso-rack-dots)"
+        height="360"
+        opacity="0.5"
+        width="320"
+        x="15"
+        y="28"
+      />
 
       <FloorRings cx={172} cy={302} delayMs={0} rings={[40, 58, 76]} />
       <IsoShadow d={64} delayMs={100} fx={146} fy={340} w={124} />
@@ -423,24 +430,50 @@ export function RackVisual({ className }: VisualProps) {
   );
 }
 
-/* --- Open source: an axis-aligned git graph merges into the repository. -- */
+/* --- Open source: a solid tiny rack — 1U units stacked flush into one block,
+   no see-through frame. The middle unit is a contribution from outside: a
+   ghost of its origin still sits on the floor, linked in along an iso axis,
+   and it settles in lit. Open source = an outside unit joins the system. */
 
-/* The main line runs along the +w floor axis from (36, 168) to (226, 58.4),
-   sliding under the repository box anchored at (216, 64.2). The contribution
-   branch offsets one depth step toward the viewer, runs parallel, and turns
-   back to merge at (186, 81.4). Every segment lies on an iso axis. */
+const OS_RACK = { d: 50, fx: 131, fy: 162, w: 106 } as const;
+const OS_UNITS = [0, 1, 2] as const;
+const OS_UNIT_H = 22;
+const OS_CONTRIB_UNIT = 1;
+const OS_UNIT_VENTS = [8, 15] as const;
+const OS_UNIT_FX = 135;
+const OS_UNIT_W = 98;
+const OS_UNIT_D = 44;
+const OS_BASE_H = 6;
 
-const OS_MAIN_COMMITS = [
-  [66, 150.7],
-  [126, 116.1],
-] as const;
-const OS_BRANCH_COMMITS = [
-  [150.2, 130.1],
-  [180.2, 112.8],
-] as const;
+/** Front-bottom Y of the unit at stack index k (units stack flush). */
+function osUnitY(fy: number, k: number): number {
+  return fy - OS_BASE_H - k * OS_UNIT_H;
+}
+
+/** Right-face LED position for a unit sitting at front corner (OS_UNIT_FX, uY). */
+function osUnitLed(uY: number): { x: number; y: number } {
+  const u = OS_UNIT_W - 14;
+  return { x: OS_UNIT_FX + RX * u, y: uY - 0.5 * u - OS_UNIT_H / 2 };
+}
+
+/** Right-front bottom corner of a unit sitting at front corner (OS_UNIT_FX, uY). */
+function osUnitCorner(uY: number): { x: number; y: number } {
+  return { x: OS_UNIT_FX + RX * OS_UNIT_W, y: uY - 0.5 * OS_UNIT_W };
+}
 
 export function OpenSourceVisual({ className }: VisualProps) {
   const stage = useVisualStage(className, "0 0 320 200");
+  const { d, fx, fy, w } = OS_RACK;
+
+  // The contribution's origin: a small ghost unit out on the floor, linked
+  // back into the rack's middle slot along an iso axis.
+  const contribY = osUnitY(fy, OS_CONTRIB_UNIT);
+  const slot = osUnitCorner(contribY);
+  const ghostFx = slot.x + 28;
+  const ghostFy = slot.y + 16;
+  const ghost = isoFaces(ghostFx, ghostFy, 30, 24, OS_UNIT_H);
+  const link = `M${pt(ghostFx, ghostFy)}L${pt(slot.x, slot.y)}`;
+  const led = osUnitLed(contribY);
 
   return (
     <svg aria-hidden="true" {...stage}>
@@ -449,98 +482,101 @@ export function OpenSourceVisual({ className }: VisualProps) {
       </defs>
       <rect fill="url(#iso-os-dots)" height="200" opacity="0.5" width="320" />
 
-      {/* Main line, laid along the iso axis into the repository. */}
-      <path
-        className="stroke-tinyrack-border-strong"
-        d="M36 168L226 58.4"
-        data-hv-enter
-        pathLength={100}
-        strokeWidth="2"
-        style={enterStyle(140, "hv-draw", 500)}
-      />
-      {/* A contribution forks toward the viewer, runs beside the main line,
-          and merges back — all on the two floor axes. */}
-      <path
-        className="stroke-tinyrack-border-strong"
-        d="M86 139.1L110.2 153.1"
-        data-hv-enter
-        pathLength={100}
-        strokeWidth="2"
-        style={enterStyle(420, "hv-draw", 250)}
-      />
-      <path
-        className="stroke-tinyrack-border-strong"
-        d="M110.2 153.1L210.2 95.4"
-        data-hv-enter
-        pathLength={100}
-        strokeWidth="2"
-        style={enterStyle(520, "hv-draw", 350)}
-      />
-      <path
-        className="stroke-tinyrack-border-strong"
-        d="M210.2 95.4L186 81.4"
-        data-hv-enter
-        pathLength={100}
-        strokeWidth="2"
-        style={enterStyle(700, "hv-draw", 250)}
+      <IsoShadow d={d} delayMs={100} fx={fx} fy={fy + 6} w={w} />
+
+      {/* Base plinth. */}
+      <IsoBox d={d} delayMs={160} fx={fx} fy={fy} h={OS_BASE_H} w={w} />
+
+      {/* 1U units stacked flush into a solid block, bottom-up. The middle one
+          is the contribution, arriving lit. */}
+      {OS_UNITS.map((k) => {
+        const uY = osUnitY(fy, k);
+        const contrib = k === OS_CONTRIB_UNIT;
+        const detail = contrib
+          ? "stroke-tinyrack-success"
+          : "stroke-tinyrack-border-strong";
+        const uLed = osUnitLed(uY);
+
+        return (
+          <IsoBox
+            anim="hv-iso-slot"
+            d={OS_UNIT_D}
+            delayMs={contrib ? 780 : 300 + k * 150}
+            fx={OS_UNIT_FX}
+            fy={uY}
+            h={OS_UNIT_H}
+            key={k}
+            w={OS_UNIT_W}
+          >
+            {OS_UNIT_VENTS.map((t) => (
+              <path
+                className={detail}
+                d={rightFaceLine(OS_UNIT_FX, uY, 10, OS_UNIT_W - 16, t)}
+                key={t}
+                strokeWidth="2"
+              />
+            ))}
+            <circle
+              className={
+                contrib ? "fill-tinyrack-success" : "fill-tinyrack-border"
+              }
+              cx={uLed.x}
+              cy={uLed.y}
+              r={contrib ? 3 : 2.5}
+            />
+          </IsoBox>
+        );
+      })}
+
+      {/* Thin cap seals the top of the block. */}
+      <IsoBox
+        anim="hv-iso-drop"
+        d={OS_UNIT_D}
+        delayMs={960}
+        fx={OS_UNIT_FX}
+        fy={osUnitY(fy, OS_UNITS.length - 1) - OS_UNIT_H}
+        h={4}
+        w={OS_UNIT_W}
       />
 
-      {/* Commits land along the lines. */}
-      {[[86, 139.1], ...OS_MAIN_COMMITS, ...OS_BRANCH_COMMITS].map(
-        ([cx, cy], index) => (
-          <circle
-            className="fill-tinyrack-canvas stroke-tinyrack-border-strong"
-            cx={cx}
-            cy={cy}
-            data-hv-enter
-            key={`${cx}-${cy}`}
-            r="3.5"
+      {/* Where the contribution came from: a ghost on the floor, still linked
+          into the rack along an iso axis. */}
+      <g data-hv-enter style={enterStyle(1060, "hv-fade")}>
+        {[ghost.left, ghost.right, ghost.top].map((points) => (
+          <polygon
+            className="stroke-tinyrack-border"
+            key={points}
+            points={points}
+            strokeDasharray="4 6"
+            strokeLinejoin="round"
             strokeWidth="2"
-            style={enterStyle(680 + index * 70, "hv-pop", 350)}
           />
-        ),
-      )}
-
-      {/* The merge lights up... */}
-      <g data-hv-enter style={enterStyle(1040, "hv-pop", 400)}>
-        <circle
-          className="stroke-tinyrack-primary opacity-40 motion-safe:animate-pulse"
-          cx="186"
-          cy="81.4"
-          r="9"
-          strokeWidth="2"
-        />
-        <circle className="fill-tinyrack-primary" cx="186" cy="81.4" r="4.5" />
+        ))}
       </g>
-
-      {/* ...and history flows into the repository. */}
-      <IsoShadow d={32} delayMs={600} fx={216} fy={70.2} w={44} />
-      <IsoBox d={32} delayMs={700} fx={216} fy={64.2} h={18} w={44}>
-        <circle
-          className="fill-tinyrack-success motion-safe:animate-pulse"
-          cx="245.4"
-          cy="38.2"
-          r="3"
-        />
-      </IsoBox>
-
-      <g data-hv-enter style={enterStyle(1250, "hv-fade")}>
-        <path
-          className="hv-flow-slow stroke-tinyrack-border-strong opacity-60"
-          d="M36 168L86 139.1"
-          strokeDasharray="4 16"
-          strokeWidth="2"
-        />
-        <path
-          className="hv-flow-slow stroke-tinyrack-border-strong opacity-60"
-          d="M110.2 153.1L210.2 95.4"
-          strokeDasharray="4 16"
-          strokeWidth="2"
-        />
+      <path
+        className="stroke-tinyrack-border-strong"
+        d={link}
+        data-hv-enter
+        pathLength={100}
+        strokeWidth="2"
+        style={enterStyle(1160, "hv-draw", 350)}
+      />
+      <g data-hv-enter style={enterStyle(1340, "hv-fade")}>
         <path
           className="hv-flow stroke-tinyrack-success"
-          d="M186 81.4L226 58.4"
+          d={link}
           strokeDasharray="4 16"
+          strokeWidth="2"
+        />
+      </g>
+
+      {/* The contribution lights up as it settles into the system. */}
+      <g data-hv-enter style={enterStyle(1280, "hv-pop", 400)}>
+        <circle
+          className="stroke-tinyrack-success opacity-40 motion-safe:animate-pulse"
+          cx={led.x}
+          cy={led.y}
+          r="8"
           strokeWidth="2"
         />
       </g>
@@ -548,21 +584,33 @@ export function OpenSourceVisual({ className }: VisualProps) {
   );
 }
 
-/* --- Self-hosting: a lit home with its own server; the cloud link is cut. */
+/* --- Self-hosting: the same solid tiny rack, but inside your own four walls.
+   It stands in the corner of your room and actively serves your own devices
+   over live local links — you are the host. No cloud, no cut: just your
+   hardware, in your space, running your things. */
 
-/* Walls: front corner (120, 158), w 76, d 52, h 34. The gable ridge runs
-   along the width axis from (97.5, 85) to (163.3, 47). Door and window sit
-   on the right wall plane. */
-
-const HOUSE = {
-  door: `${pt(132.1, 151)} ${pt(146, 143)} ${pt(146, 121)} ${pt(132.1, 129)}`,
-  gable: `${pt(120, 124)} ${pt(75, 98)} ${pt(97.5, 85)}`,
-  rightSlope: `${pt(120, 124)} ${pt(97.5, 85)} ${pt(163.3, 47)} ${pt(185.8, 86)}`,
-  window: `${pt(158.1, 124)} ${pt(172, 116)} ${pt(172, 102)} ${pt(158.1, 110)}`,
+const SH_RACK = { d: 44, fx: 152, fy: 150, w: 88 } as const;
+const SH_UNITS = [0, 1] as const;
+const SH_UNIT_H = 24;
+const SH_LIVE_UNIT = 1;
+const SH_UNIT_VENTS = [9, 16] as const;
+const SH_UNIT_FX = 156;
+const SH_UNIT_W = 80;
+const SH_UNIT_D = 38;
+const SH_BASE_H = 7;
+const SH_ROOM = {
+  floor: "150,182 260.9,118 181.2,72 70.3,136",
+  wallLeft: "70.3,136 181.2,72 181.2,16 70.3,80",
+  wallRight: "260.9,118 181.2,72 181.2,16 260.9,62",
 };
+const SH_LINK = "M120 152Q136 149 150 149";
 
 export function SelfHostVisual({ className }: VisualProps) {
   const stage = useVisualStage(className, "0 0 320 200");
+  const { d, fx, fy, w } = SH_RACK;
+  const unitY = (k: number) => fy - SH_BASE_H - k * SH_UNIT_H;
+  const ledX = SH_UNIT_FX + RX * (SH_UNIT_W - 14);
+  const ledY = (uY: number) => uY - 0.5 * (SH_UNIT_W - 14) - SH_UNIT_H / 2;
 
   return (
     <svg aria-hidden="true" {...stage}>
@@ -571,141 +619,133 @@ export function SelfHostVisual({ className }: VisualProps) {
       </defs>
       <rect fill="url(#iso-host-dots)" height="200" opacity="0.5" width="320" />
 
-      <FloorRings cx={150} cy={160} delayMs={0} rings={[44, 62, 80]} />
-      <IsoShadow d={60} delayMs={150} fx={114} fy={166} w={90} />
-
-      {/* The house: walls rise, the roof settles, the window lights up. */}
-      <IsoBox d={52} delayMs={220} fx={120} fy={158} h={34} w={76} />
-      <g data-hv-enter style={enterStyle(420, "hv-iso-drop")}>
+      {/* Your four walls: a room corner the rack lives inside. */}
+      <g data-hv-enter style={enterStyle(0, "hv-fade")}>
         <polygon
-          className="fill-tinyrack-surface-selected stroke-tinyrack-border"
-          points={HOUSE.gable}
+          className="fill-tinyrack-surface-selected stroke-tinyrack-border opacity-70"
+          points={SH_ROOM.wallLeft}
           strokeLinejoin="round"
           strokeWidth="2"
         />
         <polygon
-          className="fill-tinyrack-surface stroke-tinyrack-border"
-          points={HOUSE.rightSlope}
-          strokeLinejoin="round"
-          strokeWidth="2"
-        />
-      </g>
-      <g data-hv-enter style={enterStyle(560, "hv-fade")}>
-        <polygon
-          className="fill-tinyrack-surface-selected stroke-tinyrack-border"
-          points={HOUSE.door}
+          className="fill-tinyrack-surface stroke-tinyrack-border opacity-70"
+          points={SH_ROOM.wallRight}
           strokeLinejoin="round"
           strokeWidth="2"
         />
         <polygon
-          className="fill-tinyrack-success-surface stroke-tinyrack-border"
-          points={HOUSE.window}
+          className="stroke-tinyrack-border"
+          points={SH_ROOM.floor}
           strokeLinejoin="round"
           strokeWidth="2"
         />
       </g>
 
-      {/* A device on the floor, wired to the house along the floor axis. */}
-      <IsoShadow d={18} delayMs={600} expand={4} fx={48} fy={174} w={24} />
+      <IsoShadow d={d} delayMs={220} fx={fx} fy={fy + 6} w={w} />
+
+      {/* Base plinth. */}
+      <IsoBox d={d} delayMs={280} fx={fx} fy={fy} h={SH_BASE_H} w={w} />
+
+      {/* Two units stacked into a small home rack; the top one runs. */}
+      {SH_UNITS.map((k) => {
+        const uY = unitY(k);
+        const live = k === SH_LIVE_UNIT;
+        const detail = live
+          ? "stroke-tinyrack-success"
+          : "stroke-tinyrack-border-strong";
+
+        return (
+          <IsoBox
+            anim="hv-iso-rise"
+            d={SH_UNIT_D}
+            delayMs={360 + k * 150}
+            fx={SH_UNIT_FX}
+            fy={uY}
+            h={SH_UNIT_H}
+            key={k}
+            w={SH_UNIT_W}
+          >
+            {SH_UNIT_VENTS.map((t) => (
+              <path
+                className={detail}
+                d={rightFaceLine(SH_UNIT_FX, uY, 10, SH_UNIT_W - 16, t)}
+                key={t}
+                strokeWidth="2"
+              />
+            ))}
+            <circle
+              className={
+                live ? "fill-tinyrack-success" : "fill-tinyrack-border"
+              }
+              cx={ledX}
+              cy={ledY(uY)}
+              r={live ? 3 : 2.5}
+            />
+          </IsoBox>
+        );
+      })}
+
+      {/* Thin cap seals the block. */}
       <IsoBox
         anim="hv-iso-drop"
-        d={18}
-        delayMs={660}
-        fx={48}
-        fy={170}
-        h={12}
-        w={24}
-      />
-      <path
-        className="stroke-tinyrack-border-strong opacity-60"
-        d="M68.8 158L94.4 143.2"
-        data-hv-enter
-        strokeDasharray="4 6"
-        strokeWidth="2"
-        style={enterStyle(900, "hv-fade")}
+        d={SH_UNIT_D}
+        delayMs={720}
+        fx={SH_UNIT_FX}
+        fy={unitY(SH_UNITS.length - 1) - SH_UNIT_H}
+        h={4}
+        w={SH_UNIT_W}
       />
 
-      {/* The home server racked beside the house. */}
-      <IsoShadow d={24} delayMs={700} expand={4} fx={236} fy={154} w={36} />
+      {/* Your own device, sitting in the room, served by the rack. */}
+      <IsoShadow d={20} delayMs={820} expand={4} fx={98} fy={170} w={30} />
       <IsoBox
-        anim="hv-iso-slot"
-        d={24}
-        delayMs={760}
-        fx={236}
-        fy={150}
-        h={11}
-        w={36}
-      />
-      <IsoBox
-        anim="hv-iso-slot"
-        d={24}
-        delayMs={860}
-        fx={236}
-        fy={139}
-        h={11}
-        inverse
-        w={36}
+        anim="hv-iso-rise"
+        d={20}
+        delayMs={880}
+        fx={98}
+        fy={166}
+        h={10}
+        w={30}
       >
+        <path
+          className="stroke-tinyrack-success"
+          d={rightFaceLine(98, 166, 6, 24, 5)}
+          strokeWidth="2"
+        />
         <circle
-          className="fill-tinyrack-success motion-safe:animate-pulse"
-          cx="260.2"
-          cy="120"
-          r="2.5"
+          className="fill-tinyrack-success"
+          cx={115.6}
+          cy={150.5}
+          r={2.5}
         />
       </IsoBox>
 
-      {/* Local link: the house feeds from its own hardware. */}
+      {/* Live local link: your rack serves your device. */}
       <path
-        className="stroke-tinyrack-border-strong opacity-60"
-        d="M215.2 138L184.9 120.5"
+        className="stroke-tinyrack-border-strong"
+        d={SH_LINK}
         data-hv-enter
-        strokeDasharray="4 6"
+        fill="none"
         strokeWidth="2"
         style={enterStyle(980, "hv-fade")}
       />
-      <g data-hv-enter style={enterStyle(1250, "hv-fade")}>
+      <g data-hv-enter style={enterStyle(1160, "hv-fade")}>
         <path
           className="hv-flow stroke-tinyrack-success"
-          d="M215.2 138L184.9 120.5"
-          strokeDasharray="4 16"
-          strokeWidth="2"
-        />
-        <path
-          className="hv-flow-slow stroke-tinyrack-success"
-          d="M68.8 158L94.4 143.2"
+          d={SH_LINK}
+          fill="none"
           strokeDasharray="4 16"
           strokeWidth="2"
         />
       </g>
 
-      {/* The cloud stays out of the picture: its link is cut mid-air. */}
-      <path
-        className="stroke-tinyrack-border opacity-50"
-        d="M250 46h44a10 10 0 0 0 2.2-19.7A15 15 0 0 0 267 18a15 15 0 0 0-14.6 11.3A10 10 0 0 0 250 46Z"
-        data-hv-enter
-        strokeLinejoin="round"
-        strokeWidth="2"
-        style={enterStyle(1050, "hv-fade")}
-      />
-      <g data-hv-enter style={enterStyle(1200, "hv-fade")}>
-        <path
-          className="stroke-tinyrack-border opacity-60"
-          d="M191 83L216 68.6"
-          strokeDasharray="4 6"
-          strokeWidth="2"
-        />
-        <path
-          className="stroke-tinyrack-border opacity-60"
-          d="M232 59.4L247 50.7"
-          strokeDasharray="4 6"
-          strokeWidth="2"
-        />
-      </g>
-      <g data-hv-enter style={enterStyle(1350, "hv-pop", 350)}>
-        <path
-          className="stroke-tinyrack-border-strong"
-          d="M219 59l10 10M229 59l-10 10"
-          strokeLinecap="round"
+      {/* Running glow on the live unit. */}
+      <g data-hv-enter style={enterStyle(1080, "hv-pop", 400)}>
+        <circle
+          className="stroke-tinyrack-success opacity-40 motion-safe:animate-pulse"
+          cx={ledX}
+          cy={ledY(unitY(SH_LIVE_UNIT))}
+          r="8"
           strokeWidth="2"
         />
       </g>
