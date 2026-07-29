@@ -10,8 +10,9 @@ import { useInView } from "@/lib/use-in-view.ts";
  * both themes stay legible for free.
  *
  * Each scene tells its section's story: servers slide into a four-post rack
- * frame and boot (hero), an axis-aligned git graph on the floor merges into
- * the repository box (open source), a lit home wired to its own server while
+ * frame and boot (hero), unit blocks converge into one shared build with a
+ * slot still open for the next contributor (open source), a lit home
+ * wired to its own server while
  * the cloud link is cut (self-hosting), a crooked pile resolving into one
  * calm unit along a single floor line (simplicity), and products on iso pads
  * joined by one ground-level trace (the CTA band).
@@ -122,6 +123,16 @@ function rightFaceLine(
   const ey = fy - 0.5 * u1 - t;
 
   return `M${pt(sx, sy)}L${pt(ex, ey)}`;
+}
+
+/** Floor-plane point u along the width axis and v along the depth axis. */
+function isoOffset(
+  fx: number,
+  fy: number,
+  u: number,
+  v: number,
+): { x: number; y: number } {
+  return { x: fx + RX * (u - v), y: fy - 0.5 * (u + v) };
 }
 
 function IsoBox({
@@ -430,50 +441,44 @@ export function RackVisual({ className }: VisualProps) {
   );
 }
 
-/* --- Open source: a solid tiny rack — 1U units stacked flush into one block,
-   no see-through frame. The middle unit is a contribution from outside: a
-   ghost of its origin still sits on the floor, linked in along an iso axis,
-   and it settles in lit. Open source = an outside unit joins the system. */
+/* --- Open source: unit blocks converge into one shared build. Plain cubes
+   already stand two levels high, one cell is still a dashed outline waiting
+   for whoever comes next, and the newest contribution hovers over its open
+   slot, marked live. Anyone can add a block; the build belongs to everyone. */
 
-const OS_RACK = { d: 50, fx: 131, fy: 162, w: 106 } as const;
-const OS_UNITS = [0, 1, 2] as const;
-const OS_UNIT_H = 22;
-const OS_CONTRIB_UNIT = 1;
-const OS_UNIT_VENTS = [8, 15] as const;
-const OS_UNIT_FX = 135;
-const OS_UNIT_W = 98;
-const OS_UNIT_D = 44;
-const OS_BASE_H = 6;
+const OS_CELL = 40;
+const OS_BUILD = { fx: 160, fy: 178 } as const;
+const OS_HOVER = 26;
 
-/** Front-bottom Y of the unit at stack index k (units stack flush). */
-function osUnitY(fy: number, k: number): number {
-  return fy - OS_BASE_H - k * OS_UNIT_H;
-}
+/** Filled cells of the 2×2×2 build as [i, j, k] grid indices, in paint and
+    arrival order (back to front, bottom to top). */
+const OS_FILLED = [
+  [1, 1, 0],
+  [0, 1, 0],
+  [1, 0, 0],
+  [0, 0, 0],
+  [1, 1, 1],
+  [0, 1, 1],
+] as const;
 
-/** Right-face LED position for a unit sitting at front corner (OS_UNIT_FX, uY). */
-function osUnitLed(uY: number): { x: number; y: number } {
-  const u = OS_UNIT_W - 14;
-  return { x: OS_UNIT_FX + RX * u, y: uY - 0.5 * u - OS_UNIT_H / 2 };
-}
-
-/** Right-front bottom corner of a unit sitting at front corner (OS_UNIT_FX, uY). */
-function osUnitCorner(uY: number): { x: number; y: number } {
-  return { x: OS_UNIT_FX + RX * OS_UNIT_W, y: uY - 0.5 * OS_UNIT_W };
+/** Front-bottom corner of the build cell at grid indices (i, j, k). */
+function osCell(i: number, j: number, k: number): { x: number; y: number } {
+  const p = isoOffset(OS_BUILD.fx, OS_BUILD.fy, i * OS_CELL, j * OS_CELL);
+  return { x: p.x, y: p.y - k * OS_CELL };
 }
 
 export function OpenSourceVisual({ className }: VisualProps) {
   const stage = useVisualStage(className, "0 0 320 200");
-  const { d, fx, fy, w } = OS_RACK;
 
-  // The contribution's origin: a small ghost unit out on the floor, linked
-  // back into the rack's middle slot along an iso axis.
-  const contribY = osUnitY(fy, OS_CONTRIB_UNIT);
-  const slot = osUnitCorner(contribY);
-  const ghostFx = slot.x + 28;
-  const ghostFy = slot.y + 16;
-  const ghost = isoFaces(ghostFx, ghostFy, 30, 24, OS_UNIT_H);
-  const link = `M${pt(ghostFx, ghostFy)}L${pt(slot.x, slot.y)}`;
-  const led = osUnitLed(contribY);
+  // The two open cells on the top level: a dashed invitation on the right,
+  // and the front slot the arriving block hovers over.
+  const ghostCell = osCell(1, 0, 1);
+  const ghost = isoFaces(ghostCell.x, ghostCell.y, OS_CELL, OS_CELL, OS_CELL);
+  const slot = osCell(0, 0, 1);
+  const block = { x: slot.x, y: slot.y - OS_HOVER };
+  const ledU = OS_CELL - 12;
+  const ledX = block.x + RX * ledU;
+  const ledY = block.y - 0.5 * ledU - OS_CELL / 2;
 
   return (
     <svg aria-hidden="true" {...stage}>
@@ -482,66 +487,35 @@ export function OpenSourceVisual({ className }: VisualProps) {
       </defs>
       <rect fill="url(#iso-os-dots)" height="200" opacity="0.5" width="320" />
 
-      <IsoShadow d={d} delayMs={100} fx={fx} fy={fy + 6} w={w} />
+      <IsoShadow
+        d={2 * OS_CELL}
+        delayMs={100}
+        fx={OS_BUILD.fx}
+        fy={OS_BUILD.fy + 6}
+        w={2 * OS_CELL}
+      />
 
-      {/* Base plinth. */}
-      <IsoBox d={d} delayMs={160} fx={fx} fy={fy} h={OS_BASE_H} w={w} />
-
-      {/* 1U units stacked flush into a solid block, bottom-up. The middle one
-          is the contribution, arriving lit. */}
-      {OS_UNITS.map((k) => {
-        const uY = osUnitY(fy, k);
-        const contrib = k === OS_CONTRIB_UNIT;
-        const detail = contrib
-          ? "stroke-tinyrack-success"
-          : "stroke-tinyrack-border-strong";
-        const uLed = osUnitLed(uY);
+      {/* The shared build: plain cubes converging from different directions —
+          ground cubes rise, upper cubes slide in along the depth axis. */}
+      {OS_FILLED.map(([i, j, k], index) => {
+        const cell = osCell(i, j, k);
 
         return (
           <IsoBox
-            anim="hv-iso-slot"
-            d={OS_UNIT_D}
-            delayMs={contrib ? 780 : 300 + k * 150}
-            fx={OS_UNIT_FX}
-            fy={uY}
-            h={OS_UNIT_H}
-            key={k}
-            w={OS_UNIT_W}
-          >
-            {OS_UNIT_VENTS.map((t) => (
-              <path
-                className={detail}
-                d={rightFaceLine(OS_UNIT_FX, uY, 10, OS_UNIT_W - 16, t)}
-                key={t}
-                strokeWidth="2"
-              />
-            ))}
-            <circle
-              className={
-                contrib ? "fill-tinyrack-success" : "fill-tinyrack-border"
-              }
-              cx={uLed.x}
-              cy={uLed.y}
-              r={contrib ? 3 : 2.5}
-            />
-          </IsoBox>
+            anim={k === 0 ? "hv-iso-rise" : "hv-iso-slot"}
+            d={OS_CELL}
+            delayMs={160 + index * 140}
+            fx={cell.x}
+            fy={cell.y}
+            h={OS_CELL}
+            key={`${i}${j}${k}`}
+            w={OS_CELL}
+          />
         );
       })}
 
-      {/* Thin cap seals the top of the block. */}
-      <IsoBox
-        anim="hv-iso-drop"
-        d={OS_UNIT_D}
-        delayMs={960}
-        fx={OS_UNIT_FX}
-        fy={osUnitY(fy, OS_UNITS.length - 1) - OS_UNIT_H}
-        h={4}
-        w={OS_UNIT_W}
-      />
-
-      {/* Where the contribution came from: a ghost on the floor, still linked
-          into the rack along an iso axis. */}
-      <g data-hv-enter style={enterStyle(1060, "hv-fade")}>
+      {/* An open cell waits for whoever contributes next. */}
+      <g data-hv-enter style={enterStyle(1100, "hv-fade")}>
         {[ghost.left, ghost.right, ghost.top].map((points) => (
           <polygon
             className="stroke-tinyrack-border"
@@ -553,29 +527,35 @@ export function OpenSourceVisual({ className }: VisualProps) {
           />
         ))}
       </g>
-      <path
-        className="stroke-tinyrack-border-strong"
-        d={link}
-        data-hv-enter
-        pathLength={100}
-        strokeWidth="2"
-        style={enterStyle(1160, "hv-draw", 350)}
-      />
-      <g data-hv-enter style={enterStyle(1340, "hv-fade")}>
-        <path
-          className="hv-flow stroke-tinyrack-success"
-          d={link}
-          strokeDasharray="4 16"
-          strokeWidth="2"
-        />
-      </g>
 
-      {/* The contribution lights up as it settles into the system. */}
-      <g data-hv-enter style={enterStyle(1280, "hv-pop", 400)}>
+      {/* The drop guide marks where the arriving block lands. */}
+      <path
+        className="stroke-tinyrack-border"
+        d={`M${pt(slot.x, slot.y - 2)}V${block.y + 2}`}
+        data-hv-enter
+        strokeDasharray="2 4"
+        strokeWidth="2"
+        style={enterStyle(1250, "hv-fade")}
+      />
+
+      {/* The newest contribution arrives over its slot, powered up. */}
+      <IsoBox
+        anim="hv-iso-drop"
+        d={OS_CELL}
+        delayMs={1400}
+        fx={block.x}
+        fy={block.y}
+        h={OS_CELL}
+        inverse
+        w={OS_CELL}
+      >
+        <circle className="fill-tinyrack-success" cx={ledX} cy={ledY} r="3.5" />
+      </IsoBox>
+      <g data-hv-enter style={enterStyle(1700, "hv-pop", 400)}>
         <circle
           className="stroke-tinyrack-success opacity-40 motion-safe:animate-pulse"
-          cx={led.x}
-          cy={led.y}
+          cx={ledX}
+          cy={ledY}
           r="8"
           strokeWidth="2"
         />
