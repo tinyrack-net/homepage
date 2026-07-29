@@ -128,7 +128,7 @@ export default function App() {
       <TRCodeHighlighterProvider highlighter={trShikiWebHighlighter}>
         <HydrationMarker />
         <MDXProvider components={mdxComponents}>
-          <div className="flex min-h-screen flex-col bg-tinyrack-canvas text-tinyrack-text">
+          <div className="flex min-h-screen flex-col overflow-x-clip bg-tinyrack-canvas text-tinyrack-text">
             <SiteHeader />
             <main className="flex-1">
               <Outlet />
