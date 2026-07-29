@@ -11,9 +11,9 @@ import { useInView } from "@/lib/use-in-view.ts";
  *
  * Each scene tells its section's story: servers slide into a four-post rack
  * frame and boot (hero), unit blocks converge into one shared build with a
- * slot still open for the next contributor (open source), a lit home
- * wired to its own server while
- * the cloud link is cut (self-hosting), a crooked pile resolving into one
+ * slot still open for the next contributor (open source), a server tower
+ * sliding into a lived-in room — window, door, potted plant — and settling
+ * in running (self-hosting), a crooked pile resolving into one
  * calm unit along a single floor line (simplicity), and products on iso pads
  * joined by one ground-level trace (the CTA band).
  *
@@ -140,6 +140,7 @@ function IsoBox({
   children,
   d,
   delayMs,
+  durationMs,
   fx,
   fy,
   h,
@@ -150,6 +151,7 @@ function IsoBox({
   children?: ReactNode;
   d: number;
   delayMs: number;
+  durationMs?: number;
   fx: number;
   fy: number;
   h: number;
@@ -162,7 +164,7 @@ function IsoBox({
     : "stroke-tinyrack-border";
 
   return (
-    <g data-hv-enter style={enterStyle(delayMs, anim)}>
+    <g data-hv-enter style={enterStyle(delayMs, anim, durationMs)}>
       <polygon
         className={
           inverse
@@ -564,33 +566,56 @@ export function OpenSourceVisual({ className }: VisualProps) {
   );
 }
 
-/* --- Self-hosting: the same solid tiny rack, but inside your own four walls.
-   It stands in the corner of your room and actively serves your own devices
-   over live local links — you are the host. No cloud, no cut: just your
-   hardware, in your space, running your things. */
+/* --- Self-hosting: a server moves into your home. A room corner with a
+   window, a door and a potted plant says "your place", and a small server
+   tower — plinth, two vented units, cap — slides in as one piece, settles
+   on the floor, and lights up running. */
 
-const SH_RACK = { d: 44, fx: 152, fy: 150, w: 88 } as const;
-const SH_UNITS = [0, 1] as const;
-const SH_UNIT_H = 24;
-const SH_LIVE_UNIT = 1;
-const SH_UNIT_VENTS = [9, 16] as const;
-const SH_UNIT_FX = 156;
-const SH_UNIT_W = 80;
-const SH_UNIT_D = 38;
-const SH_BASE_H = 7;
 const SH_ROOM = {
   floor: "150,182 260.9,118 181.2,72 70.3,136",
   wallLeft: "70.3,136 181.2,72 181.2,16 70.3,80",
   wallRight: "260.9,118 181.2,72 181.2,16 260.9,62",
 };
-const SH_LINK = "M120 152Q136 149 150 149";
+const SH_WINDOW = {
+  frame: "79,107 108.4,90 108.4,68 79,85",
+  mullionH: "M79 96L108.4 79",
+  mullionV: "M93.7 98.5V76.5",
+};
+const SH_DOOR = {
+  frame: "196.8,81 219.3,94 219.3,50 196.8,37",
+  knob: { x: 215.8, y: 70 },
+};
+const SH_PLANT = {
+  leaves: [
+    "M102 138C100 127 96 122 92 118",
+    "M102 138C104 125 108 120 112 117",
+    "M102 138C102 127 101 120 100 114",
+  ],
+  pot: { d: 13, fx: 102, fy: 150, h: 9, w: 13 },
+};
+const SH_TOWER = { d: 40, fx: 162, fy: 149, w: 48 } as const;
+const SH_BASE_H = 6;
+const SH_UNIT = { d: 34, h: 15, w: 40 } as const;
+const SH_UNITS = [0, 1] as const;
+const SH_LIVE_UNIT = 1;
+const SH_VENTS = [5, 10] as const;
+/** The whole tower arrives as one piece: same slide on every part. */
+const SH_ARRIVE = { delayMs: 600, durationMs: 650 } as const;
 
 export function SelfHostVisual({ className }: VisualProps) {
   const stage = useVisualStage(className, "0 0 320 200");
-  const { d, fx, fy, w } = SH_RACK;
-  const unitY = (k: number) => fy - SH_BASE_H - k * SH_UNIT_H;
-  const ledX = SH_UNIT_FX + RX * (SH_UNIT_W - 14);
-  const ledY = (uY: number) => uY - 0.5 * (SH_UNIT_W - 14) - SH_UNIT_H / 2;
+  const { d, fx, fy, w } = SH_TOWER;
+  // Units sit centered on the plinth: equal insets along both floor axes.
+  const seat = isoOffset(
+    fx,
+    fy - SH_BASE_H,
+    (w - SH_UNIT.w) / 2,
+    (d - SH_UNIT.d) / 2,
+  );
+  const unitY = (k: number) => seat.y - k * SH_UNIT.h;
+  const ledU = SH_UNIT.w - 10;
+  const ledX = seat.x + RX * ledU;
+  const ledY = (uY: number) => uY - 0.5 * ledU - SH_UNIT.h / 2;
 
   return (
     <svg aria-hidden="true" {...stage}>
@@ -599,7 +624,7 @@ export function SelfHostVisual({ className }: VisualProps) {
       </defs>
       <rect fill="url(#iso-host-dots)" height="200" opacity="0.5" width="320" />
 
-      {/* Your four walls: a room corner the rack lives inside. */}
+      {/* Your place: a room corner with a window. */}
       <g data-hv-enter style={enterStyle(0, "hv-fade")}>
         <polygon
           className="fill-tinyrack-surface-selected stroke-tinyrack-border opacity-70"
@@ -620,112 +645,130 @@ export function SelfHostVisual({ className }: VisualProps) {
           strokeWidth="2"
         />
       </g>
+      <g data-hv-enter style={enterStyle(160, "hv-fade")}>
+        <polygon
+          className="fill-tinyrack-canvas stroke-tinyrack-border"
+          points={SH_WINDOW.frame}
+          strokeLinejoin="round"
+          strokeWidth="2"
+        />
+        <path
+          className="stroke-tinyrack-border"
+          d={SH_WINDOW.mullionH}
+          strokeWidth="2"
+        />
+        <path
+          className="stroke-tinyrack-border"
+          d={SH_WINDOW.mullionV}
+          strokeWidth="2"
+        />
+      </g>
 
-      <IsoShadow d={d} delayMs={220} fx={fx} fy={fy + 6} w={w} />
+      {/* The front door on the right wall. */}
+      <g data-hv-enter style={enterStyle(260, "hv-fade")}>
+        <polygon
+          className="fill-tinyrack-surface-muted stroke-tinyrack-border"
+          points={SH_DOOR.frame}
+          strokeLinejoin="round"
+          strokeWidth="2"
+        />
+        <circle
+          className="fill-tinyrack-border-strong"
+          cx={SH_DOOR.knob.x}
+          cy={SH_DOOR.knob.y}
+          r="2"
+        />
+      </g>
 
-      {/* Base plinth. */}
-      <IsoBox d={d} delayMs={280} fx={fx} fy={fy} h={SH_BASE_H} w={w} />
+      {/* A potted plant by the window — somebody lives here. The leaves
+          render after the pot so they spill out over its front rim. */}
+      <IsoBox
+        anim="hv-pop"
+        d={SH_PLANT.pot.d}
+        delayMs={400}
+        fx={SH_PLANT.pot.fx}
+        fy={SH_PLANT.pot.fy}
+        h={SH_PLANT.pot.h}
+        w={SH_PLANT.pot.w}
+      />
+      <g data-hv-enter style={enterStyle(400, "hv-pop")}>
+        {SH_PLANT.leaves.map((leaf) => (
+          <path
+            className="stroke-tinyrack-success"
+            d={leaf}
+            key={leaf}
+            strokeLinecap="round"
+            strokeWidth="2"
+          />
+        ))}
+      </g>
 
-      {/* Two units stacked into a small home rack; the top one runs. */}
+      {/* The server tower moves in and settles on the floor: plinth, two
+          vented units, cap — all sliding as one piece. */}
+      <IsoBox
+        anim="hv-iso-slot"
+        d={d}
+        delayMs={SH_ARRIVE.delayMs}
+        durationMs={SH_ARRIVE.durationMs}
+        fx={fx}
+        fy={fy}
+        h={SH_BASE_H}
+        w={w}
+      />
       {SH_UNITS.map((k) => {
         const uY = unitY(k);
         const live = k === SH_LIVE_UNIT;
-        const detail = live
-          ? "stroke-tinyrack-success"
-          : "stroke-tinyrack-border-strong";
 
         return (
           <IsoBox
-            anim="hv-iso-rise"
-            d={SH_UNIT_D}
-            delayMs={360 + k * 150}
-            fx={SH_UNIT_FX}
+            anim="hv-iso-slot"
+            d={SH_UNIT.d}
+            delayMs={SH_ARRIVE.delayMs}
+            durationMs={SH_ARRIVE.durationMs}
+            fx={seat.x}
             fy={uY}
-            h={SH_UNIT_H}
+            h={SH_UNIT.h}
+            inverse
             key={k}
-            w={SH_UNIT_W}
+            w={SH_UNIT.w}
           >
-            {SH_UNIT_VENTS.map((t) => (
+            {SH_VENTS.map((t) => (
               <path
-                className={detail}
-                d={rightFaceLine(SH_UNIT_FX, uY, 10, SH_UNIT_W - 16, t)}
+                className="stroke-tinyrack-border-inverse"
+                d={rightFaceLine(seat.x, uY, 8, SH_UNIT.w - 14, t)}
                 key={t}
                 strokeWidth="2"
               />
             ))}
             <circle
               className={
-                live ? "fill-tinyrack-success" : "fill-tinyrack-border"
+                live ? "fill-tinyrack-success" : "fill-tinyrack-border-inverse"
               }
               cx={ledX}
               cy={ledY(uY)}
-              r={live ? 3 : 2.5}
+              r={live ? 3.5 : 2.5}
             />
           </IsoBox>
         );
       })}
-
-      {/* Thin cap seals the block. */}
       <IsoBox
-        anim="hv-iso-drop"
-        d={SH_UNIT_D}
-        delayMs={720}
-        fx={SH_UNIT_FX}
-        fy={unitY(SH_UNITS.length - 1) - SH_UNIT_H}
+        anim="hv-iso-slot"
+        d={SH_UNIT.d}
+        delayMs={SH_ARRIVE.delayMs}
+        durationMs={SH_ARRIVE.durationMs}
+        fx={seat.x}
+        fy={unitY(SH_UNITS.length)}
         h={4}
-        w={SH_UNIT_W}
+        w={SH_UNIT.w}
       />
 
-      {/* Your own device, sitting in the room, served by the rack. */}
-      <IsoShadow d={20} delayMs={820} expand={4} fx={98} fy={170} w={30} />
-      <IsoBox
-        anim="hv-iso-rise"
-        d={20}
-        delayMs={880}
-        fx={98}
-        fy={166}
-        h={10}
-        w={30}
-      >
-        <path
-          className="stroke-tinyrack-success"
-          d={rightFaceLine(98, 166, 6, 24, 5)}
-          strokeWidth="2"
-        />
-        <circle
-          className="fill-tinyrack-success"
-          cx={115.6}
-          cy={150.5}
-          r={2.5}
-        />
-      </IsoBox>
-
-      {/* Live local link: your rack serves your device. */}
-      <path
-        className="stroke-tinyrack-border-strong"
-        d={SH_LINK}
-        data-hv-enter
-        fill="none"
-        strokeWidth="2"
-        style={enterStyle(980, "hv-fade")}
-      />
-      <g data-hv-enter style={enterStyle(1160, "hv-fade")}>
-        <path
-          className="hv-flow stroke-tinyrack-success"
-          d={SH_LINK}
-          fill="none"
-          strokeDasharray="4 16"
-          strokeWidth="2"
-        />
-      </g>
-
-      {/* Running glow on the live unit. */}
-      <g data-hv-enter style={enterStyle(1080, "hv-pop", 400)}>
+      {/* Settled in and running. */}
+      <g data-hv-enter style={enterStyle(1350, "hv-pop", 400)}>
         <circle
           className="stroke-tinyrack-success opacity-40 motion-safe:animate-pulse"
           cx={ledX}
           cy={ledY(unitY(SH_LIVE_UNIT))}
-          r="8"
+          r="7"
           strokeWidth="2"
         />
       </g>
