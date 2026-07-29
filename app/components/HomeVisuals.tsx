@@ -13,8 +13,8 @@ import { useInView } from "@/lib/use-in-view.ts";
  * frame and boot (hero), unit blocks converge into one shared build with a
  * slot still open for the next contributor (open source), a server tower
  * sliding into a lived-in room — window, door, potted plant — and settling
- * in running (self-hosting), a crooked pile resolving into one
- * calm unit along a single floor line (simplicity), and products on iso pads
+ * in running (self-hosting), an iceberg — one small solid unit at the
+ * waterline, its dashed mass sunk beneath (simplicity), and products on iso pads
  * joined by one ground-level trace (the CTA band).
  *
  * Each illustration is its own scroll stage: the root `<svg>` carries
@@ -776,20 +776,25 @@ export function SelfHostVisual({ className }: VisualProps) {
   );
 }
 
-/* --- Simplicity: a crooked pile resolves into one calm unit. ------------- */
+/* --- Simplicity: the tip of the iceberg. What you touch is one small solid
+   unit floating at the waterline inside its ripples; the mass that carries
+   it hangs beneath the surface as dashed structure, wider and fainter the
+   deeper it goes. The depth stays out of your way. */
 
-/* The pile sits low-left; one floor line runs along the +w axis from
-   (64, 162.5) up to the calm unit's front corner at (196, 86.3). */
-
-const PILE_SLABS = [
-  { d: 36, fx: 58, fy: 166, w: 56 },
-  { d: 30, fx: 74, fy: 155, w: 44 },
-  { d: 32, fx: 56, fy: 144, w: 50 },
-  { d: 26, fx: 72, fy: 133, w: 36 },
+const ICE_UNIT = { d: 38, fx: 154, fy: 118, h: 18, w: 52 } as const;
+const ICE_VENTS = [6, 12] as const;
+/** Submerged layers, deepest first, each top-centered under the unit. */
+const ICE_BELOW = [
+  { d: 80, delayMs: 150, fx: 149.6, fy: 191, h: 24, opacity: 0.55, w: 104 },
+  { d: 64, delayMs: 300, fx: 151.3, fy: 158, h: 26, opacity: 0.9, w: 84 },
 ] as const;
 
 export function SimplicityVisual({ className }: VisualProps) {
   const stage = useVisualStage(className, "0 0 320 200");
+  const { d, fx, fy, h, w } = ICE_UNIT;
+  const ledU = w - 10;
+  const ledX = fx + RX * ledU;
+  const ledY = fy - 0.5 * ledU - h / 2;
 
   return (
     <svg aria-hidden="true" {...stage}>
@@ -803,81 +808,61 @@ export function SimplicityVisual({ className }: VisualProps) {
         width="320"
       />
 
-      {/* One clean line out of the mess, along the floor axis. It renders
-          beneath the pile so it emerges from under the clutter. */}
-      <path
-        className="stroke-tinyrack-border-strong"
-        d="M64 162.5L196 86.3"
-        data-hv-enter
-        pathLength={100}
-        strokeWidth="2"
-        style={enterStyle(640, "hv-draw", 400)}
-      />
+      {/* The berg below the waterline: dashed, fading with depth. */}
+      {ICE_BELOW.map((layer) => {
+        const faces = isoFaces(layer.fx, layer.fy, layer.w, layer.d, layer.h);
 
-      {/* The pile: mismatched slabs stacked askew, wiring loose. */}
-      <IsoShadow d={48} delayMs={100} fx={52} fy={172} w={72} />
-      {PILE_SLABS.map((slab, index) => (
-        <IsoBox
-          anim="hv-pop"
-          d={slab.d}
-          delayMs={160 + index * 80}
-          fx={slab.fx}
-          fy={slab.fy}
-          h={10}
-          key={slab.fy}
-          w={slab.w}
-        />
-      ))}
-      <g data-hv-enter style={enterStyle(520, "hv-fade")}>
-        <path
-          className="stroke-tinyrack-border opacity-60"
-          d="M44 152C40 124 92 140 86 110S120 100 108 126"
-          strokeDasharray="4 6"
-          strokeWidth="2"
-        />
-        <path
-          className="stroke-tinyrack-border opacity-60"
-          d="M90 162C100 172 82 178 76 168"
-          strokeDasharray="4 6"
-          strokeWidth="2"
-        />
-      </g>
+        return (
+          <g
+            data-hv-enter
+            key={layer.w}
+            opacity={layer.opacity}
+            style={enterStyle(layer.delayMs, "hv-fade")}
+          >
+            {[faces.left, faces.right, faces.top].map((points) => (
+              <polygon
+                className="stroke-tinyrack-border"
+                key={points}
+                points={points}
+                strokeDasharray="4 6"
+                strokeLinejoin="round"
+                strokeWidth="2"
+              />
+            ))}
+          </g>
+        );
+      })}
 
-      {/* The calm unit. */}
-      <FloorRings cx={210} cy={56} delayMs={640} rings={[24, 38]} />
-      <IsoShadow d={48} delayMs={700} fx={196} fy={92.3} w={80} />
-      <IsoBox d={48} delayMs={820} fx={196} fy={86.3} h={16} w={80}>
-        <path
-          className="stroke-tinyrack-border-strong"
-          d={rightFaceLine(196, 86.3, 10, 44, 6)}
-          strokeWidth="2"
-        />
-        <path
-          className="stroke-tinyrack-border-strong"
-          d={rightFaceLine(196, 86.3, 10, 44, 12)}
-          strokeWidth="2"
-        />
+      {/* Ripples where the tip breaks the surface. */}
+      <FloorRings cx={160} cy={95} delayMs={500} rings={[40, 54]} />
+
+      {/* The tip: the one small unit you actually touch, running. */}
+      <IsoBox
+        anim="hv-iso-rise"
+        d={d}
+        delayMs={700}
+        fx={fx}
+        fy={fy}
+        h={h}
+        inverse
+        w={w}
+      >
+        {ICE_VENTS.map((t) => (
+          <path
+            className="stroke-tinyrack-border-inverse"
+            d={rightFaceLine(fx, fy, 8, w - 14, t)}
+            key={t}
+            strokeWidth="2"
+          />
+        ))}
+        <circle className="fill-tinyrack-success" cx={ledX} cy={ledY} r="3.5" />
       </IsoBox>
-      <g data-hv-enter style={enterStyle(1050, "hv-pop", 400)}>
+      <g data-hv-enter style={enterStyle(1200, "hv-pop", 400)}>
         <circle
           className="stroke-tinyrack-success opacity-40 motion-safe:animate-pulse"
-          cx="253.2"
-          cy="45.3"
-          r="8"
-          strokeWidth="2"
-        />
-        <circle
-          className="fill-tinyrack-success motion-safe:animate-pulse"
-          cx="253.2"
-          cy="45.3"
-          r="4"
-        />
-      </g>
-      <g data-hv-enter style={enterStyle(1200, "hv-fade")}>
-        <path
-          className="hv-flow-slow stroke-tinyrack-border-strong opacity-60"
-          d="M64 162.5L196 86.3"
-          strokeDasharray="4 16"
+          cx={ledX}
+          cy={ledY}
+          r="7"
           strokeWidth="2"
         />
       </g>
