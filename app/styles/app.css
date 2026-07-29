@@ -156,3 +156,9 @@ body {
   min-height: 0;
   background: transparent;
 }
+
+/* The footer's inner rule is a quiet divider, one step lighter than the
+   separator default so it reads as a hairline rather than a hard line. */
+.footer-separator {
+  --tr-separator-color: var(--tinyrack-border);
+}

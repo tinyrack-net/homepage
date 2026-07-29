@@ -18,6 +18,7 @@ import {
   getContentPath,
   getHomePath,
   getOpenSourcePath,
+  getProductsPath,
 } from "@/lib/routes.ts";
 import { PRODUCT_LINKS, SOCIAL_LINKS } from "@/lib/site-links.ts";
 import { getLanguageSwitchPath, resolveSitePage } from "@/lib/site-page.ts";
@@ -53,12 +54,13 @@ export function SiteHeader() {
     };
   });
 
-  // Open Source first: it matches the hero's primary CTA and leads with what
-  // the company builds; About and the blog follow.
+  // About leads, then Products (its overview page is still a coming-soon
+  // placeholder), then what ships today: Open Source and the blog.
   const navItems = [
+    { href: getContentPath(lang, "about"), label: t(lang, "nav.about") },
+    { href: getProductsPath(lang), label: t(lang, "nav.products") },
     { href: getOpenSourcePath(lang), label: t(lang, "nav.openSource") },
     { href: getBlogPath(lang), label: t(lang, "nav.blog") },
-    { href: getContentPath(lang, "about"), label: t(lang, "nav.about") },
   ];
 
   const isActive = (href: string) =>

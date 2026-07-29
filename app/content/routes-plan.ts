@@ -9,13 +9,14 @@ import {
   getBlogPagePath,
   getHomePath,
   getOpenSourcePath,
+  getProductsPath,
   getTagPagePath,
 } from "../lib/routes.ts";
 
 export interface RoutePlanEntry {
   id: string;
   path: string;
-  kind: "home" | "openSource" | "content" | "blog" | "tag";
+  kind: "home" | "openSource" | "products" | "content" | "blog" | "tag";
   lang: SupportedLanguageCodes;
   /** For `content` entries: MDX file relative to the `content/` directory. */
   routeFile?: string;
@@ -47,6 +48,12 @@ export function planRoutes(manifest: BlogManifest): RoutePlanEntry[] {
       id: `open-source/${lang}`,
       path: getOpenSourcePath(lang),
       kind: "openSource",
+      lang,
+    });
+    plan.push({
+      id: `products/${lang}`,
+      path: getProductsPath(lang),
+      kind: "products",
       lang,
     });
   }

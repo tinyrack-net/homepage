@@ -277,6 +277,13 @@ function DotPattern({ id }: { id: string }) {
 const RACK_SLABS = [0, 1, 2, 3] as const;
 const POWERED_SLAB = 1;
 const RACK_VENTS = [8, 14, 20] as const;
+/** Feet under each base-frame corner (front, right, left, rear). */
+const RACK_FEET = [
+  { fx: 150, fy: 336 },
+  { fx: 245.3, fy: 281 },
+  { fx: 101.5, fy: 308 },
+  { fx: 196.8, fy: 253 },
+] as const;
 
 export function RackVisual({ className }: VisualProps) {
   const stage = useVisualStage(className, "15 28 320 360");
@@ -296,16 +303,30 @@ export function RackVisual({ className }: VisualProps) {
         y="28"
       />
 
-      <FloorRings cx={172} cy={302} delayMs={0} rings={[40, 58, 76]} />
-      <IsoShadow d={64} delayMs={100} fx={146} fy={340} w={124} />
+      <FloorRings cx={172} cy={306} delayMs={0} rings={[40, 58, 76]} />
+      <IsoShadow d={58} delayMs={100} fx={150} fy={340} w={112} />
 
-      {/* Rack base plate. */}
-      <IsoBox d={64} delayMs={160} fx={146} fy={334} h={10} w={124} />
+      {/* Leveling feet at the four corners, so the rack meets the floor like
+          real hardware instead of sitting on a slab. */}
+      {RACK_FEET.map((foot, index) => (
+        <IsoBox
+          d={12}
+          delayMs={120 + index * 40}
+          fx={foot.fx}
+          fy={foot.fy}
+          h={7}
+          key={`${foot.fx},${foot.fy}`}
+          w={12}
+        />
+      ))}
+
+      {/* Rack base frame: the four posts rise from its corners. */}
+      <IsoBox d={56} delayMs={220} fx={150} fy={330} h={9} w={110} />
 
       {/* Rear mounting posts rise before the servers arrive. */}
       <path
         className="stroke-tinyrack-border-strong"
-        d="M196.8 239V72.7"
+        d="M196.8 239V83"
         data-hv-enter
         pathLength={100}
         strokeWidth="3"
@@ -313,7 +334,7 @@ export function RackVisual({ className }: VisualProps) {
       />
       <path
         className="stroke-tinyrack-border-strong"
-        d="M101.5 294V140.3"
+        d="M101.5 294V138"
         data-hv-enter
         pathLength={100}
         strokeWidth="3"
@@ -378,7 +399,7 @@ export function RackVisual({ className }: VisualProps) {
       {/* Front posts overlay the mounted servers. */}
       <path
         className="stroke-tinyrack-border-strong"
-        d="M245.3 267V108.7"
+        d="M245.3 267V111"
         data-hv-enter
         pathLength={100}
         strokeWidth="3"
@@ -393,15 +414,15 @@ export function RackVisual({ className }: VisualProps) {
         style={enterStyle(460, "hv-draw", 350)}
       />
 
-      {/* Top plate caps the frame. */}
+      {/* Top plate caps the frame flush with the four posts. */}
       <IsoBox
         anim="hv-iso-drop"
-        d={64}
+        d={56}
         delayMs={950}
-        fx={146}
+        fx={150}
         fy={166}
-        h={8}
-        w={124}
+        h={7}
+        w={110}
       />
 
       {/* The powered server's boot glow. */}
@@ -414,31 +435,99 @@ export function RackVisual({ className }: VisualProps) {
           strokeWidth="2"
         />
       </g>
+    </svg>
+  );
+}
 
-      {/* Uplink leaves the base's right corner along the floor axis. */}
-      <path
-        className="stroke-tinyrack-border-strong"
-        d="M253.4 272L305.4 242"
-        data-hv-enter
-        pathLength={100}
-        strokeWidth="2"
-        style={enterStyle(1050, "hv-draw", 400)}
-      />
-      <g data-hv-enter style={enterStyle(1300, "hv-fade")}>
-        <path
-          className="hv-flow stroke-tinyrack-success"
-          d="M253.4 272L305.4 242"
-          strokeDasharray="4 16"
-          strokeWidth="2"
-        />
-        <circle
-          className="fill-tinyrack-canvas stroke-tinyrack-border-strong"
-          cx="309.4"
-          cy="239.7"
-          r="4"
-          strokeWidth="2"
-        />
-      </g>
+/* --- Hero foreground: a full-width isometric server hall. A row of tall
+   cabinets stands shoulder to shoulder like a data-center aisle seen head-on —
+   most in the surface ramp, a couple inverse (the featured machines), each
+   front ruled into rack units with live LEDs and a soft shadow grounding it.
+   Grand enough to carry a hero. */
+
+const DC_BASE = 320;
+const DC_W = 66;
+const DC_D = 84;
+const DC_STEP = 136;
+const DC_FX0 = 150;
+/** Per-cabinet: skyline height, whether it is a featured (inverse) machine,
+    and whether it runs a live LED. */
+const DC_CABINETS = [
+  { h: 182, inverse: false, live: true },
+  { h: 166, inverse: false, live: false },
+  { h: 190, inverse: true, live: true },
+  { h: 176, inverse: false, live: false },
+  { h: 186, inverse: false, live: true },
+  { h: 162, inverse: true, live: true },
+  { h: 180, inverse: false, live: false },
+  { h: 172, inverse: false, live: true },
+] as const;
+
+/** Heights of the horizontal unit rules climbing a cabinet's front face. */
+function cabinetUnits(h: number): number[] {
+  const rules: number[] = [];
+  for (let t = 12; t < h - 10; t += 15) {
+    rules.push(t);
+  }
+  return rules;
+}
+
+export function DataCenterVisual({ className }: VisualProps) {
+  // Framed tight to the row so the cabinets read large and the end ones bleed
+  // off the screen edges.
+  const stage = useVisualStage(className, "104 48 992 300");
+
+  return (
+    <svg aria-hidden="true" {...stage}>
+      {DC_CABINETS.map((cab, index) => {
+        const fx = DC_FX0 + index * DC_STEP;
+        const fy = DC_BASE;
+        const detail = cab.inverse
+          ? "stroke-tinyrack-border-inverse"
+          : "stroke-tinyrack-border-strong";
+        // The LED sits at the right end of the topmost unit rule, so every
+        // cabinet's light lands on the same landmark instead of drifting.
+        const rules = cabinetUnits(cab.h);
+        const topRule = rules[rules.length - 1] ?? 12;
+        const ledU = DC_W - 8;
+        const ledX = fx + RX * ledU;
+        const ledY = fy - 0.5 * ledU - topRule;
+
+        return (
+          <g key={fx}>
+            <IsoShadow d={DC_D} delayMs={100} fx={fx} fy={fy + 4} w={DC_W} />
+            <IsoBox
+              anim="hv-iso-rise"
+              d={DC_D}
+              delayMs={200 + index * 90}
+              durationMs={620}
+              fx={fx}
+              fy={fy}
+              h={cab.h}
+              inverse={cab.inverse}
+              w={DC_W}
+            >
+              {rules.map((t) => (
+                <path
+                  className={detail}
+                  d={rightFaceLine(fx, fy, 8, DC_W - 8, t)}
+                  key={t}
+                  opacity="0.5"
+                  strokeWidth="1.5"
+                />
+              ))}
+              <circle
+                className={
+                  cab.live ? "fill-tinyrack-success" : "fill-tinyrack-border"
+                }
+                cx={ledX}
+                cy={ledY}
+                r={cab.live ? 3 : 2}
+              />
+            </IsoBox>
+          </g>
+        );
+      })}
     </svg>
   );
 }

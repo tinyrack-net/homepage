@@ -5,9 +5,8 @@ import type { ComponentType } from "react";
 import { Link, useLocation } from "react-router";
 import { HomeArticleTeaser } from "@/components/HomeArticleTeaser.tsx";
 import {
-  CircuitVisual,
+  DataCenterVisual,
   OpenSourceVisual,
-  RackVisual,
   SelfHostVisual,
   SimplicityVisual,
 } from "@/components/HomeVisuals.tsx";
@@ -85,8 +84,12 @@ export default function Home() {
 
   return (
     <div className="wide-shell">
-      <section className="grid gap-tinyrack-3xl py-tinyrack-4xl md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:items-center md:py-tinyrack-5xl">
-        <div>
+      <section className="py-tinyrack-4xl md:py-tinyrack-5xl">
+        <div className="-mt-[40px] mb-tinyrack-3xl mx-[calc(50%-50vw)] flex w-screen justify-center overflow-hidden md:mb-tinyrack-4xl">
+          <DataCenterVisual className="w-full min-w-[1024px] max-w-none shrink-0" />
+        </div>
+
+        <div className="max-w-tinyrack-measure-2xl">
           <TRText
             as="p"
             className="m-0 mb-tinyrack-xl flex flex-wrap items-center gap-0 [&>span+span]:before:px-tinyrack-md [&>span+span]:before:text-tinyrack-border-strong [&>span+span]:before:content-['/']"
@@ -103,26 +106,13 @@ export default function Home() {
           <TRText
             aria-label={headlineLabel}
             as="h1"
-            className="m-0 text-balance text-tinyrack-5xl leading-tinyrack-sm md:text-tinyrack-6xl md:leading-tinyrack-xs [&>span]:block"
+            className="m-0 bg-gradient-to-b from-tinyrack-text to-tinyrack-text-muted bg-clip-text text-balance text-tinyrack-5xl leading-tinyrack-sm text-transparent [-webkit-text-fill-color:transparent] md:text-tinyrack-6xl md:leading-tinyrack-xs [&>span]:block"
             variant="displayLg"
             weight="bold"
           >
             {copy.hero.headline.map((line) => (
               <span key={line.map(({ text }) => text).join("")}>
-                {line.map((segment) => (
-                  <span
-                    className={
-                      segment.tone === "inverse"
-                        ? "inline-block whitespace-pre-wrap bg-tinyrack-surface-inverse px-tinyrack-sm text-tinyrack-text-inverse"
-                        : segment.tone === "muted"
-                          ? "inline-block whitespace-pre-wrap bg-tinyrack-surface-muted px-tinyrack-sm"
-                          : "whitespace-pre-wrap"
-                    }
-                    key={`${segment.tone ?? "default"}-${segment.text}`}
-                  >
-                    {segment.text}
-                  </span>
-                ))}
+                {line.map((segment) => segment.text).join("")}
               </span>
             ))}
           </TRText>
@@ -152,10 +142,6 @@ export default function Home() {
               {copy.hero.secondaryCtaLabel}
             </TRLinkButton>
           </div>
-        </div>
-
-        <div className="hidden justify-center md:flex">
-          <RackVisual className="w-full max-w-tinyrack-measure-2xl" />
         </div>
       </section>
 
@@ -244,7 +230,6 @@ export default function Home() {
               </TRLinkButton>
             </div>
           </div>
-          <CircuitVisual className="hidden w-full md:block" />
         </div>
       </section>
 
