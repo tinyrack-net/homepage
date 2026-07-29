@@ -112,7 +112,7 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
           </Column>
         </div>
 
-        <TRSeparator />
+        <TRSeparator className="footer-separator" />
 
         <div className="flex flex-col gap-tinyrack-sm text-tinyrack-sm text-tinyrack-text-muted sm:flex-row sm:items-center sm:justify-between">
           <p className="m-0">© {year} Tinyrack</p>
