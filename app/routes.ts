@@ -35,6 +35,10 @@ const routes: RouteConfig = planRoutes(manifest).map((entry) => {
     return route(path, "routes/open-source.tsx", { id: entry.id });
   }
 
+  if (entry.kind === "products") {
+    return route(path, "routes/products.tsx", { id: entry.id });
+  }
+
   return path === ""
     ? index("routes/home.tsx", { id: entry.id })
     : route(path, "routes/home.tsx", { id: entry.id });
