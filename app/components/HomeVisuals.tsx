@@ -5,9 +5,10 @@ import { useInView } from "@/lib/use-in-view.ts";
  * Decorative, token-only SVG illustrations for the landing page, drawn as
  * isometric 2.5D scenes. Every line sits on the two iso floor axes
  * (slope ±0.577) or is vertical. Every solid isometric object uses
- * `surface-inverse` with the system opacity scale (dark grays in light mode,
- * light grays in dark mode), casts a flat diamond shadow, and keeps a 2px
- * inverse-border stroke, so both themes stay legible for free.
+ * the primary illustration fill on its front, the secondary fill on top, and
+ * the tertiary fill on its side. This top-lit hierarchy casts a dedicated
+ * illustration shadow and keeps a 2px illustration stroke, so both themes
+ * retain a natural depth cue.
  *
  * Each scene tells its section's story: servers slide into a four-post rack
  * frame and boot (hero), unit blocks converge into one shared build with a
@@ -138,7 +139,6 @@ function isoOffset(
 function IsoBox({
   anim = "hv-iso-rise",
   children,
-  backdrop = "muted",
   d,
   delayMs,
   durationMs,
@@ -148,7 +148,6 @@ function IsoBox({
   w,
 }: {
   anim?: string;
-  backdrop?: "muted" | "surface";
   children?: ReactNode;
   d: number;
   delayMs: number;
@@ -159,33 +158,26 @@ function IsoBox({
   w: number;
 }) {
   const faces = isoFaces(fx, fy, w, d, h);
-  const backdropFill =
-    backdrop === "surface"
-      ? "fill-tinyrack-surface"
-      : "fill-tinyrack-surface-muted";
 
   return (
     <g data-hv-enter data-iso-box style={enterStyle(delayMs, anim, durationMs)}>
-      <polygon className={backdropFill} points={faces.left} />
       <polygon
-        className="fill-tinyrack-surface-inverse stroke-tinyrack-border-inverse opacity-tinyrack-disabled"
-        data-iso-face
+        className="fill-tinyrack-illustration-fill-tertiary stroke-tinyrack-illustration-stroke"
+        data-iso-face="side"
         points={faces.left}
         strokeLinejoin="round"
         strokeWidth="2"
       />
-      <polygon className={backdropFill} points={faces.right} />
       <polygon
-        className="fill-tinyrack-surface-inverse stroke-tinyrack-border-inverse opacity-tinyrack-backdrop"
-        data-iso-face
+        className="fill-tinyrack-illustration-fill-primary stroke-tinyrack-illustration-stroke"
+        data-iso-face="front"
         points={faces.right}
         strokeLinejoin="round"
         strokeWidth="2"
       />
-      <polygon className={backdropFill} points={faces.top} />
       <polygon
-        className="fill-tinyrack-surface-inverse stroke-tinyrack-border-inverse opacity-tinyrack-hover"
-        data-iso-face
+        className="fill-tinyrack-illustration-fill-secondary stroke-tinyrack-illustration-stroke"
+        data-iso-face="top"
         points={faces.top}
         strokeLinejoin="round"
         strokeWidth="2"
@@ -213,9 +205,8 @@ function IsoShadow({
 }) {
   return (
     <polygon
-      className="fill-tinyrack-border"
+      className="fill-tinyrack-illustration-shadow"
       data-hv-enter
-      opacity="0.3"
       points={baseDiamond(fx, fy + expand, w + 2 * expand, d + 2 * expand)}
       style={enterStyle(delayMs, "hv-fade")}
     />
@@ -238,7 +229,7 @@ function FloorRings({
     <g data-hv-enter style={enterStyle(delayMs, "hv-fade")}>
       {rings.map((r, index) => (
         <polygon
-          className="stroke-tinyrack-border"
+          className="stroke-tinyrack-illustration-stroke"
           key={r}
           opacity={0.7 - index * 0.2}
           points={[
@@ -258,7 +249,12 @@ function FloorRings({
 function DotPattern({ id }: { id: string }) {
   return (
     <pattern height="18" id={id} patternUnits="userSpaceOnUse" width="18">
-      <circle className="fill-tinyrack-border" cx="2" cy="2" r="1.5" />
+      <circle
+        className="fill-tinyrack-illustration-detail"
+        cx="2"
+        cy="2"
+        r="1.5"
+      />
     </pattern>
   );
 }
@@ -320,7 +316,7 @@ export function RackVisual({ className }: VisualProps) {
 
       {/* Rear mounting posts rise before the servers arrive. */}
       <path
-        className="stroke-tinyrack-border-strong"
+        className="stroke-tinyrack-illustration-stroke"
         d="M196.8 239V83"
         data-hv-enter
         pathLength={100}
@@ -328,7 +324,7 @@ export function RackVisual({ className }: VisualProps) {
         style={enterStyle(280, "hv-draw", 350)}
       />
       <path
-        className="stroke-tinyrack-border-strong"
+        className="stroke-tinyrack-illustration-stroke"
         d="M101.5 294V138"
         data-hv-enter
         pathLength={100}
@@ -341,7 +337,7 @@ export function RackVisual({ className }: VisualProps) {
       {RACK_SLABS.map((slab) => {
         const fy = 322 - slab * 32;
         const powered = slab === POWERED_SLAB;
-        const detail = "stroke-tinyrack-border-inverse";
+        const detail = "stroke-tinyrack-illustration-stroke";
 
         return (
           <IsoBox
@@ -366,7 +362,7 @@ export function RackVisual({ className }: VisualProps) {
               className={
                 powered
                   ? "fill-tinyrack-success"
-                  : "fill-tinyrack-border-inverse"
+                  : "fill-tinyrack-illustration-detail"
               }
               cx="233.1"
               cy={fy - 62}
@@ -380,7 +376,7 @@ export function RackVisual({ className }: VisualProps) {
       <g data-hv-enter style={enterStyle(1000, "hv-fade")}>
         {[ghost.left, ghost.right, ghost.top].map((points) => (
           <polygon
-            className="stroke-tinyrack-border"
+            className="stroke-tinyrack-illustration-stroke"
             key={points}
             points={points}
             strokeDasharray="4 6"
@@ -392,7 +388,7 @@ export function RackVisual({ className }: VisualProps) {
 
       {/* Front posts overlay the mounted servers. */}
       <path
-        className="stroke-tinyrack-border-strong"
+        className="stroke-tinyrack-illustration-stroke"
         d="M245.3 267V111"
         data-hv-enter
         pathLength={100}
@@ -400,7 +396,7 @@ export function RackVisual({ className }: VisualProps) {
         style={enterStyle(400, "hv-draw", 350)}
       />
       <path
-        className="stroke-tinyrack-border-strong"
+        className="stroke-tinyrack-illustration-stroke"
         d="M150 322V166"
         data-hv-enter
         pathLength={100}
@@ -474,7 +470,7 @@ export function DataCenterVisual({ className }: VisualProps) {
       {DC_CABINETS.map((cab, index) => {
         const fx = DC_FX0 + index * DC_STEP;
         const fy = DC_BASE;
-        const detail = "stroke-tinyrack-border-inverse";
+        const detail = "stroke-tinyrack-illustration-stroke";
         // The LED sits at the right end of the topmost unit rule, so every
         // cabinet's light lands on the same landmark instead of drifting.
         const rules = cabinetUnits(cab.h);
@@ -488,7 +484,6 @@ export function DataCenterVisual({ className }: VisualProps) {
             <IsoShadow d={DC_D} delayMs={100} fx={fx} fy={fy + 4} w={DC_W} />
             <IsoBox
               anim="hv-iso-rise"
-              backdrop="surface"
               d={DC_D}
               delayMs={200 + index * 90}
               durationMs={620}
@@ -519,7 +514,7 @@ export function DataCenterVisual({ className }: VisualProps) {
                 className={
                   cab.live
                     ? "fill-tinyrack-success"
-                    : "fill-tinyrack-border-inverse"
+                    : "fill-tinyrack-illustration-detail"
                 }
                 cx={ledX}
                 cy={ledY}
@@ -607,7 +602,7 @@ export function OpenSourceVisual({ className }: VisualProps) {
       <g data-hv-enter style={enterStyle(1100, "hv-fade")}>
         {[ghost.left, ghost.right, ghost.top].map((points) => (
           <polygon
-            className="stroke-tinyrack-border"
+            className="stroke-tinyrack-illustration-stroke"
             key={points}
             points={points}
             strokeDasharray="4 6"
@@ -619,7 +614,7 @@ export function OpenSourceVisual({ className }: VisualProps) {
 
       {/* The drop guide marks where the arriving block lands. */}
       <path
-        className="stroke-tinyrack-border"
+        className="stroke-tinyrack-illustration-stroke"
         d={`M${pt(slot.x, slot.y - 2)}V${block.y + 2}`}
         data-hv-enter
         strokeDasharray="2 4"
@@ -702,19 +697,19 @@ export function SelfHostVisual({ className }: VisualProps) {
       {/* Your place: a room corner with a window. */}
       <g data-hv-enter style={enterStyle(0, "hv-fade")}>
         <polygon
-          className="fill-tinyrack-surface-muted stroke-tinyrack-border opacity-tinyrack-backdrop"
+          className="fill-tinyrack-illustration-fill-secondary stroke-tinyrack-illustration-stroke"
           points={SH_ROOM.wallLeft}
           strokeLinejoin="round"
           strokeWidth="2"
         />
         <polygon
-          className="fill-tinyrack-surface stroke-tinyrack-border opacity-tinyrack-backdrop"
+          className="fill-tinyrack-illustration-fill-primary stroke-tinyrack-illustration-stroke"
           points={SH_ROOM.wallRight}
           strokeLinejoin="round"
           strokeWidth="2"
         />
         <polygon
-          className="stroke-tinyrack-border"
+          className="fill-tinyrack-illustration-fill-secondary stroke-tinyrack-illustration-stroke"
           points={SH_ROOM.floor}
           strokeLinejoin="round"
           strokeWidth="2"
@@ -722,18 +717,18 @@ export function SelfHostVisual({ className }: VisualProps) {
       </g>
       <g data-hv-enter style={enterStyle(160, "hv-fade")}>
         <polygon
-          className="fill-tinyrack-surface stroke-tinyrack-border"
+          className="fill-tinyrack-illustration-fill-primary stroke-tinyrack-illustration-stroke"
           points={SH_WINDOW.frame}
           strokeLinejoin="round"
           strokeWidth="2"
         />
         <path
-          className="stroke-tinyrack-border"
+          className="stroke-tinyrack-illustration-stroke"
           d={SH_WINDOW.mullionH}
           strokeWidth="2"
         />
         <path
-          className="stroke-tinyrack-border"
+          className="stroke-tinyrack-illustration-stroke"
           d={SH_WINDOW.mullionV}
           strokeWidth="2"
         />
@@ -742,13 +737,13 @@ export function SelfHostVisual({ className }: VisualProps) {
       {/* The front door on the right wall. */}
       <g data-hv-enter style={enterStyle(260, "hv-fade")}>
         <polygon
-          className="fill-tinyrack-surface-muted stroke-tinyrack-border"
+          className="fill-tinyrack-illustration-fill-secondary stroke-tinyrack-illustration-stroke"
           points={SH_DOOR.frame}
           strokeLinejoin="round"
           strokeWidth="2"
         />
         <circle
-          className="fill-tinyrack-border-strong"
+          className="fill-tinyrack-illustration-detail"
           cx={SH_DOOR.knob.x}
           cy={SH_DOOR.knob.y}
           r="2"
@@ -769,7 +764,7 @@ export function SelfHostVisual({ className }: VisualProps) {
       <g data-hv-enter style={enterStyle(400, "hv-pop")}>
         {SH_PLANT.leaves.map((leaf) => (
           <path
-            className="stroke-tinyrack-success"
+            className="stroke-tinyrack-illustration-stroke"
             d={leaf}
             key={leaf}
             strokeLinecap="round"
@@ -808,7 +803,7 @@ export function SelfHostVisual({ className }: VisualProps) {
           >
             {SH_VENTS.map((t) => (
               <path
-                className="stroke-tinyrack-border-inverse"
+                className="stroke-tinyrack-illustration-stroke"
                 d={rightFaceLine(seat.x, uY, 8, SH_UNIT.w - 14, t)}
                 key={t}
                 strokeWidth="2"
@@ -816,7 +811,9 @@ export function SelfHostVisual({ className }: VisualProps) {
             ))}
             <circle
               className={
-                live ? "fill-tinyrack-success" : "fill-tinyrack-border-inverse"
+                live
+                  ? "fill-tinyrack-success"
+                  : "fill-tinyrack-illustration-detail"
               }
               cx={ledX}
               cy={ledY(uY)}
@@ -884,7 +881,7 @@ export function SimplicityVisual({ className }: VisualProps) {
           >
             {[faces.left, faces.right, faces.top].map((points) => (
               <polygon
-                className="stroke-tinyrack-border"
+                className="stroke-tinyrack-illustration-stroke"
                 key={points}
                 points={points}
                 strokeDasharray="4 6"
@@ -911,7 +908,7 @@ export function SimplicityVisual({ className }: VisualProps) {
       >
         {ICE_VENTS.map((t) => (
           <path
-            className="stroke-tinyrack-border-inverse"
+            className="stroke-tinyrack-illustration-stroke"
             d={rightFaceLine(fx, fy, 8, w - 14, t)}
             key={t}
             strokeWidth="2"
@@ -954,7 +951,7 @@ export function CircuitVisual({ className }: VisualProps) {
     <svg aria-hidden="true" {...stage}>
       {/* The shared trace with vias and terminals, at pad-corner height. */}
       <path
-        className="stroke-tinyrack-border-strong"
+        className="stroke-tinyrack-illustration-stroke"
         d="M40 74H920"
         data-hv-enter
         pathLength={100}
@@ -963,14 +960,14 @@ export function CircuitVisual({ className }: VisualProps) {
       />
       <g data-hv-enter style={enterStyle(300, "hv-fade")}>
         <circle
-          className="fill-tinyrack-surface stroke-tinyrack-border-strong"
+          className="fill-tinyrack-illustration-fill-primary stroke-tinyrack-illustration-stroke"
           cx="40"
           cy="74"
           r="4"
           strokeWidth="2"
         />
         <circle
-          className="fill-tinyrack-surface stroke-tinyrack-border-strong"
+          className="fill-tinyrack-illustration-fill-primary stroke-tinyrack-illustration-stroke"
           cx="920"
           cy="74"
           r="4"
@@ -978,7 +975,7 @@ export function CircuitVisual({ className }: VisualProps) {
         />
         {CIRCUIT_VIAS.map((cx) => (
           <circle
-            className="fill-tinyrack-border"
+            className="fill-tinyrack-illustration-detail"
             cx={cx}
             cy="74"
             key={cx}
@@ -1031,7 +1028,7 @@ export function CircuitVisual({ className }: VisualProps) {
                 </g>
               ) : (
                 <circle
-                  className="fill-tinyrack-border-inverse"
+                  className="fill-tinyrack-illustration-detail"
                   cx={ledX}
                   cy={ledY}
                   r="2"
