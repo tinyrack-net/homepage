@@ -31,7 +31,7 @@ export function ArticleCard({ post, showExcerpt = true }: ArticleCardProps) {
         <TRCard.Content className="flex flex-1 flex-col gap-tinyrack-sm p-tinyrack-lg">
           {/* Cards sit under a section h2, so the title is an h3. */}
           <TRCard.Title
-            className="text-tinyrack-xl font-bold"
+            className="text-tinyrack-xl font-tinyrack-bold"
             // biome-ignore lint/a11y/useHeadingContent: Base UI injects the title content into this render slot.
             render={<h3 />}
           >

@@ -24,7 +24,7 @@ export default function BlogIndex() {
         </TRText>
         <TRText
           as="p"
-          className="mt-tinyrack-lg mb-0 max-w-prose"
+          className="mt-tinyrack-lg mb-0 max-w-tinyrack-measure-xl"
           color="muted"
           variant="body"
         >

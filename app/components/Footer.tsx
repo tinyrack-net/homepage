@@ -50,7 +50,7 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
   const tags = getNavigationTags();
 
   return (
-    <footer className="mt-tinyrack-2xl border-t border-tinyrack-border">
+    <footer className="mt-tinyrack-2xl border-t-tinyrack-default border-tinyrack-border">
       <div className="wide-shell flex flex-col gap-tinyrack-xl py-tinyrack-2xl">
         <div className="grid gap-tinyrack-xl sm:grid-cols-2 lg:grid-cols-4">
           <Column title={t(lang, "nav.products")}>

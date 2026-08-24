@@ -99,7 +99,7 @@ export function ProjectCard({
             {project.descriptions[lang]}
           </TRCard.Description>
 
-          <TRCard.Footer className="mt-auto border-t border-tinyrack-border pt-tinyrack-md">
+          <TRCard.Footer className="mt-auto border-t-tinyrack-default border-tinyrack-border pt-tinyrack-md">
             <TRText
               aria-label={`${repositoryLabel}: ${repositoryPath}`}
               className="min-w-0 flex-1 truncate"

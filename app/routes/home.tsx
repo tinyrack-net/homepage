@@ -47,7 +47,7 @@ function SectionHeader({
         {description ? (
           <TRText
             as="p"
-            className="mt-tinyrack-sm mb-0 max-w-prose"
+            className="mt-tinyrack-sm mb-0 max-w-tinyrack-measure-xl"
             color="muted"
             variant="body"
           >
@@ -84,15 +84,15 @@ export default function Home() {
 
   return (
     <div className="wide-shell">
-      <section className="py-tinyrack-4xl md:py-tinyrack-5xl">
-        <div className="-mt-[40px] mb-tinyrack-3xl mx-[calc(50%-50vw)] flex w-screen justify-center overflow-hidden md:mb-tinyrack-4xl">
-          <DataCenterVisual className="w-full min-w-[1024px] max-w-none shrink-0" />
+      <section className="py-tinyrack-3xl">
+        <div className="home-hero-visual mb-tinyrack-3xl flex justify-center overflow-hidden">
+          <DataCenterVisual className="home-hero-visual-stage w-full shrink-0" />
         </div>
 
-        <div className="max-w-tinyrack-measure-2xl">
+        <div className="max-w-tinyrack-measure-xl">
           <TRText
             as="p"
-            className="m-0 mb-tinyrack-xl flex flex-wrap items-center gap-0 [&>span+span]:before:px-tinyrack-md [&>span+span]:before:text-tinyrack-border-strong [&>span+span]:before:content-['/']"
+            className="m-0 mb-tinyrack-xl flex flex-wrap items-center [&>span+span]:before:px-tinyrack-md [&>span+span]:before:text-tinyrack-border-strong [&>span+span]:before:content-['/']"
             color="muted"
             variant="label"
           >
@@ -106,7 +106,7 @@ export default function Home() {
           <TRText
             aria-label={headlineLabel}
             as="h1"
-            className="m-0 bg-gradient-to-b from-tinyrack-text to-tinyrack-text-muted bg-clip-text text-balance text-tinyrack-5xl leading-tinyrack-sm text-transparent [-webkit-text-fill-color:transparent] md:text-tinyrack-6xl md:leading-tinyrack-xs [&>span]:block"
+            className="home-hero-title m-0 text-balance text-tinyrack-5xl leading-tinyrack-sm md:text-tinyrack-6xl md:leading-tinyrack-xs [&>span]:block"
             variant="displayLg"
             weight="bold"
           >
@@ -119,7 +119,7 @@ export default function Home() {
 
           <TRText
             as="p"
-            className="mt-tinyrack-2xl mb-0 max-w-prose"
+            className="mt-tinyrack-2xl mb-0 max-w-tinyrack-measure-xl"
             color="muted"
             variant="body"
           >
@@ -145,7 +145,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-tinyrack-3xl border-t border-tinyrack-border py-tinyrack-3xl">
+      <section className="flex flex-col gap-tinyrack-3xl border-t-tinyrack-default border-tinyrack-border py-tinyrack-3xl">
         <TRText as="h2" className="m-0 uppercase" color="muted" variant="label">
           {copy.values.title}
         </TRText>
@@ -176,7 +176,7 @@ export default function Home() {
                 </TRText>
                 <TRText
                   as="p"
-                  className="mt-tinyrack-lg mb-0 max-w-prose"
+                  className="mt-tinyrack-lg mb-0 max-w-tinyrack-measure-xl"
                   color="muted"
                   variant="body"
                 >
@@ -188,10 +188,10 @@ export default function Home() {
         })}
       </section>
 
-      <section className="border-t border-tinyrack-border py-tinyrack-3xl">
+      <section className="border-t-tinyrack-default border-tinyrack-border py-tinyrack-3xl">
         <div className="flex flex-col gap-tinyrack-2xl rounded-tinyrack-lg bg-tinyrack-surface-muted p-tinyrack-2xl md:p-tinyrack-3xl">
           <div className="flex flex-col gap-tinyrack-xl md:flex-row md:items-center md:justify-between">
-            <div className="min-w-0 max-w-prose">
+            <div className="min-w-0 max-w-tinyrack-measure-xl">
               <TRText
                 as="h2"
                 className="m-0"
@@ -202,7 +202,7 @@ export default function Home() {
               </TRText>
               <TRText
                 as="p"
-                className="mt-tinyrack-sm mb-0 max-w-prose"
+                className="mt-tinyrack-sm mb-0 max-w-tinyrack-measure-xl"
                 color="muted"
                 variant="body"
               >
@@ -233,7 +233,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-tinyrack-2xl border-t border-tinyrack-border py-tinyrack-3xl">
+      <section className="flex flex-col gap-tinyrack-2xl border-t-tinyrack-default border-tinyrack-border py-tinyrack-3xl">
         <SectionHeader
           description={copy.blog.description}
           link={{ href: getBlogPath(lang), label: copy.blog.linkLabel }}
