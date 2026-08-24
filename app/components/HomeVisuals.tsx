@@ -191,6 +191,7 @@ function IsoBox({
 function IsoShadow({
   d,
   delayMs,
+  durationMs,
   expand = 6,
   fx,
   fy,
@@ -198,6 +199,7 @@ function IsoShadow({
 }: {
   d: number;
   delayMs: number;
+  durationMs?: number;
   expand?: number;
   fx: number;
   fy: number;
@@ -208,7 +210,7 @@ function IsoShadow({
       className="fill-tinyrack-illustration-shadow"
       data-hv-enter
       points={baseDiamond(fx, fy + expand, w + 2 * expand, d + 2 * expand)}
-      style={enterStyle(delayMs, "hv-fade")}
+      style={enterStyle(delayMs, "hv-fade", durationMs)}
     />
   );
 }
@@ -467,29 +469,51 @@ export function DataCenterVisual({ className }: VisualProps) {
 
   return (
     <svg aria-hidden="true" {...stage}>
-      {DC_CABINETS.map((cab, index) => {
-        const fx = DC_FX0 + index * DC_STEP;
-        const fy = DC_BASE;
-        const detail = "stroke-tinyrack-illustration-stroke";
-        // The LED sits at the right end of the topmost unit rule, so every
-        // cabinet's light lands on the same landmark instead of drifting.
-        const rules = cabinetUnits(cab.h);
-        const topRule = rules[rules.length - 1] ?? 12;
-        const ledU = DC_W - 8;
-        const ledX = fx + RX * ledU;
-        const ledY = fy - 0.5 * ledU - topRule;
+      {/* Keep every footprint below the complete cabinet row. Pairing a
+          footprint with each cabinet would let later footprints paint over
+          cabinets rendered earlier in the row. */}
+      <g data-dc-shadow-layer>
+        {DC_CABINETS.map((_, index) => {
+          const fx = DC_FX0 + index * DC_STEP;
+          const delayMs = 200 + index * 90;
 
-        return (
-          <g key={fx}>
-            <IsoShadow d={DC_D} delayMs={100} fx={fx} fy={fy + 4} w={DC_W} />
+          return (
+            <IsoShadow
+              d={DC_D}
+              delayMs={delayMs}
+              durationMs={620}
+              fx={fx}
+              fy={DC_BASE + 4}
+              key={fx}
+              w={DC_W}
+            />
+          );
+        })}
+      </g>
+      <g data-dc-cabinet-layer>
+        {DC_CABINETS.map((cab, index) => {
+          const fx = DC_FX0 + index * DC_STEP;
+          const fy = DC_BASE;
+          const delayMs = 200 + index * 90;
+          const detail = "stroke-tinyrack-illustration-stroke";
+          // The LED sits at the right end of the topmost unit rule, so every
+          // cabinet's light lands on the same landmark instead of drifting.
+          const rules = cabinetUnits(cab.h);
+          const topRule = rules[rules.length - 1] ?? 12;
+          const ledU = DC_W - 8;
+          const ledX = fx + RX * ledU;
+          const ledY = fy - 0.5 * ledU - topRule;
+
+          return (
             <IsoBox
               anim="hv-iso-rise"
               d={DC_D}
-              delayMs={200 + index * 90}
+              delayMs={delayMs}
               durationMs={620}
               fx={fx}
               fy={fy}
               h={cab.h}
+              key={fx}
               w={DC_W}
             >
               {rules.map((t) => (
@@ -521,9 +545,9 @@ export function DataCenterVisual({ className }: VisualProps) {
                 r={cab.live ? 3 : 2}
               />
             </IsoBox>
-          </g>
-        );
-      })}
+          );
+        })}
+      </g>
     </svg>
   );
 }
