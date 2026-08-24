@@ -104,6 +104,35 @@ test("landing isometric objects use opaque illustration roles", async ({
   }
 });
 
+test("hero rack footprints stay below and enter with their cabinets", async ({
+  page,
+}) => {
+  await gotoHydrated(page, "/");
+  const shadowLayer = page.locator("[data-dc-shadow-layer]");
+  const cabinetLayer = page.locator("[data-dc-cabinet-layer]");
+  await expect(shadowLayer).toHaveCount(1);
+  await expect(cabinetLayer).toHaveCount(1);
+  await expect(
+    page.locator("[data-dc-shadow-layer] + [data-dc-cabinet-layer]"),
+  ).toHaveCount(1);
+
+  const timing = (selector: string) =>
+    page.locator(selector).evaluateAll((elements) =>
+      elements.map((element) => ({
+        delay: (element as SVGElement).style.getPropertyValue("--hv-delay"),
+        duration: (element as SVGElement).style.getPropertyValue(
+          "--hv-duration",
+        ),
+      })),
+    );
+  const shadowTiming = await timing("[data-dc-shadow-layer] > [data-hv-enter]");
+  const cabinetTiming = await timing(
+    "[data-dc-cabinet-layer] > [data-iso-box]",
+  );
+  expect(shadowTiming).toHaveLength(8);
+  expect(shadowTiming).toEqual(cabinetTiming);
+});
+
 test("home editorials keep 16:9 cover images", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1024 });
   await gotoHydrated(page, "/");
