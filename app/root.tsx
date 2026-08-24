@@ -1,6 +1,7 @@
 import "./styles/app.css";
 
 import { MDXProvider } from "@mdx-js/react";
+import { tinyrackSemanticColors } from "@tinyrack/ui/core";
 import { trShikiWebHighlighter } from "@tinyrack/ui/highlighters/shiki-web";
 import { createTinyrackMdxComponents } from "@tinyrack/ui/mdx";
 import {
@@ -79,12 +80,12 @@ export function Layout({ children }: { children: ReactNode }) {
           sizes="180x180"
         />
         <meta
-          content="#fafafa"
+          content={tinyrackSemanticColors.light.surface}
           media="(prefers-color-scheme: light)"
           name="theme-color"
         />
         <meta
-          content="#0a0a0a"
+          content={tinyrackSemanticColors.dark.surface}
           media="(prefers-color-scheme: dark)"
           name="theme-color"
         />
@@ -128,7 +129,7 @@ export default function App() {
       <TRCodeHighlighterProvider highlighter={trShikiWebHighlighter}>
         <HydrationMarker />
         <MDXProvider components={mdxComponents}>
-          <div className="flex min-h-screen flex-col overflow-x-clip bg-tinyrack-canvas text-tinyrack-text">
+          <div className="flex min-h-screen flex-col overflow-x-clip bg-tinyrack-surface text-tinyrack-text">
             <SiteHeader />
             <main className="flex-1">
               <Outlet />

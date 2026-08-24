@@ -28,7 +28,7 @@ export function HomeArticleTeaser({
         to={href}
       >
         {post.data.featureImage ? (
-          <div className="aspect-video w-full overflow-hidden rounded-tinyrack-md bg-tinyrack-canvas">
+          <div className="aspect-video w-full overflow-hidden rounded-tinyrack-md bg-tinyrack-surface">
             <img
               alt=""
               className="h-full w-full object-cover"
@@ -61,7 +61,7 @@ export function HomeArticleTeaser({
             {featured ? (
               <TRText
                 as="p"
-                className="mt-tinyrack-md mb-0 line-clamp-3 max-w-prose"
+                className="mt-tinyrack-md mb-0 line-clamp-3 max-w-tinyrack-measure-xl"
                 color="muted"
                 variant="body"
               >

@@ -92,8 +92,46 @@ test("authored hero lines do not overflow in any locale", async ({ page }) => {
         ),
         `${path} at ${viewport.width}px`,
       ).toBe(true);
+      expect(
+        await page.evaluate(
+          () =>
+            document.documentElement.scrollWidth <=
+            document.documentElement.clientWidth,
+        ),
+        `${path} should not create document-level horizontal overflow at ${viewport.width}px`,
+      ).toBe(true);
+      const heroBounds = await page
+        .locator(".home-hero-visual")
+        .evaluate((hero) => {
+          const bounds = hero.getBoundingClientRect();
+          return {
+            left: bounds.left,
+            right: bounds.right,
+            width: bounds.width,
+          };
+        });
+      expect(heroBounds.left).toBeCloseTo(0, 0);
+      expect(heroBounds.right).toBeCloseTo(viewport.width, 0);
+      expect(heroBounds.width).toBeCloseTo(viewport.width, 0);
     }
   }
+});
+
+test("latest Tinyrack layout scale drives site frames", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1024 });
+
+  await page.goto("/");
+  await expect(page.locator(".wide-shell").first()).toHaveCSS(
+    "max-width",
+    "1216px",
+  );
+  await expect(page.locator("header img").first()).toHaveCSS("height", "28px");
+
+  await page.goto("/blog/");
+  await expect(page.locator(".page-shell")).toHaveCSS("max-width", "1024px");
+
+  await page.goto("/openterface-mini-kvm/");
+  await expect(page.locator(".reading-shell")).toHaveCSS("max-width", "1024px");
 });
 
 test("landing leads with philosophy, not a product list", async ({ page }) => {
@@ -444,12 +482,18 @@ test("desktop header exposes settings and a labeled menu", async ({ page }) => {
   const utilities = page.locator("[data-desktop-header-utilities]");
   await expect(utilities).toBeVisible();
   await expect(utilities.getByRole("button", { name: "Auto" })).toBeVisible();
-  await expect(
-    utilities.getByRole("combobox", { name: "Language" }),
-  ).toBeVisible();
+  const language = utilities.getByRole("combobox", { name: "Language" });
+  await expect(language).toBeVisible();
   await expect(
     utilities.getByRole("button", { name: "Open menu" }),
   ).toContainText("Menu");
+
+  await language.focus();
+  await language.press("ArrowDown");
+  await expect(page.getByRole("listbox")).toBeVisible();
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL("/ja/");
 });
 
 test("theme preference persists across reloads", async ({ page }) => {
@@ -462,6 +506,10 @@ test("theme preference persists across reloads", async ({ page }) => {
   await expect(page.locator("html")).toHaveAttribute(
     "data-theme",
     "tinyrack-dark",
+  );
+  await expect(page.locator("body")).toHaveCSS(
+    "background-color",
+    "rgb(10, 10, 10)",
   );
 });
 

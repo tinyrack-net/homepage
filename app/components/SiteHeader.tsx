@@ -69,7 +69,7 @@ export function SiteHeader() {
       : location.pathname === href;
 
   return (
-    <header className="sticky top-0 z-tinyrack-dropdown border-b border-tinyrack-border bg-tinyrack-canvas/95 backdrop-blur">
+    <header className="sticky top-0 z-tinyrack-chrome border-b-tinyrack-default border-tinyrack-border bg-tinyrack-surface/95 backdrop-blur">
       <div className="wide-shell flex items-center gap-tinyrack-lg py-tinyrack-md md:py-tinyrack-lg">
         {/* `flex`, not the default block: a block anchor wraps the lockup in an
             inline box whose descender gap makes the artwork sit three pixels
@@ -85,7 +85,7 @@ export function SiteHeader() {
           {navItems.map((item) => (
             <Link
               aria-current={isActive(item.href) ? "page" : undefined}
-              className="text-tinyrack-sm font-medium text-tinyrack-text-muted no-underline underline-offset-tinyrack-md transition-colors hover:text-tinyrack-text aria-[current]:text-tinyrack-text aria-[current]:underline"
+              className="text-tinyrack-sm font-tinyrack-medium text-tinyrack-text-muted no-underline underline-offset-tinyrack-md transition-colors hover:text-tinyrack-text aria-[current]:text-tinyrack-text aria-[current]:underline"
               key={item.href}
               to={item.href}
             >
@@ -153,7 +153,7 @@ export function SiteHeader() {
                   {navItems.map((item) => (
                     <Link
                       aria-current={isActive(item.href) ? "page" : undefined}
-                      className="font-medium text-tinyrack-text no-underline"
+                      className="font-tinyrack-medium text-tinyrack-text no-underline"
                       key={item.href}
                       onClick={() => setOpen(false)}
                       to={item.href}

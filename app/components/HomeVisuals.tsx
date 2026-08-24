@@ -428,7 +428,7 @@ export function RackVisual({ className }: VisualProps) {
       {/* The powered server's boot glow. */}
       <g data-hv-enter style={enterStyle(1150, "hv-pop", 400)}>
         <circle
-          className="stroke-tinyrack-success opacity-40 motion-safe:animate-pulse"
+          className="stroke-tinyrack-success opacity-tinyrack-disabled motion-safe:animate-pulse"
           cx="233.1"
           cy="228"
           r="8"
@@ -644,7 +644,7 @@ export function OpenSourceVisual({ className }: VisualProps) {
       </IsoBox>
       <g data-hv-enter style={enterStyle(1700, "hv-pop", 400)}>
         <circle
-          className="stroke-tinyrack-success opacity-40 motion-safe:animate-pulse"
+          className="stroke-tinyrack-success opacity-tinyrack-disabled motion-safe:animate-pulse"
           cx={ledX}
           cy={ledY}
           r="8"
@@ -716,13 +716,13 @@ export function SelfHostVisual({ className }: VisualProps) {
       {/* Your place: a room corner with a window. */}
       <g data-hv-enter style={enterStyle(0, "hv-fade")}>
         <polygon
-          className="fill-tinyrack-surface-selected stroke-tinyrack-border opacity-70"
+          className="fill-tinyrack-surface-selected stroke-tinyrack-border opacity-tinyrack-backdrop"
           points={SH_ROOM.wallLeft}
           strokeLinejoin="round"
           strokeWidth="2"
         />
         <polygon
-          className="fill-tinyrack-surface stroke-tinyrack-border opacity-70"
+          className="fill-tinyrack-surface stroke-tinyrack-border opacity-tinyrack-backdrop"
           points={SH_ROOM.wallRight}
           strokeLinejoin="round"
           strokeWidth="2"
@@ -736,7 +736,7 @@ export function SelfHostVisual({ className }: VisualProps) {
       </g>
       <g data-hv-enter style={enterStyle(160, "hv-fade")}>
         <polygon
-          className="fill-tinyrack-canvas stroke-tinyrack-border"
+          className="fill-tinyrack-surface stroke-tinyrack-border"
           points={SH_WINDOW.frame}
           strokeLinejoin="round"
           strokeWidth="2"
@@ -854,7 +854,7 @@ export function SelfHostVisual({ className }: VisualProps) {
       {/* Settled in and running. */}
       <g data-hv-enter style={enterStyle(1350, "hv-pop", 400)}>
         <circle
-          className="stroke-tinyrack-success opacity-40 motion-safe:animate-pulse"
+          className="stroke-tinyrack-success opacity-tinyrack-disabled motion-safe:animate-pulse"
           cx={ledX}
           cy={ledY(unitY(SH_LIVE_UNIT))}
           r="7"
@@ -948,7 +948,7 @@ export function SimplicityVisual({ className }: VisualProps) {
       </IsoBox>
       <g data-hv-enter style={enterStyle(1200, "hv-pop", 400)}>
         <circle
-          className="stroke-tinyrack-success opacity-40 motion-safe:animate-pulse"
+          className="stroke-tinyrack-success opacity-tinyrack-disabled motion-safe:animate-pulse"
           cx={ledX}
           cy={ledY}
           r="7"
@@ -990,14 +990,14 @@ export function CircuitVisual({ className }: VisualProps) {
       />
       <g data-hv-enter style={enterStyle(300, "hv-fade")}>
         <circle
-          className="fill-tinyrack-canvas stroke-tinyrack-border-strong"
+          className="fill-tinyrack-surface stroke-tinyrack-border-strong"
           cx="40"
           cy="74"
           r="4"
           strokeWidth="2"
         />
         <circle
-          className="fill-tinyrack-canvas stroke-tinyrack-border-strong"
+          className="fill-tinyrack-surface stroke-tinyrack-border-strong"
           cx="920"
           cy="74"
           r="4"
@@ -1044,7 +1044,7 @@ export function CircuitVisual({ className }: VisualProps) {
               {live ? (
                 <g>
                   <circle
-                    className="stroke-tinyrack-success opacity-40 motion-safe:animate-pulse"
+                    className="stroke-tinyrack-success opacity-tinyrack-disabled motion-safe:animate-pulse"
                     cx={ledX}
                     cy={ledY}
                     r="6.5"

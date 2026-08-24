@@ -59,7 +59,7 @@ export function BlogArticleFrame({ children }: { children?: ReactNode }) {
       {entry.data.featureImage ? (
         <img
           alt={entry.data.title}
-          className="mb-tinyrack-2xl aspect-video max-h-80 w-full rounded-tinyrack-lg object-cover"
+          className="mb-tinyrack-2xl aspect-video max-h-tinyrack-measure-xl w-full rounded-tinyrack-lg object-cover"
           src={entry.data.featureImage}
         />
       ) : null}
@@ -70,7 +70,7 @@ export function BlogArticleFrame({ children }: { children?: ReactNode }) {
       <header>
         {/* No `text-balance`: titles are not authored per locale, and balancing
             happily splits a hyphenated compound across the two lines. */}
-        <h1 className="text-tinyrack-4xl font-bold leading-tight">
+        <h1 className="text-tinyrack-4xl font-tinyrack-bold leading-tinyrack-sm">
           {entry.data.title}
         </h1>
         {entry.collection === "articles" ? (

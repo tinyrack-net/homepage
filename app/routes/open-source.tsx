@@ -15,7 +15,7 @@ export default function OpenSource() {
   return (
     <div className="wide-shell">
       <section className="py-tinyrack-3xl">
-        <div className="max-w-tinyrack-reading-sm">
+        <div className="max-w-tinyrack-measure-xl">
           <TRText
             as="p"
             className="mb-tinyrack-xl uppercase"
@@ -26,7 +26,7 @@ export default function OpenSource() {
           </TRText>
           <TRText
             as="h1"
-            className="max-w-tinyrack-reading-sm text-balance"
+            className="max-w-tinyrack-measure-xl text-balance"
             variant="displayLg"
             weight="bold"
           >
@@ -34,7 +34,7 @@ export default function OpenSource() {
           </TRText>
           <TRText
             as="p"
-            className="mt-tinyrack-2xl max-w-prose"
+            className="mt-tinyrack-2xl max-w-tinyrack-measure-xl"
             color="muted"
             variant="body"
           >
@@ -54,7 +54,7 @@ export default function OpenSource() {
         </div>
       </section>
 
-      <section className="border-t border-tinyrack-border py-tinyrack-2xl">
+      <section className="border-t-tinyrack-default border-tinyrack-border py-tinyrack-2xl">
         <TRText
           as="h2"
           className="mb-tinyrack-xl uppercase"

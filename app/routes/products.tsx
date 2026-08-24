@@ -13,8 +13,8 @@ export default function Products() {
 
   return (
     <div className="wide-shell">
-      <section className="py-tinyrack-4xl md:py-tinyrack-5xl">
-        <div className="max-w-tinyrack-reading-sm">
+      <section className="py-tinyrack-3xl">
+        <div className="max-w-tinyrack-measure-xl">
           <TRText
             as="p"
             className="mb-tinyrack-xl uppercase"
@@ -33,7 +33,7 @@ export default function Products() {
           </TRText>
           <TRText
             as="p"
-            className="mt-tinyrack-2xl max-w-prose"
+            className="mt-tinyrack-2xl max-w-tinyrack-measure-xl"
             color="muted"
             variant="body"
           >

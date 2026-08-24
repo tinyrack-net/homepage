@@ -24,14 +24,14 @@ export function BrandLockup({ lang }: { lang: SupportedLanguageCodes }) {
     <span className="inline-flex items-center">
       <img
         alt={korean ? "타이니랙" : "Tinyrack"}
-        className="tr-brand-lockup-light block h-7 w-auto"
+        className="tr-brand-lockup-light block h-tinyrack-control-height-sm w-auto"
         height={38}
         src={`/brand/tinyrack-lockup${suffix}.svg`}
       />
       <img
         alt=""
         aria-hidden="true"
-        className="tr-brand-lockup-dark block h-7 w-auto"
+        className="tr-brand-lockup-dark block h-tinyrack-control-height-sm w-auto"
         height={38}
         src={`/brand/tinyrack-lockup${suffix}-inverse.svg`}
       />
