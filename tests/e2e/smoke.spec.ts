@@ -24,6 +24,45 @@ test("landing page keeps its corporate sections", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("landing isometric objects invert uniformly with the theme", async ({
+  page,
+}) => {
+  await gotoHydrated(page, "/");
+  const faces = page.locator("[data-iso-face]");
+  expect(await faces.count()).toBeGreaterThan(0);
+  const backdrops = page.locator(
+    "[data-iso-box] > polygon:not([data-iso-face])",
+  );
+  expect(await backdrops.count()).toBe(await faces.count());
+
+  for (const [theme, expectedFill] of [
+    ["tinyrack-light", "rgb(23, 23, 23)"],
+    ["tinyrack-dark", "rgb(250, 250, 250)"],
+  ] as const) {
+    await page.locator("html").evaluate((html, value) => {
+      html.dataset.theme = value;
+    }, theme);
+    await expect
+      .poll(() =>
+        faces.evaluateAll((polygons) => [
+          ...new Set(polygons.map((polygon) => getComputedStyle(polygon).fill)),
+        ]),
+      )
+      .toEqual([expectedFill]);
+  }
+
+  expect(
+    await faces.evaluateAll((polygons) => [
+      ...new Set(polygons.map((polygon) => getComputedStyle(polygon).opacity)),
+    ]),
+  ).toEqual(["0.5", "0.56", "0.82"]);
+  expect(
+    await backdrops.evaluateAll((polygons) =>
+      polygons.every((polygon) => getComputedStyle(polygon).opacity === "1"),
+    ),
+  ).toBe(true);
+});
+
 test("home editorials keep 16:9 cover images", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1024 });
   await gotoHydrated(page, "/");

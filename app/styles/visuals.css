@@ -24,9 +24,15 @@
   /* Continuous ambience. `transform-box: fill-box` makes transforms pivot on
      the element itself instead of the SVG canvas origin. */
   .hv-flow,
-  .hv-flow-slow {
+  .hv-flow-slow,
+  .hv-signal-ring {
     transform-box: fill-box;
     transform-origin: center;
+  }
+
+  .hv-signal-ring {
+    animation: hv-signal-ring var(--tinyrack-duration-loading)
+      var(--tinyrack-ease-out) infinite;
   }
 
   .hv-flow {
@@ -99,5 +105,18 @@
 @keyframes hv-dash-flow {
   to {
     stroke-dashoffset: -20;
+  }
+}
+
+/* A quiet status signal: the core LED stays fixed while its halo travels
+   outward and fades. Reduced-motion users retain the resting ring. */
+@keyframes hv-signal-ring {
+  from {
+    opacity: var(--tinyrack-opacity-disabled);
+    scale: 0.72;
+  }
+  to {
+    opacity: 0;
+    scale: 1.35;
   }
 }
