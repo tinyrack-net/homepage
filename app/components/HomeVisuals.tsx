@@ -4,10 +4,10 @@ import { useInView } from "@/lib/use-in-view.ts";
 /**
  * Decorative, token-only SVG illustrations for the landing page, drawn as
  * isometric 2.5D scenes. Every line sits on the two iso floor axes
- * (slope ±0.577) or is vertical, faces shade with a three-step surface ramp
- * (top `surface`, right `surface-hover`, left `surface-selected`), objects
- * cast a flat diamond shadow, and every edge keeps a 2px border stroke, so
- * both themes stay legible for free.
+ * (slope ±0.577) or is vertical. Every solid isometric object uses
+ * `surface-inverse` with the system opacity scale (dark grays in light mode,
+ * light grays in dark mode), casts a flat diamond shadow, and keeps a 2px
+ * inverse-border stroke, so both themes stay legible for free.
  *
  * Each scene tells its section's story: servers slide into a four-post rack
  * frame and boot (hero), unit blocks converge into one shared build with a
@@ -138,16 +138,17 @@ function isoOffset(
 function IsoBox({
   anim = "hv-iso-rise",
   children,
+  backdrop = "muted",
   d,
   delayMs,
   durationMs,
   fx,
   fy,
   h,
-  inverse = false,
   w,
 }: {
   anim?: string;
+  backdrop?: "muted" | "surface";
   children?: ReactNode;
   d: number;
   delayMs: number;
@@ -155,42 +156,36 @@ function IsoBox({
   fx: number;
   fy: number;
   h: number;
-  inverse?: boolean;
   w: number;
 }) {
   const faces = isoFaces(fx, fy, w, d, h);
-  const stroke = inverse
-    ? "stroke-tinyrack-border-inverse"
-    : "stroke-tinyrack-border";
+  const backdropFill =
+    backdrop === "surface"
+      ? "fill-tinyrack-surface"
+      : "fill-tinyrack-surface-muted";
 
   return (
-    <g data-hv-enter style={enterStyle(delayMs, anim, durationMs)}>
+    <g data-hv-enter data-iso-box style={enterStyle(delayMs, anim, durationMs)}>
+      <polygon className={backdropFill} points={faces.left} />
       <polygon
-        className={
-          inverse
-            ? `fill-tinyrack-surface-inverse opacity-80 ${stroke}`
-            : `fill-tinyrack-surface-selected ${stroke}`
-        }
+        className="fill-tinyrack-surface-inverse stroke-tinyrack-border-inverse opacity-tinyrack-disabled"
+        data-iso-face
         points={faces.left}
         strokeLinejoin="round"
         strokeWidth="2"
       />
+      <polygon className={backdropFill} points={faces.right} />
       <polygon
-        className={
-          inverse
-            ? `fill-tinyrack-surface-inverse opacity-90 ${stroke}`
-            : `fill-tinyrack-surface-hover ${stroke}`
-        }
+        className="fill-tinyrack-surface-inverse stroke-tinyrack-border-inverse opacity-tinyrack-backdrop"
+        data-iso-face
         points={faces.right}
         strokeLinejoin="round"
         strokeWidth="2"
       />
+      <polygon className={backdropFill} points={faces.top} />
       <polygon
-        className={
-          inverse
-            ? `fill-tinyrack-surface-inverse ${stroke}`
-            : `fill-tinyrack-surface ${stroke}`
-        }
+        className="fill-tinyrack-surface-inverse stroke-tinyrack-border-inverse opacity-tinyrack-hover"
+        data-iso-face
         points={faces.top}
         strokeLinejoin="round"
         strokeWidth="2"
@@ -346,9 +341,7 @@ export function RackVisual({ className }: VisualProps) {
       {RACK_SLABS.map((slab) => {
         const fy = 322 - slab * 32;
         const powered = slab === POWERED_SLAB;
-        const detail = powered
-          ? "stroke-tinyrack-border-inverse"
-          : "stroke-tinyrack-border-strong";
+        const detail = "stroke-tinyrack-border-inverse";
 
         return (
           <IsoBox
@@ -358,7 +351,6 @@ export function RackVisual({ className }: VisualProps) {
             fx={150}
             fy={fy}
             h={26}
-            inverse={powered}
             key={slab}
             w={110}
           >
@@ -372,7 +364,9 @@ export function RackVisual({ className }: VisualProps) {
             ))}
             <circle
               className={
-                powered ? "fill-tinyrack-success" : "fill-tinyrack-border"
+                powered
+                  ? "fill-tinyrack-success"
+                  : "fill-tinyrack-border-inverse"
               }
               cx="233.1"
               cy={fy - 62}
@@ -428,7 +422,7 @@ export function RackVisual({ className }: VisualProps) {
       {/* The powered server's boot glow. */}
       <g data-hv-enter style={enterStyle(1150, "hv-pop", 400)}>
         <circle
-          className="stroke-tinyrack-success opacity-tinyrack-disabled motion-safe:animate-pulse"
+          className="hv-signal-ring stroke-tinyrack-success opacity-tinyrack-disabled"
           cx="233.1"
           cy="228"
           r="8"
@@ -440,27 +434,25 @@ export function RackVisual({ className }: VisualProps) {
 }
 
 /* --- Hero foreground: a full-width isometric server hall. A row of tall
-   cabinets stands shoulder to shoulder like a data-center aisle seen head-on —
-   most in the surface ramp, a couple inverse (the featured machines), each
-   front ruled into rack units with live LEDs and a soft shadow grounding it.
-   Grand enough to carry a hero. */
+   cabinets stands shoulder to shoulder like a data-center aisle seen head-on,
+   each front ruled into rack units with live LEDs and a soft shadow grounding
+   it. Grand enough to carry a hero. */
 
 const DC_BASE = 320;
 const DC_W = 66;
 const DC_D = 84;
 const DC_STEP = 136;
 const DC_FX0 = 150;
-/** Per-cabinet: skyline height, whether it is a featured (inverse) machine,
-    and whether it runs a live LED. */
+/** Per-cabinet skyline height and whether it runs a live LED. */
 const DC_CABINETS = [
-  { h: 182, inverse: false, live: true },
-  { h: 166, inverse: false, live: false },
-  { h: 190, inverse: true, live: true },
-  { h: 176, inverse: false, live: false },
-  { h: 186, inverse: false, live: true },
-  { h: 162, inverse: true, live: true },
-  { h: 180, inverse: false, live: false },
-  { h: 172, inverse: false, live: true },
+  { h: 182, live: true },
+  { h: 166, live: false },
+  { h: 190, live: true },
+  { h: 176, live: false },
+  { h: 186, live: true },
+  { h: 162, live: true },
+  { h: 180, live: false },
+  { h: 172, live: true },
 ] as const;
 
 /** Heights of the horizontal unit rules climbing a cabinet's front face. */
@@ -482,9 +474,7 @@ export function DataCenterVisual({ className }: VisualProps) {
       {DC_CABINETS.map((cab, index) => {
         const fx = DC_FX0 + index * DC_STEP;
         const fy = DC_BASE;
-        const detail = cab.inverse
-          ? "stroke-tinyrack-border-inverse"
-          : "stroke-tinyrack-border-strong";
+        const detail = "stroke-tinyrack-border-inverse";
         // The LED sits at the right end of the topmost unit rule, so every
         // cabinet's light lands on the same landmark instead of drifting.
         const rules = cabinetUnits(cab.h);
@@ -498,13 +488,13 @@ export function DataCenterVisual({ className }: VisualProps) {
             <IsoShadow d={DC_D} delayMs={100} fx={fx} fy={fy + 4} w={DC_W} />
             <IsoBox
               anim="hv-iso-rise"
+              backdrop="surface"
               d={DC_D}
               delayMs={200 + index * 90}
               durationMs={620}
               fx={fx}
               fy={fy}
               h={cab.h}
-              inverse={cab.inverse}
               w={DC_W}
             >
               {rules.map((t) => (
@@ -516,9 +506,20 @@ export function DataCenterVisual({ className }: VisualProps) {
                   strokeWidth="1.5"
                 />
               ))}
+              {cab.live ? (
+                <circle
+                  className="hv-signal-ring stroke-tinyrack-success opacity-tinyrack-disabled"
+                  cx={ledX}
+                  cy={ledY}
+                  r="7"
+                  strokeWidth="2"
+                />
+              ) : null}
               <circle
                 className={
-                  cab.live ? "fill-tinyrack-success" : "fill-tinyrack-border"
+                  cab.live
+                    ? "fill-tinyrack-success"
+                    : "fill-tinyrack-border-inverse"
                 }
                 cx={ledX}
                 cy={ledY}
@@ -535,7 +536,7 @@ export function DataCenterVisual({ className }: VisualProps) {
 /* --- Open source: unit blocks converge into one shared build. Plain cubes
    already stand two levels high, one cell is still a dashed outline waiting
    for whoever comes next, and the newest contribution hovers over its open
-   slot, marked live. Anyone can add a block; the build belongs to everyone. */
+   slot. Anyone can add a block; the build belongs to everyone. */
 
 const OS_CELL = 40;
 const OS_BUILD = { fx: 160, fy: 178 } as const;
@@ -567,9 +568,6 @@ export function OpenSourceVisual({ className }: VisualProps) {
   const ghost = isoFaces(ghostCell.x, ghostCell.y, OS_CELL, OS_CELL, OS_CELL);
   const slot = osCell(0, 0, 1);
   const block = { x: slot.x, y: slot.y - OS_HOVER };
-  const ledU = OS_CELL - 12;
-  const ledX = block.x + RX * ledU;
-  const ledY = block.y - 0.5 * ledU - OS_CELL / 2;
 
   return (
     <svg aria-hidden="true" {...stage}>
@@ -629,7 +627,7 @@ export function OpenSourceVisual({ className }: VisualProps) {
         style={enterStyle(1250, "hv-fade")}
       />
 
-      {/* The newest contribution arrives over its slot, powered up. */}
+      {/* The newest contribution arrives over its slot. */}
       <IsoBox
         anim="hv-iso-drop"
         d={OS_CELL}
@@ -637,28 +635,16 @@ export function OpenSourceVisual({ className }: VisualProps) {
         fx={block.x}
         fy={block.y}
         h={OS_CELL}
-        inverse
         w={OS_CELL}
-      >
-        <circle className="fill-tinyrack-success" cx={ledX} cy={ledY} r="3.5" />
-      </IsoBox>
-      <g data-hv-enter style={enterStyle(1700, "hv-pop", 400)}>
-        <circle
-          className="stroke-tinyrack-success opacity-tinyrack-disabled motion-safe:animate-pulse"
-          cx={ledX}
-          cy={ledY}
-          r="8"
-          strokeWidth="2"
-        />
-      </g>
+      />
     </svg>
   );
 }
 
 /* --- Self-hosting: a server moves into your home. A room corner with a
    window, a door and a potted plant says "your place", and a small server
-   tower — plinth, two vented units, cap — slides in as one piece, settles
-   on the floor, and lights up running. */
+   tower — plinth and two vented units — slides in as one piece, settles on the
+   floor, and lights up running. */
 
 const SH_ROOM = {
   floor: "150,182 260.9,118 181.2,72 70.3,136",
@@ -716,7 +702,7 @@ export function SelfHostVisual({ className }: VisualProps) {
       {/* Your place: a room corner with a window. */}
       <g data-hv-enter style={enterStyle(0, "hv-fade")}>
         <polygon
-          className="fill-tinyrack-surface-selected stroke-tinyrack-border opacity-tinyrack-backdrop"
+          className="fill-tinyrack-surface-muted stroke-tinyrack-border opacity-tinyrack-backdrop"
           points={SH_ROOM.wallLeft}
           strokeLinejoin="round"
           strokeWidth="2"
@@ -792,8 +778,8 @@ export function SelfHostVisual({ className }: VisualProps) {
         ))}
       </g>
 
-      {/* The server tower moves in and settles on the floor: plinth, two
-          vented units, cap — all sliding as one piece. */}
+      {/* The server tower moves in and settles on the floor: its plinth and two
+          vented units all slide as one piece. */}
       <IsoBox
         anim="hv-iso-slot"
         d={d}
@@ -817,7 +803,6 @@ export function SelfHostVisual({ className }: VisualProps) {
             fx={seat.x}
             fy={uY}
             h={SH_UNIT.h}
-            inverse
             key={k}
             w={SH_UNIT.w}
           >
@@ -840,21 +825,10 @@ export function SelfHostVisual({ className }: VisualProps) {
           </IsoBox>
         );
       })}
-      <IsoBox
-        anim="hv-iso-slot"
-        d={SH_UNIT.d}
-        delayMs={SH_ARRIVE.delayMs}
-        durationMs={SH_ARRIVE.durationMs}
-        fx={seat.x}
-        fy={unitY(SH_UNITS.length)}
-        h={4}
-        w={SH_UNIT.w}
-      />
-
       {/* Settled in and running. */}
       <g data-hv-enter style={enterStyle(1350, "hv-pop", 400)}>
         <circle
-          className="stroke-tinyrack-success opacity-tinyrack-disabled motion-safe:animate-pulse"
+          className="hv-signal-ring stroke-tinyrack-success opacity-tinyrack-disabled"
           cx={ledX}
           cy={ledY(unitY(SH_LIVE_UNIT))}
           r="7"
@@ -933,7 +907,6 @@ export function SimplicityVisual({ className }: VisualProps) {
         fx={fx}
         fy={fy}
         h={h}
-        inverse
         w={w}
       >
         {ICE_VENTS.map((t) => (
@@ -948,7 +921,7 @@ export function SimplicityVisual({ className }: VisualProps) {
       </IsoBox>
       <g data-hv-enter style={enterStyle(1200, "hv-pop", 400)}>
         <circle
-          className="stroke-tinyrack-success opacity-tinyrack-disabled motion-safe:animate-pulse"
+          className="hv-signal-ring stroke-tinyrack-success opacity-tinyrack-disabled"
           cx={ledX}
           cy={ledY}
           r="7"
@@ -1038,13 +1011,12 @@ export function CircuitVisual({ className }: VisualProps) {
               fx={box.fx}
               fy={64}
               h={box.h}
-              inverse={live}
               w={box.w}
             >
               {live ? (
                 <g>
                   <circle
-                    className="stroke-tinyrack-success opacity-tinyrack-disabled motion-safe:animate-pulse"
+                    className="hv-signal-ring stroke-tinyrack-success opacity-tinyrack-disabled"
                     cx={ledX}
                     cy={ledY}
                     r="6.5"
@@ -1059,7 +1031,7 @@ export function CircuitVisual({ className }: VisualProps) {
                 </g>
               ) : (
                 <circle
-                  className="fill-tinyrack-border"
+                  className="fill-tinyrack-border-inverse"
                   cx={ledX}
                   cy={ledY}
                   r="2"
