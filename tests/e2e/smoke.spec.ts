@@ -24,43 +24,84 @@ test("landing page keeps its corporate sections", async ({ page }) => {
   ).toBeVisible();
 });
 
-test("landing isometric objects invert uniformly with the theme", async ({
+test("landing isometric objects use opaque illustration roles", async ({
   page,
 }) => {
   await gotoHydrated(page, "/");
   const faces = page.locator("[data-iso-face]");
+  const fronts = page.locator('[data-iso-face="front"]');
+  const sides = page.locator('[data-iso-face="side"]');
+  const tops = page.locator('[data-iso-face="top"]');
   expect(await faces.count()).toBeGreaterThan(0);
+  expect(await fronts.count()).toBeGreaterThan(0);
   const backdrops = page.locator(
     "[data-iso-box] > polygon:not([data-iso-face])",
   );
-  expect(await backdrops.count()).toBe(await faces.count());
+  await expect(backdrops).toHaveCount(0);
 
-  for (const [theme, expectedFill] of [
-    ["tinyrack-light", "rgb(23, 23, 23)"],
-    ["tinyrack-dark", "rgb(250, 250, 250)"],
-  ] as const) {
+  for (const theme of ["tinyrack-light", "tinyrack-dark"] as const) {
     await page.locator("html").evaluate((html, value) => {
       html.dataset.theme = value;
     }, theme);
+    const expected = await page.evaluate(() => {
+      const probe = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "rect",
+      );
+      document.body.append(probe);
+      const fill = (role: string) => {
+        probe.style.fill = `var(--tinyrack-${role})`;
+        return getComputedStyle(probe).fill;
+      };
+      const colors = {
+        front: fill("illustration-fill-primary"),
+        side: fill("illustration-fill-tertiary"),
+        top: fill("illustration-fill-secondary"),
+      };
+      probe.remove();
+      return colors;
+    });
     await expect
       .poll(() =>
-        faces.evaluateAll((polygons) => [
+        fronts.evaluateAll((polygons) => [
           ...new Set(polygons.map((polygon) => getComputedStyle(polygon).fill)),
         ]),
       )
-      .toEqual([expectedFill]);
+      .toEqual([expected.front]);
+    await expect
+      .poll(() =>
+        tops.evaluateAll((polygons) => [
+          ...new Set(polygons.map((polygon) => getComputedStyle(polygon).fill)),
+        ]),
+      )
+      .toEqual([expected.top]);
+    expect(
+      await fronts.evaluateAll((polygons) => [
+        ...new Set(
+          polygons.map((polygon) => getComputedStyle(polygon).opacity),
+        ),
+      ]),
+    ).toEqual(["1"]);
+    expect(
+      await tops.evaluateAll((polygons) => [
+        ...new Set(
+          polygons.map((polygon) => getComputedStyle(polygon).opacity),
+        ),
+      ]),
+    ).toEqual(["1"]);
+    expect(
+      await sides.evaluateAll((polygons) => ({
+        fills: [
+          ...new Set(polygons.map((polygon) => getComputedStyle(polygon).fill)),
+        ],
+        opacities: [
+          ...new Set(
+            polygons.map((polygon) => getComputedStyle(polygon).opacity),
+          ),
+        ],
+      })),
+    ).toEqual({ fills: [expected.side], opacities: ["1"] });
   }
-
-  expect(
-    await faces.evaluateAll((polygons) => [
-      ...new Set(polygons.map((polygon) => getComputedStyle(polygon).opacity)),
-    ]),
-  ).toEqual(["0.5", "0.56", "0.82"]);
-  expect(
-    await backdrops.evaluateAll((polygons) =>
-      polygons.every((polygon) => getComputedStyle(polygon).opacity === "1"),
-    ),
-  ).toBe(true);
 });
 
 test("home editorials keep 16:9 cover images", async ({ page }) => {
