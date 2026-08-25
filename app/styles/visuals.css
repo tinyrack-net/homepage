@@ -1,7 +1,7 @@
 /* Landing illustration choreography (see app/components/HomeVisuals.tsx).
 
-   Entrances play when the `.hv-stage` svg reports itself in view
-   (`data-inview="true"`, toggled by the `useInView` hook), and each
+   Entrances play the first time the `.hv-stage` svg reports itself in view
+   (`data-inview="true"`, latched by the `useInView` hook), and each
    `[data-hv-enter]` group starts after its inline `--hv-delay`. Entrance
    keyframes only declare where an element comes FROM — its resting style is
    the finished composition — so prerendered HTML, no-JS and reduced-motion
@@ -10,7 +10,7 @@
    Loops (flowing dashes, floating) are separate always-on classes and, per
    the design system's motion foundation, run on linear/standard cycles while
    entrances use the ease-out token. Everything decorative sits behind
-   prefers-reduced-motion. */
+   prefers-reduced-motion. The latch resets when the page unmounts. */
 
 @media (prefers-reduced-motion: no-preference) {
   .hv-stage[data-inview="true"] [data-hv-enter] {

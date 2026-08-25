@@ -119,14 +119,47 @@ test("simplicity plinth conceals its supporting complexity", async ({
     await visual.evaluate((svg) => {
       const layer = svg.querySelector("[data-simplicity-complexity]");
       const coverLayer = svg.querySelector("[data-simplicity-cover]");
-      return Boolean(
-        layer &&
-          coverLayer &&
-          layer.compareDocumentPosition(coverLayer) &
-            Node.DOCUMENT_POSITION_FOLLOWING,
+      const visibleServer = [...svg.querySelectorAll("[data-iso-box]")].find(
+        (box) =>
+          !box.closest("[data-simplicity-complexity]") &&
+          !box.closest("[data-simplicity-cover]"),
       );
+
+      return {
+        coverMotion: (
+          coverLayer?.querySelector("[data-iso-box]") as SVGElement
+        )?.style.getPropertyValue("--hv-anim"),
+        paintsOver: Boolean(
+          layer &&
+            coverLayer &&
+            layer.compareDocumentPosition(coverLayer) &
+              Node.DOCUMENT_POSITION_FOLLOWING,
+        ),
+        serverMotion: (visibleServer as SVGElement)?.style.getPropertyValue(
+          "--hv-anim",
+        ),
+      };
     }),
-  ).toBe(true);
+  ).toEqual({
+    coverMotion: "hv-iso-drop",
+    paintsOver: true,
+    serverMotion: "hv-iso-drop",
+  });
+});
+
+test("landing illustration entrances play only once per page visit", async ({
+  page,
+}) => {
+  await gotoHydrated(page, "/");
+  const simplicity = page.locator("[data-home-principle]").nth(2);
+  const stage = simplicity.locator(".hv-stage");
+
+  await stage.scrollIntoViewIfNeeded();
+  await expect(stage).toHaveAttribute("data-inview", "true");
+
+  await page.getByRole("heading", { level: 1 }).scrollIntoViewIfNeeded();
+  await expect(stage).not.toBeInViewport();
+  await expect(stage).toHaveAttribute("data-inview", "true");
 });
 
 test("hero rack footprints stay below and enter with their cabinets", async ({
