@@ -1,11 +1,11 @@
 /* Landing illustration choreography (see app/components/HomeVisuals.tsx).
 
-   Entrances play the first time the `.hv-stage` svg reports itself in view
-   (`data-inview="true"`, latched by the `useInView` hook), and each
-   `[data-hv-enter]` group starts after its inline `--hv-delay`. Entrance
-   keyframes only declare where an element comes FROM — its resting style is
-   the finished composition — so prerendered HTML, no-JS and reduced-motion
-   always show completed artwork.
+   The head bootstrap sets `data-motion="enabled"` before styles load. That
+   arms each `[data-hv-enter]` group at the first keyframe while its `.hv-stage`
+   is out of view. Entrances run the first time the stage reports itself in
+   view (`data-inview="true"`, latched by `useInView`) and start after their
+   inline `--hv-delay`. Without JavaScript, or with reduced motion, the
+   bootstrap/animation rule is absent and the resting composition stays visible.
 
    Loops (flowing dashes, floating) are separate always-on classes and, per
    the design system's motion foundation, run on linear/standard cycles while
@@ -13,12 +13,16 @@
    prefers-reduced-motion. The latch resets when the page unmounts. */
 
 @media (prefers-reduced-motion: no-preference) {
-  .hv-stage[data-inview="true"] [data-hv-enter] {
+  [data-motion="enabled"] .hv-stage [data-hv-enter] {
     animation: var(--hv-anim, hv-fade-rise) var(--hv-duration, 0.55s)
-      var(--tinyrack-ease-out) both;
+      var(--tinyrack-ease-out) both paused;
     animation-delay: var(--hv-delay, 0ms);
     transform-box: fill-box;
     transform-origin: var(--hv-origin, center);
+  }
+
+  [data-motion="enabled"] .hv-stage[data-inview="true"] [data-hv-enter] {
+    animation-play-state: running;
   }
 
   /* Continuous ambience. `transform-box: fill-box` makes transforms pivot on
