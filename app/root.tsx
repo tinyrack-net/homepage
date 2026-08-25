@@ -35,6 +35,16 @@ const themeScript = createTinyrackColorSchemeScript({
   storageKey: THEME_STORAGE_KEY,
 });
 
+function getDocumentTheme() {
+  if (typeof document === "undefined") {
+    return "tinyrack-light";
+  }
+
+  return document.documentElement.dataset.theme === "tinyrack-dark"
+    ? "tinyrack-dark"
+    : "tinyrack-light";
+}
+
 function HydrationMarker() {
   useEffect(() => {
     const root = document.documentElement;
@@ -57,7 +67,7 @@ export function Layout({ children }: { children: ReactNode }) {
   const lang = langFromPath(location.pathname);
 
   return (
-    <html data-theme="tinyrack-light" lang={lang} suppressHydrationWarning>
+    <html data-theme={getDocumentTheme()} lang={lang} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         {/** biome-ignore lint/security/noDangerouslySetInnerHtml: no-flash theme */}

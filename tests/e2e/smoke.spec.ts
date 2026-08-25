@@ -714,6 +714,70 @@ test("theme preference persists across reloads", async ({ page }) => {
   );
 });
 
+test("auto dark theme remains stable while hydrating across time zones", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    colorScheme: "dark",
+    timezoneId: "Asia/Seoul",
+  });
+  const page = await context.newPage();
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+
+  await page.addInitScript(() => {
+    const tracedWindow = window as typeof window & {
+      __themeTransitions: (string | undefined)[];
+    };
+    tracedWindow.__themeTransitions = [];
+
+    const attachObserver = () => {
+      const html = document.documentElement;
+      tracedWindow.__themeTransitions.push(html.dataset.theme);
+      new MutationObserver(() => {
+        tracedWindow.__themeTransitions.push(html.dataset.theme);
+      }).observe(html, {
+        attributeFilter: ["data-theme"],
+        attributes: true,
+      });
+    };
+
+    if (document.documentElement) {
+      attachObserver();
+    } else {
+      new MutationObserver((_, observer) => {
+        if (document.documentElement) {
+          observer.disconnect();
+          attachObserver();
+        }
+      }).observe(document, { childList: true });
+    }
+  });
+
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-theme",
+    "tinyrack-dark",
+  );
+  await expect(page.getByText("Jun 30, 2025", { exact: true })).toBeVisible();
+
+  const transitions = await page.evaluate(
+    () =>
+      (
+        window as typeof window & {
+          __themeTransitions: (string | undefined)[];
+        }
+      ).__themeTransitions,
+  );
+  const firstDark = transitions.indexOf("tinyrack-dark");
+  expect(firstDark).toBeGreaterThanOrEqual(0);
+  expect(transitions.slice(firstDark + 1)).not.toContain("tinyrack-light");
+  expect(pageErrors).toEqual([]);
+
+  await context.close();
+});
+
 test("auto dark theme is applied before the stylesheet loads", async ({
   page,
 }) => {

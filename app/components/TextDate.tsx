@@ -1,5 +1,7 @@
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
 
+const PUBLISHED_DATE_TIME_ZONE = "Asia/Seoul";
+
 export type TextDateProps = {
   lang: SupportedLanguageCodes;
   date: string;
@@ -16,6 +18,7 @@ export function TextDate({ lang, date, className }: TextDateProps) {
         year: "numeric",
         month: "short",
         day: "numeric",
+        timeZone: PUBLISHED_DATE_TIME_ZONE,
       })}
     </time>
   );
