@@ -370,6 +370,40 @@ test("open-source showcase lists each curated project exactly once", async ({
   await firstProjectLink.focus();
   await expect(firstProjectLink).toBeFocused();
 
+  const firstProjectCardLayout = await firstProjectLink
+    .locator(".tr-card")
+    .evaluate((card) => {
+      const body = card.firstElementChild;
+      const footer = card.querySelector(".tr-card-footer");
+      if (!(body instanceof HTMLElement) || !(footer instanceof HTMLElement)) {
+        throw new Error("Project card body and footer must be present");
+      }
+
+      const cardRect = card.getBoundingClientRect();
+      const footerRect = footer.getBoundingClientRect();
+      const cardStyles = getComputedStyle(card);
+      const bodyStyles = getComputedStyle(body);
+      const footerStyles = getComputedStyle(footer);
+
+      return {
+        bodyPaddingTop: bodyStyles.paddingTop,
+        footerBottomPadding: footerStyles.paddingBottom,
+        footerLeftInset:
+          footerRect.left -
+          cardRect.left -
+          Number.parseFloat(cardStyles.borderLeftWidth),
+        footerRightInset:
+          cardRect.right -
+          footerRect.right -
+          Number.parseFloat(cardStyles.borderRightWidth),
+      };
+    });
+  expect(firstProjectCardLayout.footerLeftInset).toBeCloseTo(0, 1);
+  expect(firstProjectCardLayout.footerRightInset).toBeCloseTo(0, 1);
+  expect(firstProjectCardLayout.footerBottomPadding).toBe(
+    firstProjectCardLayout.bodyPaddingTop,
+  );
+
   const desktopColumns = await page
     .locator("[data-open-source-project-grid]")
     .evaluate(

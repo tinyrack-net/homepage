@@ -76,30 +76,32 @@ export function ProjectCard({
       >
         <TRCard.Root
           className="relative flex h-full flex-col transition-colors group-hover:border-tinyrack-border-strong group-hover:bg-tinyrack-surface"
-          padding="lg"
+          padding="none"
           variant="outlined"
         >
-          <TRCard.Header className="pr-tinyrack-2xl">
-            <div className="flex min-w-0 items-center gap-tinyrack-md">
-              <ProjectIcon project={project} />
-              <TRCard.Title
-                // biome-ignore lint/a11y/useHeadingContent: Base UI injects the title content into this render slot.
-                render={<h3 />}
-              >
-                {project.name}
-              </TRCard.Title>
-            </div>
-          </TRCard.Header>
+          <div className="flex flex-1 flex-col p-tinyrack-lg">
+            <TRCard.Header className="pr-tinyrack-2xl">
+              <div className="flex min-w-0 items-center gap-tinyrack-md">
+                <ProjectIcon project={project} />
+                <TRCard.Title
+                  // biome-ignore lint/a11y/useHeadingContent: Base UI injects the title content into this render slot.
+                  render={<h3 />}
+                >
+                  {project.name}
+                </TRCard.Title>
+              </div>
+            </TRCard.Header>
+
+            <TRCard.Description className="mt-tinyrack-md line-clamp-3">
+              {project.descriptions[lang]}
+            </TRCard.Description>
+          </div>
           <ArrowUpRight
             aria-hidden="true"
             className="absolute right-tinyrack-lg top-tinyrack-lg size-tinyrack-control-height-sm shrink-0 text-tinyrack-text-muted transition-colors group-hover:text-tinyrack-text"
           />
 
-          <TRCard.Description className="mt-tinyrack-md line-clamp-3">
-            {project.descriptions[lang]}
-          </TRCard.Description>
-
-          <TRCard.Footer className="mt-auto border-t-tinyrack-default border-tinyrack-border pt-tinyrack-md">
+          <TRCard.Footer className="border-t-tinyrack-default border-tinyrack-border px-tinyrack-lg py-tinyrack-lg">
             <TRText
               aria-label={`${repositoryLabel}: ${repositoryPath}`}
               className="min-w-0 flex-1 truncate"
