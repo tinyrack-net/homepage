@@ -104,6 +104,31 @@ test("landing isometric objects use opaque illustration roles", async ({
   }
 });
 
+test("simplicity plinth conceals its supporting complexity", async ({
+  page,
+}) => {
+  await gotoHydrated(page, "/");
+  const visual = page.locator("[data-home-principle]").nth(2).locator("svg");
+  const complexity = visual.locator("[data-simplicity-complexity]");
+  const cover = visual.locator("[data-simplicity-cover]");
+
+  await expect(complexity.locator("[data-iso-box]")).toHaveCount(4);
+  await expect(complexity.locator("[data-simplicity-network]")).toHaveCount(0);
+  await expect(cover.locator("[data-iso-box]")).toHaveCount(1);
+  expect(
+    await visual.evaluate((svg) => {
+      const layer = svg.querySelector("[data-simplicity-complexity]");
+      const coverLayer = svg.querySelector("[data-simplicity-cover]");
+      return Boolean(
+        layer &&
+          coverLayer &&
+          layer.compareDocumentPosition(coverLayer) &
+            Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    }),
+  ).toBe(true);
+});
+
 test("hero rack footprints stay below and enter with their cabinets", async ({
   page,
 }) => {
