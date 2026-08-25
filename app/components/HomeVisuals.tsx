@@ -19,11 +19,12 @@ import { useInView } from "@/lib/use-in-view.ts";
  * joined by one ground-level trace (the CTA band).
  *
  * Each illustration is its own scroll stage: the root `<svg>` carries
- * `hv-stage` and a `data-inview` flag from `useInView`, and every
+ * `hv-stage` and a sticky `data-inview` flag from `useInView`, and every
  * `[data-hv-enter]` group plays its entrance (rise, drop, slot, pop, draw —
  * see app/styles/visuals.css) after its inline `--hv-delay`. Resting styles
  * are the finished artwork, so prerendered HTML and reduced-motion users see
- * the complete composition; ambient loops stay behind `motion-safe`.
+ * the complete composition. Entrances play once per page mount; ambient loops
+ * stay behind `motion-safe`.
  */
 
 type VisualProps = {
@@ -994,7 +995,7 @@ export function SimplicityVisual({ className }: VisualProps) {
 
       {/* The one small unit you actually touch, running above the plinth. */}
       <IsoBox
-        anim="hv-iso-rise"
+        anim="hv-iso-drop"
         d={SIMPLE_UNIT.d}
         delayMs={820}
         fx={unitSeat.x}

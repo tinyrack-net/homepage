@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Tracks whether an element is in the viewport so entrance choreography can
- * start on scroll and replay when the element returns.
+ * Tracks whether an element has entered the viewport so entrance choreography
+ * starts on scroll once and stays in its completed state until unmount.
  *
  * The initial value is `true` on purpose: the prerendered HTML and any
  * environment without IntersectionObserver must always show the finished
@@ -23,7 +23,11 @@ export function useInView<T extends Element>(threshold = 0.35) {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          setInView(entry.isIntersecting);
+          if (entry.isIntersecting) {
+            setInView(true);
+            observer.disconnect();
+            break;
+          }
         }
       },
       { threshold },
