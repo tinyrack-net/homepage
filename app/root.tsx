@@ -59,9 +59,11 @@ export function Layout({ children }: { children: ReactNode }) {
   return (
     <html data-theme="tinyrack-light" lang={lang} suppressHydrationWarning>
       <head>
+        <meta charSet="utf-8" />
+        {/** biome-ignore lint/security/noDangerouslySetInnerHtml: no-flash theme */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {/** biome-ignore lint/security/noDangerouslySetInnerHtml: GTM bootstrap */}
         <script dangerouslySetInnerHTML={{ __html: gtmHeadScript }} />
-        <meta charSet="utf-8" />
         {/* No maximum-scale or user-scalable: blocking zoom fails WCAG 1.4.4. */}
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <link href="/sitemap.xml" rel="sitemap" />
@@ -94,8 +96,6 @@ export function Layout({ children }: { children: ReactNode }) {
         {getFontPreloadLinks(lang).map((link) => (
           <link key={link.href} {...link} />
         ))}
-        {/** biome-ignore lint/security/noDangerouslySetInnerHtml: no-flash theme */}
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script
           // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON.stringify output, not interpolated markup
           dangerouslySetInnerHTML={{ __html: buildOrganizationJsonLd(lang) }}

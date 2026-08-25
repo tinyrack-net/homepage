@@ -622,6 +622,46 @@ test("theme preference persists across reloads", async ({ page }) => {
   );
 });
 
+test("auto dark theme is applied before the stylesheet loads", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+
+  let markStylesheetRequested!: () => void;
+  const stylesheetRequested = new Promise<void>((resolve) => {
+    markStylesheetRequested = resolve;
+  });
+  let releaseStylesheet!: () => void;
+  const stylesheetRelease = new Promise<void>((resolve) => {
+    releaseStylesheet = resolve;
+  });
+
+  await page.route("**/*.css", async (route) => {
+    markStylesheetRequested();
+    await stylesheetRelease;
+    await route.continue();
+  });
+
+  await page.goto("/", { waitUntil: "commit" });
+  await stylesheetRequested;
+
+  try {
+    await expect(page.locator("html")).toHaveAttribute(
+      "data-theme",
+      "tinyrack-dark",
+    );
+    await expect
+      .poll(() =>
+        page.locator("html").evaluate((html) => html.style.colorScheme),
+      )
+      .toBe("dark");
+  } finally {
+    releaseStylesheet();
+  }
+
+  await page.waitForLoadState("domcontentloaded");
+});
+
 test("feeds and crawler files are served", async ({ request }) => {
   const rss = await request.get("/rss.xml");
   expect(rss.ok()).toBeTruthy();
