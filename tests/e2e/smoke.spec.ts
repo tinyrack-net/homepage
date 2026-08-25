@@ -754,6 +754,24 @@ test("auto dark theme is applied before the stylesheet loads", async ({
   await page.waitForLoadState("domcontentloaded");
 });
 
+test("about page renders unordered-list markers in dark theme", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1024 });
+  await page.addInitScript(() =>
+    window.localStorage.setItem("theme-preference", "dark"),
+  );
+  await page.goto("/about/");
+
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-theme",
+    "tinyrack-dark",
+  );
+  const lists = page.locator(".tr-mdx ul.tr-mdx-list");
+  await expect(lists).not.toHaveCount(0);
+  await expect(lists.first()).toHaveCSS("list-style-type", "disc");
+});
+
 test("feeds and crawler files are served", async ({ request }) => {
   const rss = await request.get("/rss.xml");
   expect(rss.ok()).toBeTruthy();
