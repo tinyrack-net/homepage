@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "@mdx-js/react": "3.1.1",
-    "@tinyrack/docs": "0.17.0",
-    "@tinyrack/ui": "0.26.0",
+    "@tinyrack/docs": "0.20.0",
+    "@tinyrack/ui": "0.26.1",
     "isbot": "^5",
     "lucide-react": "1.25.0",
     "react": "19.2.7",
