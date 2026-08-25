@@ -18,6 +18,7 @@ export default defineConfig({
   webServer: {
     command:
       "pnpm build:app && pnpm exec vite preview --host 127.0.0.1 --port 4511 --strictPort",
+    env: { TZ: "UTC" },
     port: 4511,
     reuseExistingServer: false,
     timeout: 180000,
