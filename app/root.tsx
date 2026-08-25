@@ -34,6 +34,7 @@ const gtmHeadScript = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start'
 const themeScript = createTinyrackColorSchemeScript({
   storageKey: THEME_STORAGE_KEY,
 });
+const motionScript = 'document.documentElement.dataset.motion = "enabled";';
 
 function getDocumentTheme() {
   if (typeof document === "undefined") {
@@ -43,6 +44,16 @@ function getDocumentTheme() {
   return document.documentElement.dataset.theme === "tinyrack-dark"
     ? "tinyrack-dark"
     : "tinyrack-light";
+}
+
+function getDocumentMotion() {
+  if (typeof document === "undefined") {
+    return undefined;
+  }
+
+  return document.documentElement.dataset.motion === "enabled"
+    ? "enabled"
+    : undefined;
 }
 
 function HydrationMarker() {
@@ -67,9 +78,16 @@ export function Layout({ children }: { children: ReactNode }) {
   const lang = langFromPath(location.pathname);
 
   return (
-    <html data-theme={getDocumentTheme()} lang={lang} suppressHydrationWarning>
+    <html
+      data-motion={getDocumentMotion()}
+      data-theme={getDocumentTheme()}
+      lang={lang}
+      suppressHydrationWarning
+    >
       <head>
         <meta charSet="utf-8" />
+        {/** biome-ignore lint/security/noDangerouslySetInnerHtml: pre-paint motion state */}
+        <script dangerouslySetInnerHTML={{ __html: motionScript }} />
         {/** biome-ignore lint/security/noDangerouslySetInnerHtml: no-flash theme */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {/** biome-ignore lint/security/noDangerouslySetInnerHtml: GTM bootstrap */}

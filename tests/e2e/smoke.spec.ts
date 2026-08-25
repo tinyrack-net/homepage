@@ -162,6 +162,54 @@ test("landing illustration entrances play only once per page visit", async ({
   await expect(stage).toHaveAttribute("data-inview", "true");
 });
 
+test("hero illustration starts empty before hydration", async ({ page }) => {
+  let releaseScripts!: () => void;
+  const scriptsRelease = new Promise<void>((resolve) => {
+    releaseScripts = resolve;
+  });
+
+  await page.route("**/*.js", async (route) => {
+    await scriptsRelease;
+    await route.continue();
+  });
+
+  await page.goto("/", { waitUntil: "commit" });
+  const stage = page.locator(".home-hero-visual .hv-stage");
+  const firstCabinet = stage
+    .locator("[data-dc-cabinet-layer] > [data-hv-enter]")
+    .first();
+
+  try {
+    await expect(stage).toHaveAttribute("data-inview", "false");
+    await expect(firstCabinet).toHaveCSS("opacity", "0");
+    await expect(firstCabinet).toHaveCSS("animation-play-state", "paused");
+  } finally {
+    releaseScripts();
+  }
+
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
+  await expect(stage).toHaveAttribute("data-inview", "true");
+  await expect(firstCabinet).toHaveCSS("opacity", "1");
+});
+
+test("hero illustration stays complete without JavaScript", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("/");
+
+  const stage = page.locator(".home-hero-visual .hv-stage");
+  const firstCabinet = stage
+    .locator("[data-dc-cabinet-layer] > [data-hv-enter]")
+    .first();
+  await expect(stage).toHaveAttribute("data-inview", "false");
+  await expect(firstCabinet).toHaveCSS("opacity", "1");
+  await expect(firstCabinet).toHaveCSS("animation-name", "none");
+
+  await context.close();
+});
+
 test("hero rack footprints stay below and enter with their cabinets", async ({
   page,
 }) => {
