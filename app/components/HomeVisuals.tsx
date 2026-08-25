@@ -14,8 +14,8 @@ import { useInView } from "@/lib/use-in-view.ts";
  * frame and boot (hero), unit blocks converge into one shared build with a
  * slot still open for the next contributor (open source), a server tower
  * sliding into a lived-in room — window, door, potted plant — and settling
- * in running (self-hosting), an iceberg — one small solid unit at the
- * waterline, its dashed mass sunk beneath (simplicity), and products on iso pads
+ * in running (self-hosting), one small server above a rack plinth that conceals
+ * its full supporting rack (simplicity), and products on iso pads
  * joined by one ground-level trace (the CTA band).
  *
  * Each illustration is its own scroll stage: the root `<svg>` carries
@@ -721,7 +721,7 @@ export function SelfHostVisual({ className }: VisualProps) {
       {/* Your place: a room corner with a window. */}
       <g data-hv-enter style={enterStyle(0, "hv-fade")}>
         <polygon
-          className="fill-tinyrack-illustration-fill-secondary stroke-tinyrack-illustration-stroke"
+          className="fill-tinyrack-illustration-fill-tertiary stroke-tinyrack-illustration-stroke"
           points={SH_ROOM.wallLeft}
           strokeLinejoin="round"
           strokeWidth="2"
@@ -860,25 +860,44 @@ export function SelfHostVisual({ className }: VisualProps) {
   );
 }
 
-/* --- Simplicity: the tip of the iceberg. What you touch is one small solid
-   unit floating at the waterline inside its ripples; the mass that carries
-   it hangs beneath the surface as dashed structure, wider and fainter the
-   deeper it goes. The depth stays out of your way. */
+/* --- Simplicity: one clear server above the rack plinth, while the full rack
+   and structural volume that support it stay tucked underneath. The
+   solid plinth paints after the infrastructure so it visibly conceals the
+   upper part of that complexity instead of presenting an exploded stack. */
 
-const ICE_UNIT = { d: 38, fx: 154, fy: 118, h: 18, w: 52 } as const;
-const ICE_VENTS = [6, 12] as const;
-/** Submerged layers, deepest first, each top-centered under the unit. */
-const ICE_BELOW = [
-  { d: 80, delayMs: 150, fx: 149.6, fy: 191, h: 24, opacity: 0.55, w: 104 },
-  { d: 64, delayMs: 300, fx: 151.3, fy: 158, h: 26, opacity: 0.9, w: 84 },
-] as const;
+const SIMPLE_BASE = { d: 68, fx: 160, fy: 125, h: 9, w: 88 } as const;
+const SIMPLE_UNIT = { d: 38, h: 18, w: 52 } as const;
+const SIMPLE_VENTS = [6, 12] as const;
+const SIMPLE_HIDDEN_HEIGHT = 50;
+const SIMPLE_STACK = { d: 48, h: 12, w: 64 } as const;
+const SIMPLE_STACK_UNITS = [0, 1, 2, 3] as const;
+const SIMPLE_STACK_VENTS = [4, 8] as const;
 
 export function SimplicityVisual({ className }: VisualProps) {
   const stage = useVisualStage(className, "0 0 320 200");
-  const { d, fx, fy, h, w } = ICE_UNIT;
-  const ledU = w - 10;
-  const ledX = fx + RX * ledU;
-  const ledY = fy - 0.5 * ledU - h / 2;
+  const hiddenFrame = isoFaces(
+    SIMPLE_BASE.fx,
+    SIMPLE_BASE.fy + SIMPLE_HIDDEN_HEIGHT,
+    SIMPLE_BASE.w,
+    SIMPLE_BASE.d,
+    SIMPLE_HIDDEN_HEIGHT,
+  );
+  const unitSeat = isoOffset(
+    SIMPLE_BASE.fx,
+    SIMPLE_BASE.fy - SIMPLE_BASE.h,
+    (SIMPLE_BASE.w - SIMPLE_UNIT.w) / 2,
+    (SIMPLE_BASE.d - SIMPLE_UNIT.d) / 2,
+  );
+  const stackTop = isoOffset(
+    SIMPLE_BASE.fx,
+    SIMPLE_BASE.fy,
+    (SIMPLE_BASE.w - SIMPLE_STACK.w) / 2,
+    (SIMPLE_BASE.d - SIMPLE_STACK.d) / 2,
+  );
+  const stackBottomY = stackTop.y + SIMPLE_STACK.h * SIMPLE_STACK_UNITS.length;
+  const ledU = SIMPLE_UNIT.w - 10;
+  const ledX = unitSeat.x + RX * ledU;
+  const ledY = unitSeat.y - 0.5 * ledU - SIMPLE_UNIT.h / 2;
 
   return (
     <svg aria-hidden="true" {...stage}>
@@ -892,18 +911,22 @@ export function SimplicityVisual({ className }: VisualProps) {
         width="320"
       />
 
-      {/* The berg below the waterline: dashed, fading with depth. */}
-      {ICE_BELOW.map((layer) => {
-        const faces = isoFaces(layer.fx, layer.fy, layer.w, layer.d, layer.h);
+      <IsoShadow
+        d={SIMPLE_BASE.d}
+        delayMs={0}
+        expand={4}
+        fx={SIMPLE_BASE.fx}
+        fy={SIMPLE_BASE.fy + SIMPLE_HIDDEN_HEIGHT}
+        w={SIMPLE_BASE.w}
+      />
 
-        return (
-          <g
-            data-hv-enter
-            key={layer.w}
-            opacity={layer.opacity}
-            style={enterStyle(layer.delayMs, "hv-fade")}
-          >
-            {[faces.left, faces.right, faces.top].map((points) => (
+      {/* A full rack stack assembles inside the recessed support
+          volume. The solid rack plinth below is painted later and hides the
+          upper portion, making this read as contained infrastructure. */}
+      <g data-simplicity-complexity>
+        <g data-hv-enter style={enterStyle(80, "hv-fade")}>
+          {[hiddenFrame.left, hiddenFrame.right, hiddenFrame.top].map(
+            (points) => (
               <polygon
                 className="stroke-tinyrack-illustration-stroke"
                 key={points}
@@ -912,35 +935,84 @@ export function SimplicityVisual({ className }: VisualProps) {
                 strokeLinejoin="round"
                 strokeWidth="2"
               />
-            ))}
-          </g>
-        );
-      })}
+            ),
+          )}
+        </g>
+        {SIMPLE_STACK_UNITS.map((k) => {
+          const stackY = stackBottomY - k * SIMPLE_STACK.h;
+          const detailU = SIMPLE_STACK.w - 9;
 
-      {/* Ripples where the tip breaks the surface. */}
-      <FloorRings cx={160} cy={95} delayMs={500} rings={[40, 54]} />
+          return (
+            <IsoBox
+              anim="hv-iso-rise"
+              d={SIMPLE_STACK.d}
+              delayMs={180 + k * 90}
+              fx={stackTop.x}
+              fy={stackY}
+              h={SIMPLE_STACK.h}
+              key={k}
+              w={SIMPLE_STACK.w}
+            >
+              {SIMPLE_STACK_VENTS.map((t) => (
+                <path
+                  className="stroke-tinyrack-illustration-stroke"
+                  d={rightFaceLine(
+                    stackTop.x,
+                    stackY,
+                    8,
+                    SIMPLE_STACK.w - 16,
+                    t,
+                  )}
+                  key={t}
+                  strokeWidth="2"
+                />
+              ))}
+              <circle
+                className="fill-tinyrack-illustration-detail"
+                cx={stackTop.x + RX * detailU}
+                cy={stackY - 0.5 * detailU - SIMPLE_STACK.h / 2}
+                r="2"
+              />
+            </IsoBox>
+          );
+        })}
+      </g>
 
-      {/* The tip: the one small unit you actually touch, running. */}
+      {/* The broad, opaque plinth is the visual boundary: complexity stays
+          beneath it while the product-facing surface remains quiet. */}
+      <g data-simplicity-cover>
+        <IsoBox
+          anim="hv-iso-drop"
+          d={SIMPLE_BASE.d}
+          delayMs={620}
+          fx={SIMPLE_BASE.fx}
+          fy={SIMPLE_BASE.fy}
+          h={SIMPLE_BASE.h}
+          w={SIMPLE_BASE.w}
+        />
+      </g>
+
+      {/* The one small unit you actually touch, running above the plinth. */}
       <IsoBox
         anim="hv-iso-rise"
-        d={d}
-        delayMs={700}
-        fx={fx}
-        fy={fy}
-        h={h}
-        w={w}
+        d={SIMPLE_UNIT.d}
+        delayMs={820}
+        fx={unitSeat.x}
+        fy={unitSeat.y}
+        h={SIMPLE_UNIT.h}
+        w={SIMPLE_UNIT.w}
       >
-        {ICE_VENTS.map((t) => (
+        {SIMPLE_VENTS.map((t) => (
           <path
             className="stroke-tinyrack-illustration-stroke"
-            d={rightFaceLine(fx, fy, 8, w - 14, t)}
+            d={rightFaceLine(unitSeat.x, unitSeat.y, 8, SIMPLE_UNIT.w - 14, t)}
             key={t}
             strokeWidth="2"
           />
         ))}
         <circle className="fill-tinyrack-success" cx={ledX} cy={ledY} r="3.5" />
       </IsoBox>
-      <g data-hv-enter style={enterStyle(1200, "hv-pop", 400)}>
+      <g data-hv-enter style={enterStyle(1300, "hv-pop", 400)}>
         <circle
           className="hv-signal-ring stroke-tinyrack-success opacity-tinyrack-disabled"
           cx={ledX}
