@@ -21,5 +21,6 @@
   "pagination.previous": "前へ",
   "theme.auto": "自動",
   "theme.light": "ライト",
-  "theme.dark": "ダーク"
+  "theme.dark": "ダーク",
+  "theme.switch": "テーマを切り替え。現在: {current}、次: {next}"
 }

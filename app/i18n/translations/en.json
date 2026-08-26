@@ -21,5 +21,6 @@
   "pagination.previous": "Previous",
   "theme.auto": "Auto",
   "theme.light": "Light",
-  "theme.dark": "Dark"
+  "theme.dark": "Dark",
+  "theme.switch": "Switch theme. Current: {current}; next: {next}"
 }

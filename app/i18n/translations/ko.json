@@ -21,5 +21,6 @@
   "pagination.previous": "이전",
   "theme.auto": "자동",
   "theme.light": "밝은 색상",
-  "theme.dark": "어두운 색상"
+  "theme.dark": "어두운 색상",
+  "theme.switch": "테마 전환. 현재: {current}, 다음: {next}"
 }
