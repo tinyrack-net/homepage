@@ -12,11 +12,11 @@ importers:
         specifier: 3.1.1
         version: 3.1.1(@types/react@19.2.17)(react@19.2.7)
       '@tinyrack/docs':
-        specifier: 0.20.0
-        version: 0.20.0(@tailwindcss/vite@4.3.2(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0)))(@types/node@24.13.3)(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react-router@8.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(rollup@4.60.1)(tailwindcss@4.3.2)(typescript@6.0.3)(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))(wrangler@4.108.0)
+        specifier: 0.21.0
+        version: 0.21.0(@tailwindcss/vite@4.3.2(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0)))(@types/node@24.13.3)(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react-router@8.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(rollup@4.60.1)(tailwindcss@4.3.2)(typescript@6.0.3)(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))(wrangler@4.108.0)
       '@tinyrack/ui':
-        specifier: 0.26.1
-        version: 0.26.1(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(shiki@4.3.1)(tailwindcss@4.3.2)
+        specifier: 0.27.0
+        version: 0.27.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(shiki@4.3.1)(tailwindcss@4.3.2)
       isbot:
         specifier: ^5
         version: 5.2.0
@@ -1543,8 +1543,8 @@ packages:
     resolution: {integrity: sha512-zIcONa+hVtVSSep9UT3jZ5rizo2BsxgyDYU7WFD5eICBE7no3881HGeb/QkGfsJs6JTkY1aQhT7rIPC7e+0nnA==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
 
-  '@tinyrack/docs@0.20.0':
-    resolution: {integrity: sha512-MzufSnF3zqWWys4ZpC3lgi0uGgVpJhuXYEsCI/1igW7puq+C7ltc8hXm25Upm1E2eHw4pwd2xXm/IBH5eY5S1g==}
+  '@tinyrack/docs@0.21.0':
+    resolution: {integrity: sha512-z9AMrnL/9zkZAVQ/+FbX1D66BxgRGjDmVMrAN6jDK69DnElfln6ynFxuQhyK7x1uQJ0aiCOU2qpkejuyoVumvA==}
     engines: {node: '>=24.0.0'}
     peerDependencies:
       '@tailwindcss/vite': '>=4.3.0 <5.0.0'
@@ -1554,8 +1554,8 @@ packages:
       tailwindcss: '>=4.3.0 <5.0.0'
       vite: '>=8.0.0 <9.0.0'
 
-  '@tinyrack/ui@0.26.1':
-    resolution: {integrity: sha512-m7Jo3EtcbiWluGxL7bIJJn//aJHioUhr4CJG7qp5zsfeW/RRvJH3DuREqe0UJPTS4Ic2WKD5uiU7tESJU1qCeg==}
+  '@tinyrack/ui@0.27.0':
+    resolution: {integrity: sha512-f8oIrQ5Epqmpi7+39+irDY61ffefJG8RmXrqfaX0zgNw51gt271usraWfRpiecfP3NsTj3/jTiOas7b6NlcUhA==}
     engines: {node: '>=24.0.0'}
     hasBin: true
     peerDependencies:
@@ -4045,7 +4045,7 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@tinyrack/docs@0.20.0(@tailwindcss/vite@4.3.2(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0)))(@types/node@24.13.3)(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react-router@8.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(rollup@4.60.1)(tailwindcss@4.3.2)(typescript@6.0.3)(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))(wrangler@4.108.0)':
+  '@tinyrack/docs@0.21.0(@tailwindcss/vite@4.3.2(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0)))(@types/node@24.13.3)(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react-router@8.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(rollup@4.60.1)(tailwindcss@4.3.2)(typescript@6.0.3)(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))(wrangler@4.108.0)':
     dependencies:
       '@fontsource/ibm-plex-mono': 5.3.0
       '@fontsource/ibm-plex-sans': 5.3.0
@@ -4057,7 +4057,7 @@ snapshots:
       '@shikijs/langs': 4.4.2
       '@shikijs/themes': 4.4.2
       '@tailwindcss/vite': 4.3.2(vite@8.1.3(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.99.0)(yaml@2.9.0))
-      '@tinyrack/ui': 0.26.1(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(shiki@4.4.2)(tailwindcss@4.3.2)
+      '@tinyrack/ui': 0.27.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(shiki@4.4.2)(tailwindcss@4.3.2)
       lucide-react: 1.28.0(react@19.2.7)
       pagefind: 1.5.2
       react: 19.2.7
@@ -4085,7 +4085,7 @@ snapshots:
       - typescript
       - wrangler
 
-  '@tinyrack/ui@0.26.1(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(shiki@4.3.1)(tailwindcss@4.3.2)':
+  '@tinyrack/ui@0.27.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(shiki@4.3.1)(tailwindcss@4.3.2)':
     dependencies:
       '@babel/parser': 7.29.7
       '@base-ui/react': 1.7.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -4102,7 +4102,7 @@ snapshots:
       - '@types/react'
       - date-fns
 
-  '@tinyrack/ui@0.26.1(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(shiki@4.4.2)(tailwindcss@4.3.2)':
+  '@tinyrack/ui@0.27.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(shiki@4.4.2)(tailwindcss@4.3.2)':
     dependencies:
       '@babel/parser': 7.29.7
       '@base-ui/react': 1.7.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -4544,7 +4544,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.9
       '@types/estree-jsx': 1.0.5
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       comma-separated-tokens: 2.0.3
       devlop: 1.1.0
       estree-util-attach-comments: 3.0.0
@@ -4597,7 +4597,7 @@ snapshots:
 
   hast-util-whitespace@3.0.0:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
 
   html-escaper@2.0.2: {}
 
@@ -4861,7 +4861,7 @@ snapshots:
   mdast-util-mdx-expression@2.0.1:
     dependencies:
       '@types/estree-jsx': 1.0.5
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       mdast-util-from-markdown: 2.0.3
@@ -4872,7 +4872,7 @@ snapshots:
   mdast-util-mdx-jsx@3.2.0:
     dependencies:
       '@types/estree-jsx': 1.0.5
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
       '@types/unist': 3.0.3
       ccount: 2.0.1
@@ -4899,7 +4899,7 @@ snapshots:
   mdast-util-mdxjs-esm@2.0.1:
     dependencies:
       '@types/estree-jsx': 1.0.5
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       mdast-util-from-markdown: 2.0.3
@@ -4914,7 +4914,7 @@ snapshots:
 
   mdast-util-to-hast@13.2.1:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
       '@ungap/structured-clone': 1.3.2
       devlop: 1.1.0
