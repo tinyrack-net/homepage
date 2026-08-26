@@ -32,6 +32,7 @@
 @import "@tinyrack/ui/components/select.css";
 @import "@tinyrack/ui/components/separator.css";
 @import "@tinyrack/ui/components/text.css";
+@import "@tinyrack/ui/components/tree-nav.css";
 
 @source "../**/*.{ts,tsx,mdx}";
 
@@ -146,6 +147,40 @@ body {
 
 .site-nav-drawer {
   --tr-drawer-popup-max-width: var(--tinyrack-overlay-width-sm);
+}
+
+.site-nav-tree {
+  --tr-site-nav-link-color: var(--tinyrack-text-muted);
+  --tr-site-nav-link-hover-background: var(--tinyrack-surface-hover);
+  --tr-site-nav-link-hover-color: var(--tinyrack-text);
+}
+
+.site-nav-tree-link {
+  align-items: center;
+  color: var(--tr-site-nav-link-color);
+  display: flex;
+  font-size: var(--tinyrack-text-sm);
+  gap: var(--tinyrack-space-sm);
+  inline-size: 100%;
+  justify-content: space-between;
+  min-block-size: var(--tinyrack-control-height-md);
+  min-inline-size: 0;
+  padding: var(--tinyrack-space-xs) var(--tinyrack-space-md);
+  transition:
+    color var(--tinyrack-duration-fast),
+    background-color var(--tinyrack-duration-fast);
+}
+
+.site-nav-tree-link > span {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.site-nav-tree-link:hover,
+.site-nav-tree-link[data-active] {
+  background: var(--tr-site-nav-link-hover-background);
+  color: var(--tr-site-nav-link-hover-color);
+  opacity: revert;
 }
 
 .home-article-link {
