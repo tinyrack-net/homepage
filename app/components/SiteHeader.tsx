@@ -5,7 +5,10 @@ import { TRDrawer } from "@tinyrack/ui/components/drawer";
 import { TRIconButton } from "@tinyrack/ui/components/icon-button";
 import { TRLink } from "@tinyrack/ui/components/link";
 import { TRSeparator } from "@tinyrack/ui/components/separator";
-import { TRText } from "@tinyrack/ui/components/text";
+import {
+  TRTreeNav,
+  type TRTreeNavItem,
+} from "@tinyrack/ui/components/tree-nav";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
@@ -24,7 +27,15 @@ import { PRODUCT_LINKS, SOCIAL_LINKS } from "@/lib/site-links.ts";
 import { getLanguageSwitchPath, resolveSitePage } from "@/lib/site-page.ts";
 import { BrandLockup } from "./BrandLockup.tsx";
 import { type LanguageLink, LanguageSelect } from "./LanguageSelect.tsx";
+import { RouterLink } from "./RouterLink.tsx";
 import { ThemeSwitcher } from "./ThemeSwitcher.tsx";
+
+type DrawerNavLeaf = {
+  active?: boolean;
+  external?: boolean;
+  href: string;
+  label: string;
+};
 
 export function SiteHeader() {
   const location = useLocation();
@@ -68,6 +79,40 @@ export function SiteHeader() {
       ? page.kind === "blog" || page.kind === "tag"
       : location.pathname === href;
 
+  const drawerNavItems: readonly TRTreeNavItem<DrawerNavLeaf>[] = [
+    {
+      activeBranch: navItems.some((item) => isActive(item.href)),
+      children: navItems.map((item) => ({
+        data: { ...item, active: isActive(item.href) },
+        key: item.href,
+        type: "leaf" as const,
+      })),
+      key: "site",
+      label: t(lang, "nav.site"),
+      type: "group",
+    },
+    {
+      children: PRODUCT_LINKS.map((item) => ({
+        data: { ...item, external: true },
+        key: item.href,
+        type: "leaf" as const,
+      })),
+      key: "products",
+      label: t(lang, "nav.products"),
+      type: "group",
+    },
+    {
+      children: SOCIAL_LINKS.map((item) => ({
+        data: { ...item, external: true },
+        key: item.href,
+        type: "leaf" as const,
+      })),
+      key: "community",
+      label: t(lang, "nav.community"),
+      type: "group",
+    },
+  ];
+
   return (
     <header className="sticky top-0 z-tinyrack-chrome border-b-tinyrack-default border-tinyrack-border bg-tinyrack-surface/95 backdrop-blur">
       <div className="wide-shell flex items-center gap-tinyrack-lg py-tinyrack-md md:py-tinyrack-lg">
@@ -85,7 +130,7 @@ export function SiteHeader() {
           {navItems.map((item) => (
             <Link
               aria-current={isActive(item.href) ? "page" : undefined}
-              className="text-tinyrack-sm font-tinyrack-medium text-tinyrack-text-muted no-underline underline-offset-tinyrack-md transition-colors hover:text-tinyrack-text aria-[current]:text-tinyrack-text aria-[current]:underline"
+              className="text-tinyrack-sm font-tinyrack-medium text-tinyrack-text-muted no-underline transition-colors hover:text-tinyrack-text aria-[current]:text-tinyrack-text"
               key={item.href}
               to={item.href}
             >
@@ -146,64 +191,37 @@ export function SiteHeader() {
                   />
                 </div>
                 <TRSeparator />
-                <nav
-                  aria-label={t(lang, "nav.site")}
-                  className="flex flex-col gap-tinyrack-md md:hidden"
-                >
-                  {navItems.map((item) => (
-                    <Link
-                      aria-current={isActive(item.href) ? "page" : undefined}
-                      className="font-tinyrack-medium text-tinyrack-text no-underline"
-                      key={item.href}
-                      onClick={() => setOpen(false)}
-                      to={item.href}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </nav>
-                <div className="flex flex-col gap-tinyrack-md">
-                  <TRText
-                    as="p"
-                    className="m-0"
-                    color="muted"
-                    variant="bodySm"
-                    weight="medium"
-                  >
-                    {t(lang, "nav.products")}
-                  </TRText>
-                  {PRODUCT_LINKS.map((item) => (
-                    <TRLink
-                      href={item.href}
-                      key={item.href}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      {item.label}
-                    </TRLink>
-                  ))}
-                </div>
-                <div className="flex flex-col gap-tinyrack-md">
-                  <TRText
-                    as="p"
-                    className="m-0"
-                    color="muted"
-                    variant="bodySm"
-                    weight="medium"
-                  >
-                    {t(lang, "nav.community")}
-                  </TRText>
-                  {SOCIAL_LINKS.map((item) => (
-                    <TRLink
-                      href={item.href}
-                      key={item.href}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      {item.label}
-                    </TRLink>
-                  ))}
-                </div>
+                <TRTreeNav<DrawerNavLeaf>
+                  className="site-nav-tree"
+                  data-site-nav-tree
+                  defaultGroupsOpen
+                  items={drawerNavItems}
+                  label={t(lang, "nav.site")}
+                  renderLeaf={({ data: item }) =>
+                    item.external ? (
+                      <TRLink
+                        className="site-nav-tree-link"
+                        href={item.href}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        underline="none"
+                      >
+                        <span>{item.label}</span>
+                      </TRLink>
+                    ) : (
+                      <RouterLink
+                        aria-current={item.active ? "page" : undefined}
+                        className="site-nav-tree-link"
+                        data-active={item.active || undefined}
+                        onClick={() => setOpen(false)}
+                        to={item.href}
+                        underline="none"
+                      >
+                        <span>{item.label}</span>
+                      </RouterLink>
+                    )
+                  }
+                />
                 <TRSeparator />
                 <div className="flex flex-col gap-tinyrack-lg md:hidden">
                   <ThemeSwitcher lang={lang} />

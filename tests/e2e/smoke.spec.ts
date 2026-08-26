@@ -683,7 +683,39 @@ test("mobile menu opens and closes", async ({ page }) => {
   await page.getByRole("button", { name: "Open menu" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole("link", { name: "About" })).toBeVisible();
+  const tree = dialog.locator("[data-site-nav-tree]");
+  for (const group of ["Tinyrack", "Products", "Community"]) {
+    await expect(
+      tree.getByRole("button", { name: group, exact: true }),
+    ).toHaveAttribute("aria-expanded", "true");
+  }
+  for (const link of [
+    "About",
+    "Products",
+    "Open Source",
+    "Blog",
+    "Dotweave",
+    "Proxer",
+    "Tinyauth",
+    "Forum",
+    "GitHub",
+    "YouTube",
+  ]) {
+    await expect(tree.getByRole("link", { name: link })).toBeVisible();
+  }
+  const dotweave = tree.getByRole("link", { name: "Dotweave" });
+  await expect(dotweave).toHaveAttribute("target", "_blank");
+  await expect(dotweave).toHaveAttribute("rel", "noopener noreferrer");
+
+  const productsGroup = tree.getByRole("button", {
+    name: "Products",
+    exact: true,
+  });
+  await productsGroup.click();
+  await expect(dotweave).toBeHidden();
+  await productsGroup.click();
+  await expect(dotweave).toBeVisible();
+
   const themeSwitcher = dialog.getByRole("button", {
     name: "Switch theme. Current: Auto; next: Light",
   });
@@ -727,8 +759,39 @@ test("mobile menu opens and closes", async ({ page }) => {
   await expect
     .poll(() => dialog.evaluate((popup) => popup.getBoundingClientRect().right))
     .toBeCloseTo(geometry.innerWidth, 0);
-  await page.getByRole("button", { name: "Close menu" }).click();
+  await tree.getByRole("link", { name: "About" }).click();
+  await expect(page).toHaveURL("/about/");
   await expect(dialog).toBeHidden();
+});
+
+test("active navigation links are emphasized without an underline", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1024 });
+  await gotoHydrated(page, "/blog/");
+
+  const headerBlogLink = page
+    .locator("header nav")
+    .getByRole("link", { name: "Blog" });
+  await expect(headerBlogLink).toHaveAttribute("aria-current", "page");
+  await expect(headerBlogLink).toHaveCSS("text-decoration-line", "none");
+
+  await page
+    .locator("[data-desktop-header-utilities]")
+    .getByRole("button", { name: "Open menu" })
+    .click();
+  const treeBlogLink = page
+    .getByRole("dialog")
+    .locator("[data-site-nav-tree]")
+    .getByRole("link", { name: "Blog" });
+  await expect(treeBlogLink).toHaveAttribute("aria-current", "page");
+  await expect(treeBlogLink).toHaveAttribute("data-active", "true");
+  await expect(treeBlogLink).toHaveCSS("text-decoration-line", "none");
+  expect(
+    await treeBlogLink.evaluate(
+      (link) => getComputedStyle(link).backgroundColor,
+    ),
+  ).not.toBe("rgba(0, 0, 0, 0)");
 });
 
 test("desktop header exposes settings and a labeled menu", async ({ page }) => {
@@ -750,6 +813,19 @@ test("desktop header exposes settings and a labeled menu", async ({ page }) => {
   await expect(
     utilities.getByRole("button", { name: "Open menu" }),
   ).toContainText("Menu");
+
+  await utilities.getByRole("button", { name: "Open menu" }).click();
+  const dialog = page.getByRole("dialog");
+  const tree = dialog.locator("[data-site-nav-tree]");
+  await expect(tree).toBeVisible();
+  await expect(
+    tree.getByRole("button", { name: "Tinyrack", exact: true }),
+  ).toHaveAttribute("aria-expanded", "true");
+  await expect(tree.getByRole("link", { name: "About" })).toBeVisible();
+  await expect(tree.getByRole("link", { name: "Dotweave" })).toBeVisible();
+  await expect(tree.getByRole("link", { name: "Forum" })).toBeVisible();
+  await dialog.getByRole("button", { name: "Close menu" }).click();
+  await expect(dialog).toBeHidden();
 
   await language.focus();
   await language.press("ArrowDown");
