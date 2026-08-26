@@ -684,7 +684,14 @@ test("mobile menu opens and closes", async ({ page }) => {
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("link", { name: "About" })).toBeVisible();
-  await expect(dialog.getByRole("button", { name: "Auto" })).toBeVisible();
+  const themeSwitcher = dialog.getByRole("button", {
+    name: "Switch theme. Current: Auto; next: Light",
+  });
+  await expect(themeSwitcher).toBeVisible();
+  await expect(themeSwitcher.locator("svg.lucide-monitor")).toBeVisible();
+  await expect(
+    dialog.getByRole("button", { name: /^Switch theme\./ }),
+  ).toHaveCount(1);
   await expect(
     dialog.getByRole("combobox", { name: "Language" }),
   ).toBeVisible();
@@ -730,7 +737,14 @@ test("desktop header exposes settings and a labeled menu", async ({ page }) => {
 
   const utilities = page.locator("[data-desktop-header-utilities]");
   await expect(utilities).toBeVisible();
-  await expect(utilities.getByRole("button", { name: "Auto" })).toBeVisible();
+  await expect(
+    utilities.getByRole("button", {
+      name: "Switch theme. Current: Auto; next: Light",
+    }),
+  ).toBeVisible();
+  await expect(
+    utilities.getByRole("button", { name: /^Switch theme\./ }),
+  ).toHaveCount(1);
   const language = utilities.getByRole("combobox", { name: "Language" });
   await expect(language).toBeVisible();
   await expect(
@@ -743,6 +757,57 @@ test("desktop header exposes settings and a labeled menu", async ({ page }) => {
   await page.keyboard.press("ArrowDown");
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL("/ja/");
+});
+
+test("theme button cycles through auto, light, and dark", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.setViewportSize({ width: 1440, height: 1024 });
+  await gotoHydrated(page, "/");
+
+  const utilities = page.locator("[data-desktop-header-utilities]");
+  let themeSwitcher = utilities.getByRole("button", {
+    name: "Switch theme. Current: Auto; next: Light",
+  });
+  await expect(themeSwitcher.locator("svg.lucide-monitor")).toBeVisible();
+
+  await themeSwitcher.click();
+  themeSwitcher = utilities.getByRole("button", {
+    name: "Switch theme. Current: Light; next: Dark",
+  });
+  await expect(themeSwitcher.locator("svg.lucide-sun")).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-theme",
+    "tinyrack-light",
+  );
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem("theme-preference")))
+    .toBe("light");
+
+  await themeSwitcher.click();
+  themeSwitcher = utilities.getByRole("button", {
+    name: "Switch theme. Current: Dark; next: Auto",
+  });
+  await expect(themeSwitcher.locator("svg.lucide-moon")).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-theme",
+    "tinyrack-dark",
+  );
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem("theme-preference")))
+    .toBe("dark");
+
+  await themeSwitcher.click();
+  themeSwitcher = utilities.getByRole("button", {
+    name: "Switch theme. Current: Auto; next: Light",
+  });
+  await expect(themeSwitcher.locator("svg.lucide-monitor")).toBeVisible();
+  await expect(page.locator("html")).toHaveAttribute(
+    "data-theme",
+    "tinyrack-light",
+  );
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem("theme-preference")))
+    .toBe("auto");
 });
 
 test("theme preference persists across reloads", async ({ page }) => {

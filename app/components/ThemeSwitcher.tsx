@@ -15,37 +15,32 @@ const ICONS: Record<TinyrackColorSchemePreference, LucideIcon> = {
   dark: Moon,
 };
 
+const NEXT_PREFERENCE: Record<
+  TinyrackColorSchemePreference,
+  TinyrackColorSchemePreference
+> = {
+  auto: "light",
+  light: "dark",
+  dark: "auto",
+};
+
 export function ThemeSwitcher({ lang }: { lang: SupportedLanguageCodes }) {
   const { preference, setPreference } = useTinyrackColorScheme();
-
-  const options: {
-    value: TinyrackColorSchemePreference;
-    label: string;
-  }[] = [
-    { value: "auto", label: t(lang, "theme.auto") },
-    { value: "light", label: t(lang, "theme.light") },
-    { value: "dark", label: t(lang, "theme.dark") },
-  ];
+  const nextPreference = NEXT_PREFERENCE[preference];
+  const Icon = ICONS[preference];
 
   return (
-    <div className="flex items-center gap-tinyrack-xs">
-      {options.map(({ value, label }) => {
-        const Icon = ICONS[value];
-        const active = preference === value;
-        return (
-          <TRIconButton
-            key={value}
-            appearance={active ? "solid" : "ghost"}
-            aria-label={label}
-            aria-pressed={active}
-            intent={active ? "primary" : "neutral"}
-            onClick={() => setPreference(value)}
-            uiSize="sm"
-          >
-            <Icon aria-hidden="true" size={16} />
-          </TRIconButton>
-        );
+    <TRIconButton
+      appearance="solid"
+      aria-label={t(lang, "theme.switch", {
+        current: t(lang, `theme.${preference}`),
+        next: t(lang, `theme.${nextPreference}`),
       })}
-    </div>
+      intent="primary"
+      onClick={() => setPreference(nextPreference)}
+      uiSize="sm"
+    >
+      <Icon aria-hidden="true" size={16} />
+    </TRIconButton>
   );
 }
