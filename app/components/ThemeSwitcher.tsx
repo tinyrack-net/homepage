@@ -31,14 +31,13 @@ export function ThemeSwitcher({ lang }: { lang: SupportedLanguageCodes }) {
 
   return (
     <TRIconButton
-      appearance="solid"
+      appearance="ghost"
       aria-label={t(lang, "theme.switch", {
         current: t(lang, `theme.${preference}`),
         next: t(lang, `theme.${nextPreference}`),
       })}
-      intent="primary"
       onClick={() => setPreference(nextPreference)}
-      uiSize="sm"
+      uiSize="md"
     >
       <Icon aria-hidden="true" size={16} />
     </TRIconButton>

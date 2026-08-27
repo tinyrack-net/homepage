@@ -5,7 +5,7 @@ export type SiteLink = {
   label: string;
 };
 
-/** Open-source products, shown on the landing, in the drawer, and the footer. */
+/** Open-source products linked from the footer. */
 export const PRODUCT_LINKS: readonly SiteLink[] = [
   { label: "Dotweave", href: "https://dotweave.tinyrack.net" },
   { label: "Proxer", href: "https://proxer.tinyrack.net" },

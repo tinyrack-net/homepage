@@ -1,14 +1,8 @@
 "use client";
 
-import { TRButton } from "@tinyrack/ui/components/button";
 import { TRDrawer } from "@tinyrack/ui/components/drawer";
 import { TRIconButton } from "@tinyrack/ui/components/icon-button";
-import { TRLink } from "@tinyrack/ui/components/link";
-import { TRSeparator } from "@tinyrack/ui/components/separator";
-import {
-  TRTreeNav,
-  type TRTreeNavItem,
-} from "@tinyrack/ui/components/tree-nav";
+import { tinyrackBreakpoints } from "@tinyrack/ui/core";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
@@ -23,19 +17,10 @@ import {
   getOpenSourcePath,
   getProductsPath,
 } from "@/lib/routes.ts";
-import { PRODUCT_LINKS, SOCIAL_LINKS } from "@/lib/site-links.ts";
 import { getLanguageSwitchPath, resolveSitePage } from "@/lib/site-page.ts";
 import { BrandLockup } from "./BrandLockup.tsx";
 import { type LanguageLink, LanguageSelect } from "./LanguageSelect.tsx";
-import { RouterLink } from "./RouterLink.tsx";
 import { ThemeSwitcher } from "./ThemeSwitcher.tsx";
-
-type DrawerNavLeaf = {
-  active?: boolean;
-  external?: boolean;
-  href: string;
-  label: string;
-};
 
 export function SiteHeader() {
   const location = useLocation();
@@ -47,6 +32,20 @@ export function SiteHeader() {
   // Close the drawer on navigation so a link tap does not leave it hanging open.
   // biome-ignore lint/correctness/useExhaustiveDependencies: the pathname is the trigger, not a value read here.
   useEffect(() => setOpen(false), [location.pathname]);
+
+  // A drawer opened on a narrow viewport must not survive a resize into the
+  // desktop header, where the menu and sidebar do not exist.
+  useEffect(() => {
+    const desktop = window.matchMedia(`(min-width: ${tinyrackBreakpoints.lg})`);
+    const closeOnDesktop = () => {
+      if (desktop.matches) {
+        setOpen(false);
+      }
+    };
+    desktop.addEventListener("change", closeOnDesktop);
+    closeOnDesktop();
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
 
   const altLinks =
     page.kind === "content"
@@ -79,40 +78,6 @@ export function SiteHeader() {
       ? page.kind === "blog" || page.kind === "tag"
       : location.pathname === href;
 
-  const drawerNavItems: readonly TRTreeNavItem<DrawerNavLeaf>[] = [
-    {
-      activeBranch: navItems.some((item) => isActive(item.href)),
-      children: navItems.map((item) => ({
-        data: { ...item, active: isActive(item.href) },
-        key: item.href,
-        type: "leaf" as const,
-      })),
-      key: "site",
-      label: t(lang, "nav.site"),
-      type: "group",
-    },
-    {
-      children: PRODUCT_LINKS.map((item) => ({
-        data: { ...item, external: true },
-        key: item.href,
-        type: "leaf" as const,
-      })),
-      key: "products",
-      label: t(lang, "nav.products"),
-      type: "group",
-    },
-    {
-      children: SOCIAL_LINKS.map((item) => ({
-        data: { ...item, external: true },
-        key: item.href,
-        type: "leaf" as const,
-      })),
-      key: "community",
-      label: t(lang, "nav.community"),
-      type: "group",
-    },
-  ];
-
   return (
     <header className="sticky top-0 z-tinyrack-chrome border-b-tinyrack-default border-tinyrack-border bg-tinyrack-surface/95 backdrop-blur">
       <div className="wide-shell flex items-center gap-tinyrack-lg py-tinyrack-md md:py-tinyrack-lg">
@@ -125,7 +90,7 @@ export function SiteHeader() {
 
         <nav
           aria-label={t(lang, "nav.site")}
-          className="hidden items-center gap-tinyrack-lg md:flex"
+          className="hidden items-center gap-tinyrack-lg lg:flex"
         >
           {navItems.map((item) => (
             <Link
@@ -139,41 +104,37 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <TRIconButton
-          appearance="ghost"
-          aria-label={t(lang, "nav.menu.open")}
-          className="ms-auto md:hidden"
-          onClick={() => setOpen(true)}
-          uiSize="sm"
-        >
-          <Menu aria-hidden="true" />
-        </TRIconButton>
         <div
-          className="ms-auto hidden items-center gap-tinyrack-md md:flex"
+          className="ms-auto flex items-center gap-tinyrack-sm lg:hidden"
+          data-mobile-header-utilities
+        >
+          <ThemeSwitcher lang={lang} />
+          <TRIconButton
+            appearance="ghost"
+            aria-label={t(lang, "nav.menu.open")}
+            onClick={() => setOpen(true)}
+            uiSize="md"
+          >
+            <Menu aria-hidden="true" />
+          </TRIconButton>
+        </div>
+        <div
+          className="ms-auto hidden items-center gap-tinyrack-md lg:flex"
           data-desktop-header-utilities
         >
           <ThemeSwitcher lang={lang} />
           <LanguageSelect lang={lang} links={languageLinks} />
-          <TRButton
-            appearance="ghost"
-            aria-label={t(lang, "nav.menu.open")}
-            onClick={() => setOpen(true)}
-            uiSize="sm"
-          >
-            <Menu aria-hidden="true" />
-            {t(lang, "nav.menu.label")}
-          </TRButton>
         </div>
       </div>
 
-      {/* Anchored to the trailing edge, under the button that opens it — the
-          panel is dismissed by swiping back out the way it came. */}
+      {/* Mobile navigation follows the docs shell: a full-height drawer from
+          the trailing edge with site navigation and locale selection only. */}
       <TRDrawer.Root onOpenChange={setOpen} open={open} swipeDirection="right">
         <TRDrawer.Portal>
           <TRDrawer.Backdrop />
           <TRDrawer.Viewport>
             <TRDrawer.Popup className="site-nav-drawer">
-              <TRDrawer.Content>
+              <TRDrawer.Content className="site-nav-drawer-content">
                 <div className="flex items-center justify-between gap-tinyrack-md">
                   <TRDrawer.Title render={<span />}>
                     <BrandLockup lang={lang} />
@@ -183,48 +144,35 @@ export function SiteHeader() {
                       <TRIconButton
                         appearance="ghost"
                         aria-label={t(lang, "nav.menu.close")}
-                        uiSize="sm"
+                        uiSize="md"
                       >
                         <X aria-hidden="true" />
                       </TRIconButton>
                     }
                   />
                 </div>
-                <TRSeparator />
-                <TRTreeNav<DrawerNavLeaf>
-                  className="site-nav-tree"
-                  data-site-nav-tree
-                  defaultGroupsOpen
-                  items={drawerNavItems}
-                  label={t(lang, "nav.site")}
-                  renderLeaf={({ data: item }) =>
-                    item.external ? (
-                      <TRLink
-                        className="site-nav-tree-link"
-                        href={item.href}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                        underline="none"
-                      >
-                        <span>{item.label}</span>
-                      </TRLink>
-                    ) : (
-                      <RouterLink
-                        aria-current={item.active ? "page" : undefined}
-                        className="site-nav-tree-link"
-                        data-active={item.active || undefined}
+                <nav
+                  aria-label={t(lang, "nav.site")}
+                  className="site-nav-drawer-navigation"
+                  data-site-nav
+                >
+                  {navItems.map((item) => {
+                    const active = isActive(item.href);
+                    return (
+                      <Link
+                        aria-current={active ? "page" : undefined}
+                        className="site-nav-drawer-link"
+                        data-active={active || undefined}
+                        key={item.href}
                         onClick={() => setOpen(false)}
                         to={item.href}
-                        underline="none"
                       >
                         <span>{item.label}</span>
-                      </RouterLink>
-                    )
-                  }
-                />
-                <TRSeparator />
-                <div className="flex flex-col gap-tinyrack-lg md:hidden">
-                  <ThemeSwitcher lang={lang} />
+                      </Link>
+                    );
+                  })}
+                </nav>
+                <div className="site-nav-drawer-actions">
                   <LanguageSelect
                     lang={lang}
                     links={languageLinks}

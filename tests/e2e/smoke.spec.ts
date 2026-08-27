@@ -677,98 +677,128 @@ test("switching language from the blog stays on a real page", async ({
   await expect(page.locator("html")).toHaveAttribute("lang", "ko");
 });
 
-test("mobile menu opens and closes", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await gotoHydrated(page, "/");
-  await page.getByRole("button", { name: "Open menu" }).click();
-  const dialog = page.getByRole("dialog");
-  await expect(dialog).toBeVisible();
-  const tree = dialog.locator("[data-site-nav-tree]");
-  for (const group of ["Tinyrack", "Products", "Community"]) {
+test("mobile header and navigation match the docs layout", async ({ page }) => {
+  for (const width of [390, 900]) {
+    await page.setViewportSize({ width, height: 844 });
+    await gotoHydrated(page, "/blog/");
+
+    const mobileUtilities = page.locator("[data-mobile-header-utilities]");
+    const themeSwitcher = mobileUtilities.getByRole("button", {
+      name: "Switch theme. Current: Auto; next: Light",
+    });
+    await expect(themeSwitcher).toBeVisible();
+    await expect(themeSwitcher).toHaveAttribute("data-appearance", "ghost");
+    await expect(page.locator("[data-desktop-header-utilities]")).toBeHidden();
+
+    await mobileUtilities.getByRole("button", { name: "Open menu" }).click();
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    const navigation = dialog.locator("[data-site-nav]");
+    for (const link of ["About", "Products", "Open Source", "Blog"]) {
+      await expect(
+        navigation.getByRole("link", { name: link, exact: true }),
+      ).toBeVisible();
+    }
+    for (const removedLink of ["Dotweave", "Forum", "GitHub", "YouTube"]) {
+      await expect(
+        dialog.getByRole("link", { name: removedLink, exact: true }),
+      ).toHaveCount(0);
+    }
     await expect(
-      tree.getByRole("button", { name: group, exact: true }),
-    ).toHaveAttribute("aria-expanded", "true");
-  }
-  for (const link of [
-    "About",
-    "Products",
-    "Open Source",
-    "Blog",
-    "Dotweave",
-    "Proxer",
-    "Tinyauth",
-    "Forum",
-    "GitHub",
-    "YouTube",
-  ]) {
-    await expect(tree.getByRole("link", { name: link })).toBeVisible();
-  }
-  const dotweave = tree.getByRole("link", { name: "Dotweave" });
-  await expect(dotweave).toHaveAttribute("target", "_blank");
-  await expect(dotweave).toHaveAttribute("rel", "noopener noreferrer");
+      dialog.getByRole("button", { name: /^Switch theme\./ }),
+    ).toHaveCount(0);
+    await expect(
+      dialog.getByRole("combobox", { name: "Language" }),
+    ).toBeVisible();
 
-  const productsGroup = tree.getByRole("button", {
-    name: "Products",
-    exact: true,
-  });
-  await productsGroup.click();
-  await expect(dotweave).toBeHidden();
-  await productsGroup.click();
-  await expect(dotweave).toBeVisible();
+    const blogLink = navigation.getByRole("link", { name: "Blog" });
+    await expect(blogLink).toHaveAttribute("aria-current", "page");
+    await expect(blogLink).toHaveAttribute("data-active", "true");
+    await expect(blogLink).toHaveCSS("text-decoration-line", "none");
+    expect(
+      await blogLink.evaluate((link) => getComputedStyle(link).backgroundColor),
+    ).not.toBe("rgba(0, 0, 0, 0)");
 
-  const themeSwitcher = dialog.getByRole("button", {
-    name: "Switch theme. Current: Auto; next: Light",
-  });
-  await expect(themeSwitcher).toBeVisible();
-  await expect(themeSwitcher.locator("svg.lucide-monitor")).toBeVisible();
-  await expect(
-    dialog.getByRole("button", { name: /^Switch theme\./ }),
-  ).toHaveCount(1);
-  await expect(
-    dialog.getByRole("combobox", { name: "Language" }),
-  ).toBeVisible();
-  const geometry = await dialog.evaluate((popup) => {
-    const viewport = popup.closest(".tr-drawer-viewport");
-    const popupRect = popup.getBoundingClientRect();
-    const viewportRect = viewport?.getBoundingClientRect();
-    const style = getComputedStyle(popup);
-    const widthProbe = document.createElement("div");
-    widthProbe.style.position = "fixed";
-    widthProbe.style.width = "var(--tinyrack-overlay-width-sm)";
-    document.body.append(widthProbe);
-    const expectedWidth = widthProbe.getBoundingClientRect().width;
-    widthProbe.remove();
-    return {
-      borderWidths: [
-        style.borderTopWidth,
-        style.borderRightWidth,
-        style.borderBottomWidth,
-        style.borderLeftWidth,
-      ],
-      expectedWidth,
-      innerWidth: window.innerWidth,
-      popupWidth: popupRect.width,
-      popupRight: popupRect.right,
-      viewportRight: viewportRect?.right,
-    };
-  });
-  expect(geometry.borderWidths).toEqual(["0px", "0px", "0px", "0px"]);
-  expect(geometry.popupWidth).toBeCloseTo(geometry.expectedWidth, 0);
-  expect(geometry.popupWidth).toBeLessThan(geometry.innerWidth);
-  expect(geometry.viewportRight).toBeCloseTo(geometry.innerWidth, 0);
-  await expect
-    .poll(() => dialog.evaluate((popup) => popup.getBoundingClientRect().right))
-    .toBeCloseTo(geometry.innerWidth, 0);
-  await tree.getByRole("link", { name: "About" }).click();
-  await expect(page).toHaveURL("/about/");
-  await expect(dialog).toBeHidden();
+    const geometry = await dialog.evaluate((popup) => {
+      const popupRect = popup.getBoundingClientRect();
+      const style = getComputedStyle(popup);
+      const widthProbe = document.createElement("div");
+      widthProbe.style.position = "fixed";
+      widthProbe.style.width = "calc(var(--tinyrack-space-2xl) * 9)";
+      document.body.append(widthProbe);
+      const expectedWidth = widthProbe.getBoundingClientRect().width;
+      widthProbe.remove();
+      return {
+        borderRadii: [
+          style.borderTopLeftRadius,
+          style.borderTopRightRadius,
+          style.borderBottomRightRadius,
+          style.borderBottomLeftRadius,
+        ],
+        expectedWidth,
+        innerHeight: window.innerHeight,
+        innerWidth: window.innerWidth,
+        popupBottom: popupRect.bottom,
+        popupHeight: popupRect.height,
+        popupRight: popupRect.right,
+        popupTop: popupRect.top,
+        popupWidth: popupRect.width,
+      };
+    });
+    expect(geometry.borderRadii).toEqual(["0px", "0px", "0px", "0px"]);
+    expect(geometry.popupWidth).toBeCloseTo(
+      Math.min(geometry.expectedWidth, geometry.innerWidth),
+      0,
+    );
+    expect(geometry.popupTop).toBeCloseTo(0, 0);
+    expect(geometry.popupBottom).toBeCloseTo(geometry.innerHeight, 0);
+    expect(geometry.popupHeight).toBeCloseTo(geometry.innerHeight, 0);
+    await expect
+      .poll(() =>
+        dialog.evaluate((popup) => popup.getBoundingClientRect().right),
+      )
+      .toBeCloseTo(geometry.innerWidth, 0);
+
+    if (width === 390) {
+      await dialog.getByRole("button", { name: "Close menu" }).click();
+      await expect(dialog).toBeHidden();
+      await mobileUtilities.getByRole("button", { name: "Open menu" }).click();
+      await dialog
+        .locator("[data-site-nav]")
+        .getByRole("link", { name: "About" })
+        .click();
+      await expect(page).toHaveURL("/about/");
+      await expect(dialog).toBeHidden();
+    } else {
+      await page.setViewportSize({ width: 1440, height: 844 });
+      await expect(dialog).toBeHidden();
+      await expect(
+        page.getByRole("button", { name: "Open menu" }),
+      ).toBeHidden();
+    }
+  }
 });
 
-test("active navigation links are emphasized without an underline", async ({
+test("desktop header exposes navigation and settings without a menu", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 1024 });
   await gotoHydrated(page, "/blog/");
+
+  const utilities = page.locator("[data-desktop-header-utilities]");
+  await expect(utilities).toBeVisible();
+  const themeSwitcher = utilities.getByRole("button", {
+    name: "Switch theme. Current: Auto; next: Light",
+  });
+  await expect(themeSwitcher).toBeVisible();
+  await expect(themeSwitcher).toHaveAttribute("data-appearance", "ghost");
+  await expect(
+    utilities.getByRole("button", { name: /^Switch theme\./ }),
+  ).toHaveCount(1);
+  const language = utilities.getByRole("combobox", { name: "Language" });
+  await expect(language).toBeVisible();
+  await expect(page.getByRole("button", { name: "Open menu" })).toBeHidden();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 
   const headerBlogLink = page
     .locator("header nav")
@@ -776,63 +806,12 @@ test("active navigation links are emphasized without an underline", async ({
   await expect(headerBlogLink).toHaveAttribute("aria-current", "page");
   await expect(headerBlogLink).toHaveCSS("text-decoration-line", "none");
 
-  await page
-    .locator("[data-desktop-header-utilities]")
-    .getByRole("button", { name: "Open menu" })
-    .click();
-  const treeBlogLink = page
-    .getByRole("dialog")
-    .locator("[data-site-nav-tree]")
-    .getByRole("link", { name: "Blog" });
-  await expect(treeBlogLink).toHaveAttribute("aria-current", "page");
-  await expect(treeBlogLink).toHaveAttribute("data-active", "true");
-  await expect(treeBlogLink).toHaveCSS("text-decoration-line", "none");
-  expect(
-    await treeBlogLink.evaluate(
-      (link) => getComputedStyle(link).backgroundColor,
-    ),
-  ).not.toBe("rgba(0, 0, 0, 0)");
-});
-
-test("desktop header exposes settings and a labeled menu", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1024 });
-  await page.goto("/");
-
-  const utilities = page.locator("[data-desktop-header-utilities]");
-  await expect(utilities).toBeVisible();
-  await expect(
-    utilities.getByRole("button", {
-      name: "Switch theme. Current: Auto; next: Light",
-    }),
-  ).toBeVisible();
-  await expect(
-    utilities.getByRole("button", { name: /^Switch theme\./ }),
-  ).toHaveCount(1);
-  const language = utilities.getByRole("combobox", { name: "Language" });
-  await expect(language).toBeVisible();
-  await expect(
-    utilities.getByRole("button", { name: "Open menu" }),
-  ).toContainText("Menu");
-
-  await utilities.getByRole("button", { name: "Open menu" }).click();
-  const dialog = page.getByRole("dialog");
-  const tree = dialog.locator("[data-site-nav-tree]");
-  await expect(tree).toBeVisible();
-  await expect(
-    tree.getByRole("button", { name: "Tinyrack", exact: true }),
-  ).toHaveAttribute("aria-expanded", "true");
-  await expect(tree.getByRole("link", { name: "About" })).toBeVisible();
-  await expect(tree.getByRole("link", { name: "Dotweave" })).toBeVisible();
-  await expect(tree.getByRole("link", { name: "Forum" })).toBeVisible();
-  await dialog.getByRole("button", { name: "Close menu" }).click();
-  await expect(dialog).toBeHidden();
-
   await language.focus();
   await language.press("ArrowDown");
   await expect(page.getByRole("listbox")).toBeVisible();
   await page.keyboard.press("ArrowDown");
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL("/ja/");
+  await expect(page).toHaveURL("/ja/blog/");
 });
 
 test("theme button cycles through auto, light, and dark", async ({ page }) => {
