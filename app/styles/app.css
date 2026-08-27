@@ -19,7 +19,6 @@
 @import "./visuals.css";
 @import "@tinyrack/ui/mdx.css";
 @import "@tinyrack/ui/components/badge.css";
-@import "@tinyrack/ui/components/button.css";
 @import "@tinyrack/ui/components/card.css";
 @import "@tinyrack/ui/components/code.css";
 @import "@tinyrack/ui/components/code-block.css";
@@ -32,7 +31,6 @@
 @import "@tinyrack/ui/components/select.css";
 @import "@tinyrack/ui/components/separator.css";
 @import "@tinyrack/ui/components/text.css";
-@import "@tinyrack/ui/components/tree-nav.css";
 
 @source "../**/*.{ts,tsx,mdx}";
 
@@ -146,16 +144,29 @@ body {
 }
 
 .site-nav-drawer {
-  --tr-drawer-popup-max-width: var(--tinyrack-overlay-width-sm);
+  --tr-drawer-popup-max-width: calc(var(--tinyrack-space-2xl) * 9);
+  border-radius: 0;
+  max-block-size: none;
 }
 
-.site-nav-tree {
+.site-nav-drawer-content.tr-drawer-content {
+  block-size: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tinyrack-space-2xl);
+  max-block-size: none;
+  padding: var(--tinyrack-space-lg);
+}
+
+.site-nav-drawer-navigation {
   --tr-site-nav-link-color: var(--tinyrack-text-muted);
   --tr-site-nav-link-hover-background: var(--tinyrack-surface-hover);
   --tr-site-nav-link-hover-color: var(--tinyrack-text);
+  display: grid;
+  gap: var(--tinyrack-space-sm);
 }
 
-.site-nav-tree-link {
+.site-nav-drawer-link {
   align-items: center;
   color: var(--tr-site-nav-link-color);
   display: flex;
@@ -166,21 +177,32 @@ body {
   min-block-size: var(--tinyrack-control-height-md);
   min-inline-size: 0;
   padding: var(--tinyrack-space-xs) var(--tinyrack-space-md);
+  text-decoration-line: none;
   transition:
     color var(--tinyrack-duration-fast),
     background-color var(--tinyrack-duration-fast);
 }
 
-.site-nav-tree-link > span {
+.site-nav-drawer-link > span {
   min-inline-size: 0;
   overflow-wrap: anywhere;
 }
 
-.site-nav-tree-link:hover,
-.site-nav-tree-link[data-active] {
+.site-nav-drawer-link:hover,
+.site-nav-drawer-link[data-active] {
   background: var(--tr-site-nav-link-hover-background);
   color: var(--tr-site-nav-link-hover-color);
-  opacity: revert;
+}
+
+.site-nav-drawer-actions {
+  align-items: stretch;
+  display: flex;
+  inline-size: 100%;
+  margin-block-start: auto;
+}
+
+.site-nav-drawer-actions .tr-select-trigger {
+  inline-size: 100%;
 }
 
 .home-article-link {
