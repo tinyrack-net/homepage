@@ -1,7 +1,7 @@
 import { getAllArticles, getAllPages } from "./content.ts";
 import type { ContentEntry } from "./content-types.ts";
 import {
-  defaultLangCode,
+  langFromPath,
   SUPPORTED_LANGUAGE_CODES,
   type SupportedLanguageCodes,
 } from "./language.ts";
@@ -33,16 +33,7 @@ function normalize(pathname: string): string {
   return pathname.endsWith("/") ? pathname : `${pathname}/`;
 }
 
-export function langFromPath(pathname: string): SupportedLanguageCodes {
-  const first = pathname.split("/").filter(Boolean)[0];
-  if (
-    first &&
-    SUPPORTED_LANGUAGE_CODES.includes(first as SupportedLanguageCodes)
-  ) {
-    return first as SupportedLanguageCodes;
-  }
-  return defaultLangCode;
-}
+export { langFromPath } from "./language.ts";
 
 function pageFrom(raw: string | undefined): number {
   const parsed = Number.parseInt(raw ?? "1", 10);

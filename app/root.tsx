@@ -20,6 +20,7 @@ import {
 } from "react-router";
 import { BlogArticleFrame } from "./components/BlogArticleFrame.tsx";
 import { Footer } from "./components/Footer.tsx";
+import { NavigationProgress } from "./components/NavigationProgress.tsx";
 import { SiteHeader } from "./components/SiteHeader.tsx";
 import * as m from "./i18n/paraglide/messages.js";
 import { GTM_ID, THEME_STORAGE_KEY } from "./lib/constants.ts";
@@ -159,6 +160,7 @@ export default function App() {
         <HydrationMarker />
         <MDXProvider components={mdxComponents}>
           <div className="flex min-h-screen flex-col overflow-x-clip bg-tinyrack-surface text-tinyrack-text">
+            <NavigationProgress />
             <SiteHeader />
             <main className="flex-1">
               <Outlet />
