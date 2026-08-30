@@ -4,7 +4,7 @@ import { TRBadge } from "@tinyrack/ui/components/badge";
 import { TRSeparator } from "@tinyrack/ui/components/separator";
 import type { CSSProperties, ReactNode } from "react";
 import { useLocation } from "react-router";
-import { t } from "@/i18n/index.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import { getAlternativeLanguageLinks } from "@/lib/alternative-language-links.ts";
 import {
   getAllArticles,
@@ -46,7 +46,10 @@ export function BlogArticleFrame({ children }: { children?: ReactNode }) {
     ...getAllArticles(),
     ...getAllPages(),
   ]);
-  const altAvailable = t(lang, "article.alternative-language-available");
+  const altAvailable = m.article_alternative_language_available(
+    {},
+    { locale: lang },
+  );
   // `data.tags` holds slugs, and the reserved language tags are navigation
   // plumbing rather than subjects, so resolve through the navigable set.
   const articleTags =

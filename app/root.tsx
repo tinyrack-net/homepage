@@ -21,7 +21,8 @@ import {
 import { BlogArticleFrame } from "./components/BlogArticleFrame.tsx";
 import { Footer } from "./components/Footer.tsx";
 import { SiteHeader } from "./components/SiteHeader.tsx";
-import { GTM_ID, SITE_TITLES, THEME_STORAGE_KEY } from "./lib/constants.ts";
+import { getSiteTitle } from "./i18n/copy.ts";
+import { GTM_ID, THEME_STORAGE_KEY } from "./lib/constants.ts";
 import { getFontPreloadLinks } from "./lib/font-preloads.ts";
 import { buildMeta, buildOrganizationJsonLd } from "./lib/seo.ts";
 import { langFromPath } from "./lib/site-page.ts";
@@ -98,7 +99,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <link
           href="/rss.xml"
           rel="alternate"
-          title={`${SITE_TITLES[lang]} RSS`}
+          title={`${getSiteTitle(lang)} RSS`}
           type="application/rss+xml"
         />
         {/* The app icon is a dark tile with a light mark, so it reads on both

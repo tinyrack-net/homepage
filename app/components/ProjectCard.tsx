@@ -5,7 +5,10 @@ import { TRLink } from "@tinyrack/ui/components/link";
 import { TRText } from "@tinyrack/ui/components/text";
 import { ArrowUpRight, Blocks, Network, Package, Star } from "lucide-react";
 import type { ReactNode } from "react";
-import type { OpenSourceProject } from "@/content/open-source.ts";
+import {
+  getOpenSourceProjectDescription,
+  type OpenSourceProject,
+} from "@/content/open-source.ts";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
 
 export function ProjectIcon({
@@ -93,7 +96,7 @@ export function ProjectCard({
             </TRCard.Header>
 
             <TRCard.Description className="mt-tinyrack-md line-clamp-3">
-              {project.descriptions[lang]}
+              {getOpenSourceProjectDescription(project.id, lang)}
             </TRCard.Description>
           </div>
           <ArrowUpRight

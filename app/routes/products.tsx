@@ -2,14 +2,14 @@ import { TRLinkButton } from "@tinyrack/ui/components/link-button";
 import { TRText } from "@tinyrack/ui/components/text";
 import { ArrowRight } from "lucide-react";
 import { Link, useLocation } from "react-router";
-import { productsCopy } from "@/content/products.ts";
+import { getProductsCopy } from "@/content/products.ts";
 import { getOpenSourcePath } from "@/lib/routes.ts";
 import { langFromPath } from "@/lib/site-page.ts";
 
 export default function Products() {
   const location = useLocation();
   const lang = langFromPath(location.pathname);
-  const copy = productsCopy[lang];
+  const copy = getProductsCopy(lang);
 
   return (
     <div className="wide-shell">

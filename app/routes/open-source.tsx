@@ -3,14 +3,17 @@ import { TRText } from "@tinyrack/ui/components/text";
 import { Code2 } from "lucide-react";
 import { useLocation } from "react-router";
 import { ProjectCard } from "@/components/ProjectCard.tsx";
-import { OPEN_SOURCE_PROJECTS, openSourceCopy } from "@/content/open-source.ts";
+import {
+  getOpenSourceCopy,
+  OPEN_SOURCE_PROJECTS,
+} from "@/content/open-source.ts";
 import { LINKS } from "@/lib/constants.ts";
 import { langFromPath } from "@/lib/site-page.ts";
 
 export default function OpenSource() {
   const location = useLocation();
   const lang = langFromPath(location.pathname);
-  const copy = openSourceCopy[lang];
+  const copy = getOpenSourceCopy(lang);
 
   return (
     <div className="wide-shell">

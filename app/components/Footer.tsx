@@ -3,7 +3,7 @@ import { TRSeparator } from "@tinyrack/ui/components/separator";
 import { TRText } from "@tinyrack/ui/components/text";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
-import { t } from "@/i18n/index.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import { LINKS } from "@/lib/constants.ts";
 import { getNavigationTags } from "@/lib/content.ts";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
@@ -53,7 +53,7 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
     <footer className="mt-tinyrack-2xl border-t-tinyrack-default border-tinyrack-border">
       <div className="wide-shell flex flex-col gap-tinyrack-xl py-tinyrack-2xl">
         <div className="grid gap-tinyrack-xl sm:grid-cols-2 lg:grid-cols-4">
-          <Column title={t(lang, "nav.products")}>
+          <Column title={m.nav_products({}, { locale: lang })}>
             {PRODUCT_LINKS.map((link) => (
               <ExternalItem
                 href={link.href}
@@ -63,20 +63,20 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
             ))}
           </Column>
 
-          <Column title={t(lang, "nav.site")}>
+          <Column title={m.nav_site({}, { locale: lang })}>
             <li>
               <Link className={ITEM_CLASS} to={getOpenSourcePath(lang)}>
-                {t(lang, "nav.openSource")}
+                {m.nav_open_source({}, { locale: lang })}
               </Link>
             </li>
             <li>
               <Link className={ITEM_CLASS} to={getBlogPath(lang)}>
-                {t(lang, "nav.blog")}
+                {m.nav_blog({}, { locale: lang })}
               </Link>
             </li>
             <li>
               <Link className={ITEM_CLASS} to={getContentPath(lang, "about")}>
-                {t(lang, "nav.about")}
+                {m.nav_about({}, { locale: lang })}
               </Link>
             </li>
             <li>
@@ -90,7 +90,7 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
             </li>
           </Column>
 
-          <Column title={t(lang, "nav.community")}>
+          <Column title={m.nav_community({}, { locale: lang })}>
             {SOCIAL_LINKS.map((link) => (
               <ExternalItem
                 href={link.href}
@@ -101,7 +101,7 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
             <ExternalItem href={AUTHOR_LINK.href} label={AUTHOR_LINK.label} />
           </Column>
 
-          <Column title={t(lang, "nav.tags")}>
+          <Column title={m.nav_tags({}, { locale: lang })}>
             {tags.map((tag) => (
               <li key={tag.slug}>
                 <Link className={ITEM_CLASS} to={getTagPath(lang, tag.slug)}>

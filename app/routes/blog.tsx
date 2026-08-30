@@ -1,7 +1,7 @@
 import { TRText } from "@tinyrack/ui/components/text";
 import { useLocation } from "react-router";
 import { ArticleList } from "@/components/ArticleList.tsx";
-import { t } from "@/i18n/index.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import { getAllArticles } from "@/lib/content.ts";
 import { getPageCount, getPageItems } from "@/lib/pagination.ts";
 import { getBlogPagePath } from "@/lib/routes.ts";
@@ -20,7 +20,7 @@ export default function BlogIndex() {
     <div className="page-shell flex flex-col gap-tinyrack-2xl py-tinyrack-3xl">
       <header>
         <TRText as="h1" className="m-0" variant="display" weight="bold">
-          {t(lang, "blog.title")}
+          {m.blog_title({}, { locale: lang })}
         </TRText>
         <TRText
           as="p"
@@ -28,7 +28,7 @@ export default function BlogIndex() {
           color="muted"
           variant="body"
         >
-          {t(lang, "blog.description")}
+          {m.blog_description({}, { locale: lang })}
         </TRText>
       </header>
       <ArticleList

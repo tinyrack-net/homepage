@@ -10,7 +10,7 @@ import {
   SelfHostVisual,
   SimplicityVisual,
 } from "@/components/HomeVisuals.tsx";
-import { landingCopy } from "@/content/landing-copy.ts";
+import { getLandingCopy } from "@/content/landing-copy.ts";
 import { LINKS } from "@/lib/constants.ts";
 import { getAllArticles } from "@/lib/content.ts";
 import {
@@ -72,7 +72,7 @@ function SectionHeader({
 export default function Home() {
   const location = useLocation();
   const lang = langFromPath(location.pathname);
-  const copy = landingCopy[lang];
+  const copy = getLandingCopy(lang);
   const posts = getAllArticles()
     .filter((post) => post.data.lang === lang)
     .slice(0, TEASER_COUNT);

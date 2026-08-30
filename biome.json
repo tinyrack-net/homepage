@@ -28,10 +28,14 @@
       "**",
       "!build",
       "!.react-router",
+      "!app/i18n/paraglide",
       "!coverage",
       "!dist",
       "!node_modules",
       "!playwright-report",
+      "!project.inlang/.meta.json",
+      "!project.inlang/README.md",
+      "!project.inlang/cache",
       "!test-results",
       "!content/**/*.mdx"
     ]

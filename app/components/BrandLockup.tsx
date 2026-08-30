@@ -1,3 +1,4 @@
+import { getSiteTitle } from "@/i18n/copy.ts";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
 
 /**
@@ -23,7 +24,7 @@ export function BrandLockup({ lang }: { lang: SupportedLanguageCodes }) {
   return (
     <span className="inline-flex items-center">
       <img
-        alt={korean ? "타이니랙" : "Tinyrack"}
+        alt={getSiteTitle(lang)}
         className="tr-brand-lockup-light block h-tinyrack-control-height-sm w-auto"
         height={38}
         src={`/brand/tinyrack-lockup${suffix}.svg`}

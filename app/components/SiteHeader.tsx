@@ -6,10 +6,11 @@ import { tinyrackBreakpoints } from "@tinyrack/ui/core";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { t } from "@/i18n/index.ts";
+import { getLocaleLabel } from "@/i18n/copy.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import { getAlternativeLanguageLinks } from "@/lib/alternative-language-links.ts";
 import { getAllArticles, getAllPages } from "@/lib/content.ts";
-import { LOCALE_INFO, SUPPORTED_LANGUAGE_CODES } from "@/lib/language.ts";
+import { SUPPORTED_LANGUAGE_CODES } from "@/lib/language.ts";
 import {
   getBlogPath,
   getContentPath,
@@ -60,17 +61,29 @@ export function SiteHeader() {
     return {
       lang: code,
       href: alt?.href ?? getLanguageSwitchPath(location.pathname, code),
-      label: LOCALE_INFO[code],
+      label: getLocaleLabel(code),
     };
   });
 
   // About leads, then Products (its overview page is still a coming-soon
   // placeholder), then what ships today: Open Source and the blog.
   const navItems = [
-    { href: getContentPath(lang, "about"), label: t(lang, "nav.about") },
-    { href: getProductsPath(lang), label: t(lang, "nav.products") },
-    { href: getOpenSourcePath(lang), label: t(lang, "nav.openSource") },
-    { href: getBlogPath(lang), label: t(lang, "nav.blog") },
+    {
+      href: getContentPath(lang, "about"),
+      label: m.nav_about({}, { locale: lang }),
+    },
+    {
+      href: getProductsPath(lang),
+      label: m.nav_products({}, { locale: lang }),
+    },
+    {
+      href: getOpenSourcePath(lang),
+      label: m.nav_open_source({}, { locale: lang }),
+    },
+    {
+      href: getBlogPath(lang),
+      label: m.nav_blog({}, { locale: lang }),
+    },
   ];
 
   const isActive = (href: string) =>
@@ -89,7 +102,7 @@ export function SiteHeader() {
         </Link>
 
         <nav
-          aria-label={t(lang, "nav.site")}
+          aria-label={m.nav_site({}, { locale: lang })}
           className="hidden items-center gap-tinyrack-lg lg:flex"
         >
           {navItems.map((item) => (
@@ -111,7 +124,7 @@ export function SiteHeader() {
           <ThemeSwitcher lang={lang} />
           <TRIconButton
             appearance="ghost"
-            aria-label={t(lang, "nav.menu.open")}
+            aria-label={m.nav_menu_open({}, { locale: lang })}
             onClick={() => setOpen(true)}
             uiSize="md"
           >
@@ -143,7 +156,7 @@ export function SiteHeader() {
                     render={
                       <TRIconButton
                         appearance="ghost"
-                        aria-label={t(lang, "nav.menu.close")}
+                        aria-label={m.nav_menu_close({}, { locale: lang })}
                         uiSize="md"
                       >
                         <X aria-hidden="true" />
@@ -152,7 +165,7 @@ export function SiteHeader() {
                   />
                 </div>
                 <nav
-                  aria-label={t(lang, "nav.site")}
+                  aria-label={m.nav_site({}, { locale: lang })}
                   className="site-nav-drawer-navigation"
                   data-site-nav
                 >
