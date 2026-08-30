@@ -6,7 +6,6 @@ import { tinyrackBreakpoints } from "@tinyrack/ui/core";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { getLocaleLabel } from "@/i18n/copy.ts";
 import * as m from "@/i18n/paraglide/messages.js";
 import { getAlternativeLanguageLinks } from "@/lib/alternative-language-links.ts";
 import { getAllArticles, getAllPages } from "@/lib/content.ts";
@@ -61,7 +60,7 @@ export function SiteHeader() {
     return {
       lang: code,
       href: alt?.href ?? getLanguageSwitchPath(location.pathname, code),
-      label: getLocaleLabel(code),
+      label: m.locale_name({}, { locale: code }),
     };
   });
 

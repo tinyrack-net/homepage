@@ -17,22 +17,6 @@ export type OpenSourceProject = {
   stars: number;
 };
 
-export type OpenSourceCopy = {
-  meta: {
-    title: string;
-    description: string;
-  };
-  hero: {
-    eyebrow: string;
-    title: string;
-    description: string;
-    ctaLabel: string;
-  };
-  projectsTitle: string;
-  repositoryLabel: string;
-  starsLabel: string;
-};
-
 /** Non-translatable project identity and repository metadata. */
 export const OPEN_SOURCE_PROJECTS: readonly OpenSourceProject[] = [
   {
@@ -93,27 +77,4 @@ export function getOpenSourceProjectDescription(
   lang: SupportedLanguageCodes,
 ): string {
   return PROJECT_DESCRIPTION_MESSAGES[id]({}, { locale: lang });
-}
-
-export function getOpenSourceCopy(
-  lang: SupportedLanguageCodes,
-): OpenSourceCopy {
-  const options = { locale: lang } as const;
-  const site = m.nav_site({}, options);
-
-  return {
-    meta: {
-      title: m.open_source_meta_title({ site }, options),
-      description: m.open_source_meta_description({}, options),
-    },
-    hero: {
-      eyebrow: m.open_source_hero_eyebrow({}, options),
-      title: m.open_source_hero_title({}, options),
-      description: m.open_source_hero_description({}, options),
-      ctaLabel: m.open_source_hero_cta({}, options),
-    },
-    projectsTitle: m.open_source_projects_title({}, options),
-    repositoryLabel: m.open_source_repository_label({}, options),
-    starsLabel: m.open_source_stars_label({}, options),
-  };
 }

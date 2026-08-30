@@ -1,4 +1,4 @@
-import { getLocaleLabel } from "../i18n/copy.ts";
+import * as m from "../i18n/paraglide/messages.js";
 import type { ContentEntry } from "./content-types.ts";
 import type { SupportedLanguageCodes } from "./language.ts";
 import { getContentPath } from "./routes.ts";
@@ -22,7 +22,7 @@ export function getAlternativeLanguageLinks(
     })
     .map((candidate) => ({
       href: getContentPath(candidate.data.lang, candidate.data.routeSlug),
-      label: getLocaleLabel(candidate.data.lang),
+      label: m.locale_name({}, { locale: candidate.data.lang }),
       lang: candidate.data.lang,
     }));
 }

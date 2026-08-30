@@ -10,7 +10,7 @@ import {
   SelfHostVisual,
   SimplicityVisual,
 } from "@/components/HomeVisuals.tsx";
-import { getLandingCopy } from "@/content/landing-copy.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import { LINKS } from "@/lib/constants.ts";
 import { getAllArticles } from "@/lib/content.ts";
 import {
@@ -21,13 +21,6 @@ import {
 import { langFromPath } from "@/lib/site-page.ts";
 
 const TEASER_COUNT = 3;
-
-/** One illustration per authored principle, in copy order. */
-const PRINCIPLE_VISUALS: readonly ComponentType<{ className?: string }>[] = [
-  OpenSourceVisual,
-  SelfHostVisual,
-  SimplicityVisual,
-];
 
 function SectionHeader({
   description,
@@ -72,15 +65,39 @@ function SectionHeader({
 export default function Home() {
   const location = useLocation();
   const lang = langFromPath(location.pathname);
-  const copy = getLandingCopy(lang);
+  const messageOptions = { locale: lang } as const;
   const posts = getAllArticles()
     .filter((post) => post.data.lang === lang)
     .slice(0, TEASER_COUNT);
-  const headlineLabel = copy.hero.headline
-    .map((line) => line.map((segment) => segment.text).join(""))
+  const heroHeadline = [
+    m.home_hero_headline_first({}, messageOptions),
+    m.home_hero_headline_second({}, messageOptions),
+  ];
+  const headlineLabel = heroHeadline
     .join(lang === "ja" ? "" : " ")
     .replace(/\s+/g, " ")
     .trim();
+  const principles: readonly {
+    title: string;
+    description: string;
+    Visual: ComponentType<{ className?: string }>;
+  }[] = [
+    {
+      title: m.home_values_open_source_title({}, messageOptions),
+      description: m.home_values_open_source_description({}, messageOptions),
+      Visual: OpenSourceVisual,
+    },
+    {
+      title: m.home_values_self_hosting_title({}, messageOptions),
+      description: m.home_values_self_hosting_description({}, messageOptions),
+      Visual: SelfHostVisual,
+    },
+    {
+      title: m.home_values_simplicity_title({}, messageOptions),
+      description: m.home_values_simplicity_description({}, messageOptions),
+      Visual: SimplicityVisual,
+    },
+  ];
 
   return (
     <div className="wide-shell">
@@ -96,7 +113,10 @@ export default function Home() {
             color="muted"
             variant="label"
           >
-            {copy.hero.eyebrow.map((part) => (
+            {[
+              m.home_hero_eyebrow_open_infrastructure({}, messageOptions),
+              m.home_hero_eyebrow_self_hosted({}, messageOptions),
+            ].map((part) => (
               <TRText as="span" key={part} variant="label">
                 {part}
               </TRText>
@@ -110,10 +130,8 @@ export default function Home() {
             variant="displayLg"
             weight="bold"
           >
-            {copy.hero.headline.map((line) => (
-              <span key={line.map(({ text }) => text).join("")}>
-                {line.map((segment) => segment.text).join("")}
-              </span>
+            {heroHeadline.map((line) => (
+              <span key={line}>{line}</span>
             ))}
           </TRText>
 
@@ -123,7 +141,7 @@ export default function Home() {
             color="muted"
             variant="body"
           >
-            {copy.hero.subhead}
+            {m.home_hero_subhead({}, messageOptions)}
           </TRText>
 
           <div className="mt-tinyrack-2xl flex flex-wrap gap-tinyrack-md">
@@ -132,14 +150,14 @@ export default function Home() {
               render={<Link to={getOpenSourcePath(lang)} />}
               uiSize="lg"
             >
-              {copy.hero.primaryCtaLabel}
+              {m.home_hero_primary_cta({}, messageOptions)}
             </TRLinkButton>
             <TRLinkButton
               appearance="outline"
               render={<Link to={getContentPath(lang, "about")} />}
               uiSize="lg"
             >
-              {copy.hero.secondaryCtaLabel}
+              {m.home_hero_secondary_cta({}, messageOptions)}
             </TRLinkButton>
           </div>
         </div>
@@ -147,23 +165,21 @@ export default function Home() {
 
       <section className="flex flex-col gap-tinyrack-3xl border-t-tinyrack-default border-tinyrack-border py-tinyrack-3xl">
         <TRText as="h2" className="m-0 uppercase" color="muted" variant="label">
-          {copy.values.title}
+          {m.home_values_title({}, messageOptions)}
         </TRText>
-        {copy.values.items.map((item, index) => {
-          const Visual = PRINCIPLE_VISUALS[index % PRINCIPLE_VISUALS.length];
-
+        {principles.map(({ description, title, Visual }, index) => {
           return (
             <div
               className="grid items-center gap-tinyrack-2xl md:grid-cols-2 md:gap-tinyrack-3xl"
               data-home-principle
-              key={item.title}
+              key={title}
             >
               <div
                 className={`overflow-hidden rounded-tinyrack-lg border border-tinyrack-border bg-tinyrack-surface-muted${
                   index % 2 === 1 ? " md:order-last" : ""
                 }`}
               >
-                {Visual ? <Visual className="block w-full" /> : null}
+                <Visual className="block w-full" />
               </div>
               <div>
                 <TRText
@@ -172,7 +188,7 @@ export default function Home() {
                   variant="display"
                   weight="bold"
                 >
-                  {item.title}
+                  {title}
                 </TRText>
                 <TRText
                   as="p"
@@ -180,7 +196,7 @@ export default function Home() {
                   color="muted"
                   variant="body"
                 >
-                  {item.description}
+                  {description}
                 </TRText>
               </div>
             </div>
@@ -198,7 +214,7 @@ export default function Home() {
                 variant="headingLg"
                 weight="heading"
               >
-                {copy.work.title}
+                {m.home_work_title({}, messageOptions)}
               </TRText>
               <TRText
                 as="p"
@@ -206,7 +222,7 @@ export default function Home() {
                 color="muted"
                 variant="body"
               >
-                {copy.work.description}
+                {m.home_work_description({}, messageOptions)}
               </TRText>
             </div>
             <div className="flex shrink-0 flex-wrap gap-tinyrack-md">
@@ -215,7 +231,7 @@ export default function Home() {
                 render={<Link to={getOpenSourcePath(lang)} />}
                 uiSize="lg"
               >
-                {copy.work.ctaLabel}
+                {m.home_work_cta({}, messageOptions)}
                 <ArrowRight aria-hidden="true" />
               </TRLinkButton>
               <TRLinkButton
@@ -226,7 +242,7 @@ export default function Home() {
                 uiSize="lg"
               >
                 <Code2 aria-hidden="true" />
-                {copy.work.githubCtaLabel}
+                {m.home_work_github_cta({}, messageOptions)}
               </TRLinkButton>
             </div>
           </div>
@@ -235,13 +251,16 @@ export default function Home() {
 
       <section className="flex flex-col gap-tinyrack-2xl border-t-tinyrack-default border-tinyrack-border py-tinyrack-3xl">
         <SectionHeader
-          description={copy.blog.description}
-          link={{ href: getBlogPath(lang), label: copy.blog.linkLabel }}
-          title={copy.blog.title}
+          description={m.home_blog_description({}, messageOptions)}
+          link={{
+            href: getBlogPath(lang),
+            label: m.home_blog_link({}, messageOptions),
+          }}
+          title={m.home_blog_title({}, messageOptions)}
         />
         {posts.length === 0 ? (
           <TRText as="p" className="m-0" color="muted" variant="body">
-            {copy.blog.empty}
+            {m.home_blog_empty({}, messageOptions)}
           </TRText>
         ) : (
           <ul className="grid gap-x-tinyrack-xl gap-y-tinyrack-2xl md:grid-cols-3">
@@ -255,7 +274,7 @@ export default function Home() {
             appearance="outline"
             render={<Link to={getBlogPath(lang)} />}
           >
-            {copy.blog.linkLabel}
+            {m.home_blog_link({}, messageOptions)}
             <ArrowRight aria-hidden="true" />
           </TRLinkButton>
         </div>
