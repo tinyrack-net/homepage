@@ -3,7 +3,7 @@
 import { TRSelect } from "@tinyrack/ui/components/select";
 import { ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router";
-import { t } from "@/i18n/index.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
 
 export type LanguageLink = {
@@ -45,7 +45,10 @@ export function LanguageSelect({
       }}
       value={lang}
     >
-      <TRSelect.Trigger aria-label={t(lang, "language")} uiSize="sm">
+      <TRSelect.Trigger
+        aria-label={m.language({}, { locale: lang })}
+        uiSize="sm"
+      >
         <TRSelect.Value>
           <span lang={selected?.lang}>{selected?.label ?? lang}</span>
         </TRSelect.Value>

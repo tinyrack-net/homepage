@@ -3,15 +3,11 @@ import type {
   SitePageDescriptor,
   SiteSeoConfig,
 } from "@tinyrack/docs/site";
-import { openSourceCopy } from "../content/open-source.ts";
+import { getOpenSourceCopy } from "../content/open-source.ts";
 import type { RoutePlanEntry } from "../content/routes-plan.ts";
 import { planRoutes } from "../content/routes-plan.ts";
-import {
-  getSiteImage,
-  SITE,
-  SITE_DESCRIPTIONS,
-  SITE_TITLES,
-} from "./constants.ts";
+import { getSiteDescription, getSiteTitle } from "../i18n/copy.ts";
+import { getSiteImage, SITE } from "./constants.ts";
 import type { BlogManifest, ContentEntry } from "./content-types.ts";
 import { defaultLangCode, type SupportedLanguageCodes } from "./language.ts";
 
@@ -22,13 +18,13 @@ const OPEN_GRAPH_LOCALES: Record<SupportedLanguageCodes, string> = {
 };
 
 export const siteSeoConfig: SiteSeoConfig = {
-  description: SITE_DESCRIPTIONS[defaultLangCode],
+  description: getSiteDescription(defaultLangCode),
   image: { url: `${SITE}${getSiteImage(defaultLangCode)}` },
   locale: {
     language: defaultLangCode,
     openGraph: OPEN_GRAPH_LOCALES[defaultLangCode],
   },
-  title: SITE_TITLES[defaultLangCode],
+  title: getSiteTitle(defaultLangCode),
   url: SITE,
 };
 
@@ -78,7 +74,7 @@ function routeTitleAndDescription(
   const content = contentForRoute(route, manifest);
   if (content) {
     return {
-      description: content.data.excerpt || SITE_DESCRIPTIONS[route.lang],
+      description: content.data.excerpt || getSiteDescription(route.lang),
       title: content.data.title,
     };
   }
@@ -87,18 +83,18 @@ function routeTitleAndDescription(
     const tag = manifest.tags.find((entry) => entry.slug === route.tagSlug);
     const translation = tag?.translations[route.lang];
     return {
-      description: translation?.description ?? SITE_DESCRIPTIONS[route.lang],
-      title: `${translation?.title ?? tag?.name ?? route.tagSlug} - ${SITE_TITLES[route.lang]}`,
+      description: translation?.description ?? getSiteDescription(route.lang),
+      title: `${translation?.title ?? tag?.name ?? route.tagSlug} - ${getSiteTitle(route.lang)}`,
     };
   }
 
   if (route.kind === "openSource") {
-    return openSourceCopy[route.lang].meta;
+    return getOpenSourceCopy(route.lang).meta;
   }
 
   return {
-    description: SITE_DESCRIPTIONS[route.lang],
-    title: SITE_TITLES[route.lang],
+    description: getSiteDescription(route.lang),
+    title: getSiteTitle(route.lang),
   };
 }
 
@@ -156,12 +152,12 @@ export function createHomepageFeed(manifest: BlogManifest): SiteFeedDescriptor {
     }));
 
   return {
-    description: SITE_DESCRIPTIONS[defaultLangCode],
+    description: getSiteDescription(defaultLangCode),
     imageUrl: `${SITE}/brand/tinyrack-app-icon.svg`,
     items,
     language: defaultLangCode,
     path: "/rss.xml",
     siteUrl: `${SITE}/`,
-    title: SITE_TITLES[defaultLangCode],
+    title: getSiteTitle(defaultLangCode),
   };
 }

@@ -1,4 +1,4 @@
-import { t } from "@/i18n/index.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import type { ArticleEntry } from "@/lib/content-types.ts";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
 import { ArticleCard } from "./ArticleCard.tsx";
@@ -24,7 +24,9 @@ export function ArticleList({
 }: ArticleListProps) {
   if (articles.length === 0) {
     return (
-      <p className="text-tinyrack-text-muted">{t(lang, "global.empty")}</p>
+      <p className="text-tinyrack-text-muted">
+        {m.global_empty({}, { locale: lang })}
+      </p>
     );
   }
 

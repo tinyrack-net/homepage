@@ -1,5 +1,6 @@
+import { getLocaleLabel } from "../i18n/copy.ts";
 import type { ContentEntry } from "./content-types.ts";
-import { LOCALE_INFO, type SupportedLanguageCodes } from "./language.ts";
+import type { SupportedLanguageCodes } from "./language.ts";
 import { getContentPath } from "./routes.ts";
 
 export type AlternativeLanguageLink = {
@@ -21,7 +22,7 @@ export function getAlternativeLanguageLinks(
     })
     .map((candidate) => ({
       href: getContentPath(candidate.data.lang, candidate.data.routeSlug),
-      label: LOCALE_INFO[candidate.data.lang],
+      label: getLocaleLabel(candidate.data.lang),
       lang: candidate.data.lang,
     }));
 }

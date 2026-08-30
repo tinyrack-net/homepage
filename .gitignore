@@ -9,6 +9,7 @@ dev-server.log
 # generated types
 .astro/
 .react-router/
+/app/i18n/paraglide/
 
 # dependencies
 node_modules/

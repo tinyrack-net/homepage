@@ -6,7 +6,7 @@ import {
   useTinyrackColorScheme,
 } from "@tinyrack/ui/providers/color-scheme";
 import { type LucideIcon, Monitor, Moon, Sun } from "lucide-react";
-import { t } from "@/i18n/index.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
 
 const ICONS: Record<TinyrackColorSchemePreference, LucideIcon> = {
@@ -14,6 +14,12 @@ const ICONS: Record<TinyrackColorSchemePreference, LucideIcon> = {
   light: Sun,
   dark: Moon,
 };
+
+const THEME_LABEL_MESSAGES = {
+  auto: m.theme_auto,
+  light: m.theme_light,
+  dark: m.theme_dark,
+} as const satisfies Record<TinyrackColorSchemePreference, typeof m.theme_auto>;
 
 const NEXT_PREFERENCE: Record<
   TinyrackColorSchemePreference,
@@ -32,10 +38,13 @@ export function ThemeSwitcher({ lang }: { lang: SupportedLanguageCodes }) {
   return (
     <TRIconButton
       appearance="ghost"
-      aria-label={t(lang, "theme.switch", {
-        current: t(lang, `theme.${preference}`),
-        next: t(lang, `theme.${nextPreference}`),
-      })}
+      aria-label={m.theme_switch(
+        {
+          current: THEME_LABEL_MESSAGES[preference]({}, { locale: lang }),
+          next: THEME_LABEL_MESSAGES[nextPreference]({}, { locale: lang }),
+        },
+        { locale: lang },
+      )}
       onClick={() => setPreference(nextPreference)}
       uiSize="md"
     >

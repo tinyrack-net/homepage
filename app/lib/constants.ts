@@ -1,20 +1,5 @@
 export const SITE = "https://tinyrack.net";
 
-export const SITE_TITLES = {
-  en: "Tinyrack",
-  // The brand is written in Latin on Japanese surfaces; only Korean has its own
-  // approved wordmark. Keep this in step with `nav.site` and the lockup choice
-  // in `app/components/BrandLockup.tsx`.
-  ja: "Tinyrack",
-  ko: "타이니랙",
-};
-
-export const SITE_DESCRIPTIONS = {
-  en: "Tinyrack builds open-source, self-hosted infrastructure tools — developed in the open.",
-  ja: "Tinyrackは、自分で運用できるオープンソースのインフラツールをオープンに開発しています。",
-  ko: "Tinyrack은 직접 운영할 수 있는 오픈소스 인프라 도구를 공개적으로 개발해요.",
-};
-
 /**
  * Social preview images. Only the locales with artwork on disk appear here —
  * pointing at a file that does not exist makes `og:image` a 404 for every page
@@ -42,6 +27,3 @@ export const LINKS = {
   FORUM: "https://forum.tinyrack.net/",
   EMAIL: "contact@tinyrack.net",
 };
-
-export const SITE_TITLE = SITE_TITLES.ko;
-export const SITE_DESCRIPTION = SITE_DESCRIPTIONS.ko;

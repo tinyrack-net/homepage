@@ -1,4 +1,5 @@
 import { fileURLToPath } from "node:url";
+import { paraglideVitePlugin } from "@inlang/paraglide-js";
 import mdx from "@mdx-js/rollup";
 import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
@@ -29,6 +30,12 @@ export default defineConfig({
     port: 8432,
   },
   plugins: [
+    paraglideVitePlugin({
+      project: "./project.inlang",
+      outdir: "./app/i18n/paraglide",
+      strategy: ["baseLocale"],
+      emitTsDeclarations: true,
+    }),
     brandAssets(),
     tinyrackSiteAssets({
       feeds: () => [createHomepageFeed(scanContent(process.cwd()))],
