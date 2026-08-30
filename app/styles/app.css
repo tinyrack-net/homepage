@@ -28,6 +28,7 @@
 @import "@tinyrack/ui/components/link.css";
 @import "@tinyrack/ui/components/link-button.css";
 @import "@tinyrack/ui/components/pagination.css";
+@import "@tinyrack/ui/components/progress.css";
 @import "@tinyrack/ui/components/select.css";
 @import "@tinyrack/ui/components/separator.css";
 @import "@tinyrack/ui/components/text.css";
@@ -120,6 +121,27 @@ body {
 body {
   font-family: var(--tinyrack-font-body);
   margin: 0;
+}
+
+/* Match the design-system docs shell: route progress stays above all chrome
+   without changing the document flow or intercepting pointer input. */
+.site-navigation-progress {
+  --tr-progress-fill: var(--tinyrack-primary-foreground);
+  --tr-progress-height: var(--tinyrack-space-xs);
+  position: fixed;
+  z-index: var(--tinyrack-layer-toast);
+  inset-block-start: 0;
+  inset-inline: 0;
+  pointer-events: none;
+}
+
+.site-navigation-progress-label {
+  position: absolute;
+  overflow: hidden;
+  inline-size: var(--tinyrack-border-width-default);
+  block-size: var(--tinyrack-border-width-default);
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 *,
