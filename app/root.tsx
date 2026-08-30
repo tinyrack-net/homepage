@@ -21,7 +21,7 @@ import {
 import { BlogArticleFrame } from "./components/BlogArticleFrame.tsx";
 import { Footer } from "./components/Footer.tsx";
 import { SiteHeader } from "./components/SiteHeader.tsx";
-import { getSiteTitle } from "./i18n/copy.ts";
+import * as m from "./i18n/paraglide/messages.js";
 import { GTM_ID, THEME_STORAGE_KEY } from "./lib/constants.ts";
 import { getFontPreloadLinks } from "./lib/font-preloads.ts";
 import { buildMeta, buildOrganizationJsonLd } from "./lib/seo.ts";
@@ -99,7 +99,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <link
           href="/rss.xml"
           rel="alternate"
-          title={`${getSiteTitle(lang)} RSS`}
+          title={`${m.nav_site({}, { locale: lang })} RSS`}
           type="application/rss+xml"
         />
         {/* The app icon is a dark tile with a light mark, so it reads on both

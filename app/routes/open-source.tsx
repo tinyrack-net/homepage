@@ -3,17 +3,15 @@ import { TRText } from "@tinyrack/ui/components/text";
 import { Code2 } from "lucide-react";
 import { useLocation } from "react-router";
 import { ProjectCard } from "@/components/ProjectCard.tsx";
-import {
-  getOpenSourceCopy,
-  OPEN_SOURCE_PROJECTS,
-} from "@/content/open-source.ts";
+import { OPEN_SOURCE_PROJECTS } from "@/content/open-source.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import { LINKS } from "@/lib/constants.ts";
 import { langFromPath } from "@/lib/site-page.ts";
 
 export default function OpenSource() {
   const location = useLocation();
   const lang = langFromPath(location.pathname);
-  const copy = getOpenSourceCopy(lang);
+  const messageOptions = { locale: lang } as const;
 
   return (
     <div className="wide-shell">
@@ -25,7 +23,7 @@ export default function OpenSource() {
             color="muted"
             variant="label"
           >
-            {copy.hero.eyebrow}
+            {m.open_source_hero_eyebrow({}, messageOptions)}
           </TRText>
           <TRText
             as="h1"
@@ -33,7 +31,7 @@ export default function OpenSource() {
             variant="displayLg"
             weight="bold"
           >
-            {copy.hero.title}
+            {m.open_source_hero_title({}, messageOptions)}
           </TRText>
           <TRText
             as="p"
@@ -41,7 +39,7 @@ export default function OpenSource() {
             color="muted"
             variant="body"
           >
-            {copy.hero.description}
+            {m.open_source_hero_description({}, messageOptions)}
           </TRText>
           <TRLinkButton
             className="mt-tinyrack-2xl"
@@ -52,7 +50,7 @@ export default function OpenSource() {
             uiSize="lg"
           >
             <Code2 aria-hidden="true" />
-            {copy.hero.ctaLabel}
+            {m.open_source_hero_cta({}, messageOptions)}
           </TRLinkButton>
         </div>
       </section>
@@ -64,7 +62,7 @@ export default function OpenSource() {
           color="muted"
           variant="label"
         >
-          {copy.projectsTitle}
+          {m.open_source_projects_title({}, messageOptions)}
         </TRText>
         <ul
           className="grid gap-tinyrack-lg md:grid-cols-2 xl:grid-cols-3"
@@ -75,8 +73,11 @@ export default function OpenSource() {
               key={project.id}
               lang={lang}
               project={project}
-              repositoryLabel={copy.repositoryLabel}
-              starsLabel={copy.starsLabel}
+              repositoryLabel={m.open_source_repository_label(
+                {},
+                messageOptions,
+              )}
+              starsLabel={m.open_source_stars_label({}, messageOptions)}
             />
           ))}
         </ul>

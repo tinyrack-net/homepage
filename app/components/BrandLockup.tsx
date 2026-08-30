@@ -1,4 +1,4 @@
-import { getSiteTitle } from "@/i18n/copy.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
 
 /**
@@ -24,7 +24,7 @@ export function BrandLockup({ lang }: { lang: SupportedLanguageCodes }) {
   return (
     <span className="inline-flex items-center">
       <img
-        alt={getSiteTitle(lang)}
+        alt={m.nav_site({}, { locale: lang })}
         className="tr-brand-lockup-light block h-tinyrack-control-height-sm w-auto"
         height={38}
         src={`/brand/tinyrack-lockup${suffix}.svg`}

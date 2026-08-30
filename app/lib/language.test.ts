@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getLocaleLabel } from "../i18n/copy.ts";
+import * as m from "../i18n/paraglide/messages.js";
 import { defaultLangCode, SUPPORTED_LANGUAGE_CODES } from "./language.ts";
 
 describe("language constants", () => {
@@ -9,8 +9,8 @@ describe("language constants", () => {
   });
 
   it("maps each code to a display label", () => {
-    expect(getLocaleLabel("en")).toBe("English");
-    expect(getLocaleLabel("ja")).toBe("日本語");
-    expect(getLocaleLabel("ko")).toBe("한국어");
+    expect(m.locale_name({}, { locale: "en" })).toBe("English");
+    expect(m.locale_name({}, { locale: "ja" })).toBe("日本語");
+    expect(m.locale_name({}, { locale: "ko" })).toBe("한국어");
   });
 });

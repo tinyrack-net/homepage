@@ -2,14 +2,14 @@ import { TRLinkButton } from "@tinyrack/ui/components/link-button";
 import { TRText } from "@tinyrack/ui/components/text";
 import { ArrowRight } from "lucide-react";
 import { Link, useLocation } from "react-router";
-import { getProductsCopy } from "@/content/products.ts";
+import * as m from "@/i18n/paraglide/messages.js";
 import { getOpenSourcePath } from "@/lib/routes.ts";
 import { langFromPath } from "@/lib/site-page.ts";
 
 export default function Products() {
   const location = useLocation();
   const lang = langFromPath(location.pathname);
-  const copy = getProductsCopy(lang);
+  const messageOptions = { locale: lang } as const;
 
   return (
     <div className="wide-shell">
@@ -21,7 +21,7 @@ export default function Products() {
             color="muted"
             variant="label"
           >
-            {copy.eyebrow}
+            {m.products_eyebrow({}, messageOptions)}
           </TRText>
           <TRText
             as="h1"
@@ -29,7 +29,7 @@ export default function Products() {
             variant="displayLg"
             weight="bold"
           >
-            {copy.title}
+            {m.products_title({}, messageOptions)}
           </TRText>
           <TRText
             as="p"
@@ -37,7 +37,7 @@ export default function Products() {
             color="muted"
             variant="body"
           >
-            {copy.description}
+            {m.products_description({}, messageOptions)}
           </TRText>
           <TRLinkButton
             className="mt-tinyrack-2xl"
@@ -45,7 +45,7 @@ export default function Products() {
             render={<Link to={getOpenSourcePath(lang)} />}
             uiSize="lg"
           >
-            {copy.ctaLabel}
+            {m.products_cta({}, messageOptions)}
             <ArrowRight aria-hidden="true" />
           </TRLinkButton>
         </div>

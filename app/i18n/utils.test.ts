@@ -1,12 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { getLandingCopy } from "../content/landing-copy.ts";
-import {
-  getOpenSourceCopy,
-  getOpenSourceProjectDescription,
-} from "../content/open-source.ts";
-import { getProductsCopy } from "../content/products.ts";
+import { getOpenSourceProjectDescription } from "../content/open-source.ts";
 import { defaultLangCode, SUPPORTED_LANGUAGE_CODES } from "../lib/language.ts";
-import { getLocaleLabel, getSiteDescription, getSiteTitle } from "./copy.ts";
 import * as m from "./paraglide/messages.js";
 import { baseLocale, locales } from "./paraglide/runtime.js";
 import en from "./translations/en.json";
@@ -45,17 +39,19 @@ describe("Paraglide messages", () => {
     expect(baseLocale).toBe(defaultLangCode);
   });
 
-  it("assembles every app-owned localized copy surface from messages", () => {
-    expect(getLandingCopy("ko").hero.headline[0]?.[0]?.text).toBe(
+  it("exposes app-owned localized copy directly as messages", () => {
+    expect(m.home_hero_headline_first({}, { locale: "ko" })).toBe(
       "열린 인프라를",
     );
-    expect(getProductsCopy("ja").title).toBe("準備中です。");
-    expect(getOpenSourceCopy("en").meta.title).toBe("Open Source - Tinyrack");
+    expect(m.products_title({}, { locale: "ja" })).toBe("準備中です。");
+    expect(
+      m.open_source_meta_title({ site: "Tinyrack" }, { locale: "en" }),
+    ).toBe("Open Source - Tinyrack");
     expect(getOpenSourceProjectDescription("dotweave", "ko")).toContain(
       "dotfiles",
     );
-    expect(getLocaleLabel("ja")).toBe("日本語");
-    expect(getSiteTitle("ko")).toBe("타이니랙");
-    expect(getSiteDescription("en")).toContain("self-hosted");
+    expect(m.locale_name({}, { locale: "ja" })).toBe("日本語");
+    expect(m.nav_site({}, { locale: "ko" })).toBe("타이니랙");
+    expect(m.site_description({}, { locale: "en" })).toContain("self-hosted");
   });
 });
