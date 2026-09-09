@@ -88,11 +88,11 @@ export function Layout({ children }: { children: ReactNode }) {
     >
       <head>
         <meta charSet="utf-8" />
-        {/** biome-ignore lint/security/noDangerouslySetInnerHtml: pre-paint motion state */}
+        {/** biome-ignore lint/security/noDangerouslySetInnerHtml: pre-paint motion state; tinyrack-check-ignore-next-line components/no-raw-html -- trusted pre-paint motion bootstrap */}
         <script dangerouslySetInnerHTML={{ __html: motionScript }} />
-        {/** biome-ignore lint/security/noDangerouslySetInnerHtml: no-flash theme */}
+        {/** biome-ignore lint/security/noDangerouslySetInnerHtml: no-flash theme; tinyrack-check-ignore-next-line components/no-raw-html -- trusted no-flash theme bootstrap */}
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-        {/** biome-ignore lint/security/noDangerouslySetInnerHtml: GTM bootstrap */}
+        {/** biome-ignore lint/security/noDangerouslySetInnerHtml: GTM bootstrap; tinyrack-check-ignore-next-line components/no-raw-html -- trusted GTM bootstrap */}
         <script dangerouslySetInnerHTML={{ __html: gtmHeadScript }} />
         {/* No maximum-scale or user-scalable: blocking zoom fails WCAG 1.4.4. */}
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -127,7 +127,7 @@ export function Layout({ children }: { children: ReactNode }) {
           <link key={link.href} {...link} />
         ))}
         <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON.stringify output, not interpolated markup
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON.stringify output, not interpolated markup; tinyrack-check-ignore-next-line components/no-raw-html -- JSON-LD requires raw script text
           dangerouslySetInnerHTML={{ __html: buildOrganizationJsonLd(lang) }}
           type="application/ld+json"
         />

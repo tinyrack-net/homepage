@@ -1,3 +1,4 @@
+import { TRText } from "@tinyrack/ui/components/text";
 import * as m from "@/i18n/paraglide/messages.js";
 import type { ArticleEntry } from "@/lib/content-types.ts";
 import type { SupportedLanguageCodes } from "@/lib/language.ts";
@@ -24,9 +25,9 @@ export function ArticleList({
 }: ArticleListProps) {
   if (articles.length === 0) {
     return (
-      <p className="text-tinyrack-text-muted">
+      <TRText as="p" color="muted">
         {m.global_empty({}, { locale: lang })}
-      </p>
+      </TRText>
     );
   }
 

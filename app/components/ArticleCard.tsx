@@ -1,4 +1,5 @@
 import { TRCard } from "@tinyrack/ui/components/card";
+import { TRText } from "@tinyrack/ui/components/text";
 import { Link } from "react-router";
 import type { ArticleEntry } from "@/lib/content-types.ts";
 import { getContentPath } from "@/lib/routes.ts";
@@ -32,8 +33,7 @@ export function ArticleCard({ post, showExcerpt = true }: ArticleCardProps) {
           {/* Cards sit under a section h2, so the title is an h3. */}
           <TRCard.Title
             className="text-tinyrack-xl font-tinyrack-bold"
-            // biome-ignore lint/a11y/useHeadingContent: Base UI injects the title content into this render slot.
-            render={<h3 />}
+            render={<TRText as="h3" variant="headingSm" />}
           >
             {/* The pseudo-element stretches the hit area over the whole card
                 while keeping exactly one link in the accessibility tree. */}

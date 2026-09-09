@@ -166,7 +166,10 @@ body {
 }
 
 .site-nav-drawer {
-  --tr-drawer-popup-max-width: calc(var(--tinyrack-space-2xl) * 9);
+  --tr-drawer-popup-max-width: calc(
+    var(--tinyrack-overlay-width-sm) -
+    var(--tinyrack-space-2xl)
+  );
   border-radius: 0;
   max-block-size: none;
 }

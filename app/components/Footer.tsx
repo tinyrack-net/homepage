@@ -115,7 +115,9 @@ export function Footer({ lang }: { lang: SupportedLanguageCodes }) {
         <TRSeparator className="footer-separator" />
 
         <div className="flex flex-col gap-tinyrack-sm text-tinyrack-sm text-tinyrack-text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p className="m-0">© {year} Tinyrack</p>
+          <TRText as="p" color="muted" variant="bodySm">
+            © {year} Tinyrack
+          </TRText>
           <TRLink
             className="text-tinyrack-sm"
             href={`mailto:${LINKS.EMAIL}`}

@@ -91,7 +91,7 @@ export function SiteHeader() {
       : location.pathname === href;
 
   return (
-    <header className="sticky top-0 z-tinyrack-chrome border-b-tinyrack-default border-tinyrack-border bg-tinyrack-surface/95 backdrop-blur">
+    <header className="sticky top-0 z-tinyrack-chrome border-b-tinyrack-default border-tinyrack-border bg-tinyrack-surface backdrop-blur">
       <div className="wide-shell flex items-center gap-tinyrack-lg py-tinyrack-md md:py-tinyrack-lg">
         {/* `flex`, not the default block: a block anchor wraps the lockup in an
             inline box whose descender gap makes the artwork sit three pixels
