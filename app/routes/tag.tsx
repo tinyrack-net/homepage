@@ -1,3 +1,4 @@
+import { TRText } from "@tinyrack/ui/components/text";
 import { useLocation } from "react-router";
 import { ArticleList } from "@/components/ArticleList.tsx";
 import { getAllArticles, getAllTags } from "@/lib/content.ts";
@@ -23,11 +24,17 @@ export default function TagPage() {
   return (
     <div className="page-shell flex flex-col gap-tinyrack-2xl py-tinyrack-3xl">
       <header>
-        <h1 className="text-tinyrack-3xl font-tinyrack-bold">{tagTitle}</h1>
+        <TRText as="h1" variant="headingLg">
+          {tagTitle}
+        </TRText>
         {tagDescription ? (
-          <p className="mt-tinyrack-lg max-w-tinyrack-measure-xl text-tinyrack-text-muted">
+          <TRText
+            as="p"
+            className="mt-tinyrack-lg max-w-tinyrack-measure-xl"
+            color="muted"
+          >
             {tagDescription}
-          </p>
+          </TRText>
         ) : null}
       </header>
       <ArticleList

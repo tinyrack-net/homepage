@@ -2,6 +2,7 @@
 
 import { TRBadge } from "@tinyrack/ui/components/badge";
 import { TRSeparator } from "@tinyrack/ui/components/separator";
+import { TRText } from "@tinyrack/ui/components/text";
 import type { CSSProperties, ReactNode } from "react";
 import { useLocation } from "react-router";
 import * as m from "@/i18n/paraglide/messages.js";
@@ -73,9 +74,13 @@ export function BlogArticleFrame({ children }: { children?: ReactNode }) {
       <header>
         {/* No `text-balance`: titles are not authored per locale, and balancing
             happily splits a hyphenated compound across the two lines. */}
-        <h1 className="text-tinyrack-4xl font-tinyrack-bold leading-tinyrack-sm">
+        <TRText
+          as="h1"
+          className="text-tinyrack-4xl font-tinyrack-bold leading-tinyrack-sm"
+          variant="headingLg"
+        >
           {entry.data.title}
-        </h1>
+        </TRText>
         {entry.collection === "articles" ? (
           <div className="mt-tinyrack-lg flex flex-wrap items-center gap-x-tinyrack-md gap-y-tinyrack-sm">
             <TextDate date={entry.data.publishedAt} lang={lang} />

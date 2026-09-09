@@ -1,5 +1,4 @@
 import dotweaveIconUrl from "@tinyrack/ui/brand/apps/dotweave-app-icon.svg";
-import tinyauthIconUrl from "@tinyrack/ui/brand/apps/tinyauth-app-icon.svg";
 import { TRCard } from "@tinyrack/ui/components/card";
 import { TRLink } from "@tinyrack/ui/components/link";
 import { TRText } from "@tinyrack/ui/components/text";
@@ -22,16 +21,6 @@ export function ProjectIcon({
         alt=""
         className="size-tinyrack-control-height-md rounded-tinyrack-sm"
         src={dotweaveIconUrl}
-      />
-    );
-  }
-
-  if (project.id === "tinyauth") {
-    return (
-      <img
-        alt=""
-        className="size-tinyrack-control-height-md rounded-tinyrack-sm"
-        src={tinyauthIconUrl}
       />
     );
   }
@@ -86,10 +75,7 @@ export function ProjectCard({
             <TRCard.Header className="pr-tinyrack-2xl">
               <div className="flex min-w-0 items-center gap-tinyrack-md">
                 <ProjectIcon project={project} />
-                <TRCard.Title
-                  // biome-ignore lint/a11y/useHeadingContent: Base UI injects the title content into this render slot.
-                  render={<h3 />}
-                >
+                <TRCard.Title render={<TRText as="h3" variant="headingSm" />}>
                   {project.name}
                 </TRCard.Title>
               </div>
