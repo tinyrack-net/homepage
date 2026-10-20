@@ -1,0 +1,35 @@
+---
+title: "サポート"
+excerpt: "tinyrack のウェブサイト、コミュニティフォーラム、オープンソースアプリのヘルプ。"
+lang: "ja"
+routeSlug: "support"
+translationKey: "support"
+updatedAt: "2026-10-20T00:00:00.000+09:00"
+---
+
+tinyrack が作ったものについて助けが必要ですか？ここから始めてください。
+
+## サポート
+
+- **コミュニティフォーラム:** [forum.tinyrack.net](https://forum.tinyrack.net/) — 質問・構成・トラブルシューティング。
+- **GitHub:** [github.com/tinyrack-net](https://github.com/tinyrack-net) — 使っているアプリのリポジトリで Issue を作成。
+- **メール:** contact@tinyrack.net
+
+## アプリ
+
+### TinyTrayManager
+
+CPU・メモリ・ネットワークの使用状況を Windows のタスクトレイに表示します。
+
+- **アイコンが表示されない。** Windows は新しいトレイアイコンをオーバーフロー領域(`^`)に入れます。**設定 > 個人用設定 > タスクバー > その他のシステム トレイ アイコン**で TinyTrayManager をオンにするか、アイコンをオーバーフローからドラッグしてください。
+- **Windows と一緒に起動する。** トレイメニューの **Run at sign-in** をオンにするか、**設定 > アプリ > スタートアップ**を使います。
+- **設定とログ。** `%APPDATA%\tray-monitor\config.toml` と `%LOCALAPPDATA%\tray-monitor\log.txt`。Microsoft Store 版ではどちらもパッケージの `LocalState` フォルダーにあります。
+- **ソースと Issue:** [github.com/tinyrack-net/tray-monitor](https://github.com/tinyrack-net/tray-monitor)。
+
+### その他のアプリ
+
+- [Dotweave](https://dotweave.tinyrack.net) — git でマシン間の設定を同期。
+- [Proxer](https://proxer.tinyrack.net) — プライベートな HTTP サービスを自分で管理する公開 URL の背後に置く。
+- [Tinyauth](https://tinyauth.tinyrack.net) — 自分のサービスに認証を追加。
+
+不具合を報告するときは、OS のバージョンと関連するログ行を添えてください。
