@@ -2,7 +2,8 @@
  * Pull blog articles from Outline (the source of truth) into
  * `content/articles/<routeSlug>/<lang>.md`.
  *
- * Outline layout: Articles / tinyrack / <article (ko original)> / <translation (en)>
+ * Outline layout: Articles / <blog> / <original article> / <translations>
+ * Every document declares its language with `lang` in the yaml block.
  * Each article body starts with a ```yaml metadata block; see README.md.
  *
  * Usage: OUTLINE_API_KEY=... node scripts/content-pull.ts
@@ -27,7 +28,6 @@ const SITE = {
   parentDocumentId: "9c30bf9b-768c-45b2-a7c2-235dec541ef8",
   /** Outline collection that contains the parent document. */
   collectionId: "6bbfb285-728f-482b-9aaf-6b63df7e27d7",
-  originalLanguage: "ko",
   languages: ["ko", "en", "ja"],
   extension: "md",
   outputDir: "content/articles",
@@ -45,7 +45,7 @@ const CONCURRENCY = 6;
 // Metadata
 // ---------------------------------------------------------------------------
 
-/** Fields allowed in the yaml block of an original article. */
+/** Fields allowed in the yaml block of an original article (besides `lang`). */
 const ORIGINAL_FIELDS = [
   "routeSlug",
   "publishedAt",
@@ -56,7 +56,7 @@ const ORIGINAL_FIELDS = [
   "excerpt",
 ] as const;
 
-/** Fields a translation may override; everything else is inherited. */
+/** Fields a translation may override (besides `lang`); everything else is inherited. */
 const TRANSLATION_FIELDS = ["publishedAt", "updatedAt", "excerpt"] as const;
 
 type Meta = {
@@ -206,6 +206,23 @@ function readMeta(
     }
   }
   return meta;
+}
+
+/** Read and remove the required `lang` field from a yaml block. */
+function takeLang(doc: OutlineDocument, data: Record<string, unknown>): string {
+  const lang = toStringValue(data.lang);
+  delete data.lang;
+  if (!lang) {
+    throw new ContentError(
+      `"${doc.title}": lang is required (${SITE.languages.join(", ")})`,
+    );
+  }
+  if (!SITE.languages.includes(lang)) {
+    throw new ContentError(
+      `"${doc.title}": unsupported lang "${lang}" (${SITE.languages.join(", ")})`,
+    );
+  }
+  return lang;
 }
 
 /** Normalize Outline's markdown export into plain CommonMark/GFM. */
@@ -388,6 +405,7 @@ async function collectArticles(): Promise<ArticleFile[][]> {
       id: node.id,
     });
     const { data, body } = splitMetadata(original);
+    const originalLang = takeLang(original, data);
     const meta = readMeta(original, data, ORIGINAL_FIELDS);
     for (const key of ["routeSlug", "publishedAt", "commentsTerm"] as const) {
       if (!meta[key]) {
@@ -418,7 +436,7 @@ async function collectArticles(): Promise<ArticleFile[][]> {
     const files: ArticleFile[] = [
       {
         slug: base.routeSlug,
-        lang: SITE.originalLanguage,
+        lang: originalLang,
         title: original.title.trim(),
         meta: base,
         body: normalizeBody(body),
@@ -430,26 +448,23 @@ async function collectArticles(): Promise<ArticleFile[][]> {
       const translation = await api<OutlineDocument>("documents.info", {
         id: child.id,
       });
-      const match = /^(.*)\s+\(([a-z]{2})\)\s*$/.exec(translation.title);
-      const [, title, lang] = match ?? [];
-      if (!title || !lang || !SITE.languages.includes(lang)) {
-        throw new ContentError(
-          `"${translation.title}": translation titles must end with (${SITE.languages
-            .filter((lang) => lang !== SITE.originalLanguage)
-            .join("|")})`,
-        );
-      }
       if (child.children.length > 0) {
         throw new ContentError(
           `"${translation.title}": translations cannot have child documents`,
         );
       }
       const split = splitMetadata(translation);
+      const lang = takeLang(translation, split.data);
+      if (files.some((file) => file.lang === lang)) {
+        throw new ContentError(
+          `"${translation.title}": "${original.title}" already has a ${lang} version`,
+        );
+      }
       const overrides = readMeta(translation, split.data, TRANSLATION_FIELDS);
       files.push({
         slug: base.routeSlug,
         lang,
-        title: title.trim(),
+        title: translation.title.trim(),
         meta: { ...base, excerpt: "", ...overrides },
         body: normalizeBody(split.body),
         source: translation.title,

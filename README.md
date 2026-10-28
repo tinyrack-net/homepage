@@ -25,9 +25,9 @@ This repository contains the Tinyrack homepage, built with React Router and popu
 
 Articles live in Outline under `Articles / tinyrack` (notes.winetree94.com), not in this repository. Pages (`content/pages`) and tags (`content/tags`) stay here.
 
-- The Korean original is the article document; translations are child documents titled `<title> (en)` or `<title> (ja)`.
+- The original is the article document; translations are its child documents. Document titles are used as-is.
 - Drafts are unpublished Outline documents and are never deployed.
-- Each body starts with a `yaml` block. The original holds `routeSlug`, `publishedAt`, `updatedAt`, `tags`, `featureImage`, `commentsTerm`, and `excerpt`; translations only override `publishedAt`, `updatedAt`, or `excerpt`.
+- Each body starts with a `yaml` block. Every document declares its language with `lang` (for example `lang: "en"`). The original also holds `routeSlug`, `publishedAt`, `updatedAt`, `tags`, `featureImage`, `commentsTerm`, and `excerpt`; translations may only override `publishedAt`, `updatedAt`, or `excerpt` and inherit the rest.
 - `pnpm content:pull` converts them into `content/articles/<slug>/<lang>.md` (gitignored). Tests use `pnpm content:fixtures` instead.
 
 To publish content-only changes, run the **Web Deployment** workflow manually:
