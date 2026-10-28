@@ -18,6 +18,10 @@ jobs:
     permissions:
       contents: read
 
+    env:
+      # Pushes to main and manual runs on main deploy; pull requests only test.
+      DEPLOY: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -38,6 +42,9 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
 
+      - name: Use fixture articles
+        run: pnpm run content:fixtures
+
       - name: Run test suite
         run: pnpm run test:ci
 
@@ -52,8 +59,26 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      - name: Restore Outline attachment cache
+        if: env.DEPLOY == 'true'
+        uses: actions/cache@v6.1.0
+        with:
+          path: .outline-cache
+          key: outline-attachments-${{ github.run_id }}
+          restore-keys: outline-attachments-
+
+      - name: Pull articles from Outline
+        if: env.DEPLOY == 'true'
+        run: pnpm run content:pull
+        env:
+          OUTLINE_API_KEY: ${{ secrets.OUTLINE_API_KEY }}
+
+      - name: Build web with Outline articles
+        if: env.DEPLOY == 'true'
+        run: pnpm run build
+
       - name: Deploy to Cloudflare
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: env.DEPLOY == 'true'
         run: pnpm run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

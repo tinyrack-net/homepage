@@ -1,18 +1,18 @@
 ---
 title: "또 다른 작은 오픈소스 KVM, Openterface"
-excerpt: "이 제품은 제조사로부터 무상으로 대여받았습니다.\n본 리뷰는 제조사의 가이드라인 없이 진솔하게 진행됨을 알려드립니다.\n\n일전에 유튜브에 Sipeed NanoKVM 이란 KVM 제품의 리뷰 영상을 올렸었는데, 얼마 뒤 한 메일이 도착했어요.\n\nI hope this message finds you well. My name is Billy Wang, founder of TecxArtisan and product manager of Openterface. I’m reaching out to introduce our latest Open-source gadget, the Openterface Mini-KVM, a KVM-over-USB gadget we’ve been developing for the past year. We’d love the opportunity to send you an Openterface Mini-KVM Toolkit for your review. We are keen"
+excerpt: "이 제품은 제조사로부터 무상으로 대여받았습니다. 본 리뷰는 제조사의 가이드라인 없이 진솔하게 진행됨을 알려드립니다."
 lang: "ko"
 routeSlug: "openterface-mini-kvm"
 translationKey: "openterface-mini-kvm"
-featureImage: "./attachments/1013207.JPG"
-updatedAt: "2025-06-09T01:54:52.000+09:00"
 publishedAt: "2025-05-19T16:38:16.000+09:00"
+updatedAt: "2025-06-09T01:54:52.000+09:00"
+tags: ["news", "hardware"]
+featureImage: "./attachments/1013207.JPG"
 commentsTerm: "6828d3c2b90f9500013b4d02"
-tags:
-  - "news"
-  - "hardware"
+draft: false
 ---
-> 이 제품은 제조사로부터 무상으로 대여받았습니다.<br />
+
+> 이 제품은 제조사로부터 무상으로 대여받았습니다.\
 > 본 리뷰는 제조사의 가이드라인 없이 진솔하게 진행됨을 알려드립니다.
 
 일전에 유튜브에 [Sipeed NanoKVM](https://youtu.be/xJJvupLO9uM?si=ZdVAuVIvlGXQTKVr&ref=tinyrack.net) 이란 KVM 제품의 리뷰 영상을 올렸었는데, 얼마 뒤 한 메일이 도착했어요.
@@ -21,7 +21,7 @@ tags:
 
 TecxArtisan 란 회사에서 Openterface 라는 오픈소스 USB KVM을 만들었는데 한번 리뷰해 보지 않겠냐는 내용이었는데요. 광고료를 받는 것도 아니고 리뷰의 가이드라인이 정해져 있는 것도 아니여서 흔쾌히 수락하게 되었어요.
 
-* * *
+***
 
 # 패키징과 외관
 
@@ -35,15 +35,15 @@ TecxArtisan 란 회사에서 Openterface 라는 오픈소스 USB KVM을 만들�
 
 Openterface 본품 키트는 다음의 구성을 가지고 있어요.
 
-- 가방
-- 제품 본체
-- Openterface 와 호스트 연결용 USB 케이블
-- Openterface 와 타겟 연결용 USB 케이블
-- Openterface 와 타겟 연결용 HDMI 케이블
-- 기타
-    -   본체의 확장 핀을 제어할 수 있는 여분의 교체용 캡
-    -   퀵 스타트 가이드
-    -   각종 스티커
+* 가방
+* 제품 본체
+* Openterface 와 호스트 연결용 USB 케이블
+* Openterface 와 타겟 연결용 USB 케이블
+* Openterface 와 타겟 연결용 HDMI 케이블
+* 기타
+  * 본체의 확장 핀을 제어할 수 있는 여분의 교체용 캡
+  * 퀵 스타트 가이드
+  * 각종 스티커
 
 먼저, USB 방식의 KVM은 특성상 케이블이 주렁주렁 달릴 수 밖에 없는데 단일 가방으로 깔끔하게 가지고 다닐 수 있게 구성한 것은 마음에 든 부분이에요.
 
@@ -59,7 +59,7 @@ Openterface 본체의 경우 메탈 재질로 되어 있고 각종 인증 마크
 
 사용을 위해 연결을 구성하면 이런 모습이에요. USB는 C타입과 A타입에서 모두 사용할 수 있도록 변환 젠더가 구성되어 있어요.
 
-* * *
+***
 
 # 가격
 
@@ -71,15 +71,15 @@ Openterface 는 현재 크라우드 펀딩 방식으로 판매하고 있는데, 
 
 현재 Openterface 는 세가지 키트 구성으로 판매되고 있는데, 옵션별 구성과 가격은 다음과 같아요.
 
-- 제품 본체만: $89
-- 가방 및 케이블이 동봉된 키트: $115
-- VGA to HDMI 컨버터 키트: $25
+* 제품 본체만: $89
+* 가방 및 케이블이 동봉된 키트: $115
+* VGA to HDMI 컨버터 키트: $25
 
 일단 본체 단품과 키트 구성의 가격의 차이가 크지 않아서 저라면 키트를 구매할 것 같기는 한데 전체적으로 꽤 비싸다고 생각해요. 작은 업체에다 수요가 많지 않은 분야라 가성비가 좋기는 힘들다 생각하지만 그럼에도 가격이 높은 편이에요.
 
 경쟁 모델이라 볼 수 있는 [NanoKVM USB](https://wiki.sipeed.com/hardware/en/kvm/NanoKVM_USB/introduction.html?ref=tinyrack.net) 모델이 얼마 전 비슷한 키트 구성으로 한화 약 77,000원 정도에 출시했는데요. 이것과 비교하면 두배 정도 차이가 나니 기능적 우위가 없다면 이걸 선택하긴 어렵겠다는 생각이 들었어요.
 
-* * *
+***
 
 # 오픈소스
 
@@ -95,7 +95,7 @@ Openterface 는 완전한 오픈소스 하드웨어/소프트웨어를 지향해
 
 아직 Openterface 의 소프트웨어를 직접 사용하기 전이지만, 다행히 개발 활동은 활발해 보여요. 이런 제품은 소프트웨어 지원이 중요해서 앞으로도 적극적으로 개발이 진행되었으면 하는 바램이에요.
 
-* * *
+***
 
 # 소프트웨어
 
@@ -129,13 +129,13 @@ Openterface 는 완전한 오픈소스 하드웨어/소프트웨어를 지향해
 
 그래서 제가 Openterface 에게 기대하는 것은 어떻게 연결을 하든 일단 제대로 동작할 수 있는가에요. 그래서 다음의 상황들을 테스트 해봤어요.
 
-- 중간에 호스트 케이블 재연결 => 동작
-- 타겟의 마우스/키보드 USB 케이블 재연결 => 동작
-- 타겟의 디스플레이 케이블 재연결 => 동작
-- 타겟의 케이블들만 꽂인 상태에서 호스트 연결 => 동작
-- 호스트만 연결된 상태에서 타겟 케이블들 연결 => 동작
-- 전원이 꺼진 상태에서 연결 후 부팅했을 때 바이오스 진입 => 동작
-- 전원 켜진 상태에서 연결 후 재부팅했을 때 바이오스 진입 => 동작
+* 중간에 호스트 케이블 재연결 => 동작
+* 타겟의 마우스/키보드 USB 케이블 재연결 => 동작
+* 타겟의 디스플레이 케이블 재연결 => 동작
+* 타겟의 케이블들만 꽂인 상태에서 호스트 연결 => 동작
+* 호스트만 연결된 상태에서 타겟 케이블들 연결 => 동작
+* 전원이 꺼진 상태에서 연결 후 부팅했을 때 바이오스 진입 => 동작
+* 전원 켜진 상태에서 연결 후 재부팅했을 때 바이오스 진입 => 동작
 
 테스트 환경이 너무 당연한 기능이라 생각하실 수 있지만, 생각보다 이게 잘 안되는 제품들이 있어요. KVM은 여러 선이 복잡하게 연결되어야 하는데, 특별한 순서로 연결해야만 제대로 동작한다면 너무 피곤해지거든요.
 
@@ -173,14 +173,14 @@ sudo udevadm trigger
 
 그런데 이런 저런 시도를 해보다 결국은 리눅스에서의 Openterface 사용을 포기했어요. 잠깐씩 연결이 가능할 때도 있었지만 대부분의 상황에서 다음과 같은 문제가 발생해 실제 사용이 어려웠어요.
 
-- 설명대로 진행해도 Serial 관련 권한 오류 발생, root 권한으로 실행해야 동작
-- 옵션을 이리 저리 변경해도 화면 출력 불가
-- 펌웨어 업데이트 기능 동작 불가
-- 사용중 앱 크래시
+* 설명대로 진행해도 Serial 관련 권한 오류 발생, root 권한으로 실행해야 동작
+* 옵션을 이리 저리 변경해도 화면 출력 불가
+* 펌웨어 업데이트 기능 동작 불가
+* 사용중 앱 크래시
 
 그래서 현시점에서는 리눅스 지원이 제대로 되고 있다고 보기는 힘들어요. 이 부분은 더 많은 개선이 필요하다고 생각해요.
 
-* * *
+***
 
 # 정리
 

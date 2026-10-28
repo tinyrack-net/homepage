@@ -4,15 +4,15 @@ excerpt: "This product was loaned to me free of charge by the manufacturer. This
 lang: "en"
 routeSlug: "openterface-mini-kvm"
 translationKey: "openterface-mini-kvm"
-featureImage: "./attachments/1013207.JPG"
-updatedAt: "2025-06-09T01:54:52.000+09:00"
 publishedAt: "2025-05-19T16:38:16.000+09:00"
+updatedAt: "2025-06-09T01:54:52.000+09:00"
+tags: ["news", "hardware"]
+featureImage: "./attachments/1013207.JPG"
 commentsTerm: "6828d3c2b90f9500013b4d02"
-tags:
-  - "news"
-  - "hardware"
+draft: false
 ---
-> This product was loaned to me free of charge by the manufacturer.<br />
+
+> This product was loaned to me free of charge by the manufacturer.\
 > This review was written honestly without review guidelines from the manufacturer.
 
 I previously uploaded a review video of the [Sipeed NanoKVM](https://youtu.be/xJJvupLO9uM?si=ZdVAuVIvlGXQTKVr&ref=tinyrack.net) on YouTube. A little while later, I received an email.
@@ -21,7 +21,7 @@ I previously uploaded a review video of the [Sipeed NanoKVM](https://youtu.be/xJ
 
 TecxArtisan had made an open-source USB KVM called Openterface and asked whether I would review it. There was no advertising fee and no review guideline, so I gladly accepted.
 
-* * *
+***
 
 # Packaging and Exterior
 
@@ -35,15 +35,15 @@ The package I received looked like this. It was divided into the main kit, which
 
 The Openterface main kit includes:
 
-- Carrying bag
-- Main device
-- USB cable for connecting Openterface to the host
-- USB cable for connecting Openterface to the target
-- HDMI cable for connecting Openterface to the target
-- Extras
-  - Spare replaceable caps for controlling the expansion pins
-  - Quick start guide
-  - Various stickers
+* Carrying bag
+* Main device
+* USB cable for connecting Openterface to the host
+* USB cable for connecting Openterface to the target
+* HDMI cable for connecting Openterface to the target
+* Extras
+  * Spare replaceable caps for controlling the expansion pins
+  * Quick start guide
+  * Various stickers
 
 USB KVMs inevitably involve many cables, so I liked that everything could be carried neatly in a single bag.
 
@@ -59,7 +59,7 @@ The Openterface body is made of metal and includes certification marks and a dia
 
 This is what it looks like when connected for use. USB adapters are included so it can be used with both Type-C and Type-A ports.
 
-* * *
+***
 
 # Price
 
@@ -71,15 +71,15 @@ Fortunately, Openterface appears to be producing real units and delivering them 
 
 Openterface is sold in three kit configurations:
 
-- Main device only: $89
-- Kit with bag and cables: $115
-- VGA-to-HDMI converter kit: $25
+* Main device only: $89
+* Kit with bag and cables: $115
+* VGA-to-HDMI converter kit: $25
 
 The price difference between the main device and the kit is not large, so I would probably buy the kit. Overall, though, I think it is fairly expensive. It is difficult for a small company in a niche market to offer strong value, but the price is still high.
 
 The competing [NanoKVM USB](https://wiki.sipeed.com/hardware/en/kvm/NanoKVM_USB/introduction.html?ref=tinyrack.net) was recently released with a similar kit for about 77,000 KRW. Compared with that, Openterface is roughly twice as expensive, so I would hesitate unless it had a clear functional advantage.
 
-* * *
+***
 
 # Open Source
 
@@ -95,7 +95,7 @@ Open source can look like an angelic decision from the manufacturer, but that is
 
 I have not yet used Openterface's software deeply, but development activity looks active. Software support is important for this kind of product, so I hope active development continues.
 
-* * *
+***
 
 # Software
 
@@ -129,13 +129,13 @@ If the goal is gaming or remote desktop use, a KVM is probably not the right too
 
 What I wanted from Openterface was simple: no matter how I connected it, would it work reliably? I tested these situations:
 
-- Reconnecting the host cable during use: worked
-- Reconnecting the target mouse and keyboard USB cable: worked
-- Reconnecting the target display cable: worked
-- Connecting the host after only the target cables were plugged in: worked
-- Connecting the target cables after only the host was connected: worked
-- Entering BIOS after connecting while powered off and then booting: worked
-- Entering BIOS after connecting while powered on and then rebooting: worked
+* Reconnecting the host cable during use: worked
+* Reconnecting the target mouse and keyboard USB cable: worked
+* Reconnecting the target display cable: worked
+* Connecting the host after only the target cables were plugged in: worked
+* Connecting the target cables after only the host was connected: worked
+* Entering BIOS after connecting while powered off and then booting: worked
+* Entering BIOS after connecting while powered on and then rebooting: worked
 
 These may sound like obvious scenarios, but some products fail them. A KVM already requires several cables, and if it only works when connected in a special order, it becomes exhausting.
 
@@ -173,14 +173,14 @@ The disappointing part is that after installing the package, users still need to
 
 After trying several things, I eventually gave up using Openterface on Linux. It connected briefly at times, but most situations had problems that made real use difficult.
 
-- Serial permission errors occurred even after following the instructions, requiring root privileges
-- Display output did not work even after changing options
-- Firmware update did not work
-- The app crashed during use
+* Serial permission errors occurred even after following the instructions, requiring root privileges
+* Display output did not work even after changing options
+* Firmware update did not work
+* The app crashed during use
 
 At this point, I do not think Linux support is in good shape. This area needs a lot more improvement.
 
-* * *
+***
 
 # Conclusion
 
