@@ -49,9 +49,6 @@ node_modules
 
 .opencode
 
-# Obsidian local workspace state
-content/.obsidian/*
-!content/.obsidian/core-plugins.json
 
 # Hermes agent workspace
 .hermes/
