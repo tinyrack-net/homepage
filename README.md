@@ -47,7 +47,7 @@ Articles live in the Outline collection `Blog: tinyrack` (notes.winetree94.com),
 - The image is required in the original and optional in translations, which otherwise reuse it.
 - Every document declares its language with `lang`. The original also holds `routeSlug`, `publishedAt`, `updatedAt`, `tags`, `commentsTerm`, and `excerpt`; translations may only override `publishedAt`, `updatedAt`, or `excerpt` and inherit the rest.
 - `pnpm content:pull` converts published documents into `content/articles/<slug>/<lang>.md` (gitignored). Tests use `pnpm content:fixtures` instead.
-- `pnpm content:check` validates every document, drafts included, without writing files. Run it before publishing.
+- `pnpm content:check` validates published documents without writing files. Drafts are skipped unless passed explicitly: `pnpm content:check <document id or URL>...` also validates those drafts and their draft translations. Run it on a draft before publishing.
 
 To publish content-only changes, run the **Web Deployment** workflow manually:
 

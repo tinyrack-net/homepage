@@ -7,9 +7,11 @@
  * declares `lang`, and a `---` divider; see README.md and content-format.ts.
  *
  * Usage:
- *   OUTLINE_API_KEY=... node scripts/content-pull.ts          # published only
- *   OUTLINE_API_KEY=... node scripts/content-pull.ts --check  # validate all,
- *                                                     including drafts; no writes
+ *   OUTLINE_API_KEY=... node scripts/content-pull.ts          # write published
+ *   OUTLINE_API_KEY=... node scripts/content-pull.ts --check  # validate
+ *                                                     published; no writes
+ *   ... --check <document id or URL>...   # also validate these drafts and
+ *                                           their draft translations
  */
 import {
   cpSync,
@@ -48,6 +50,10 @@ const OUTLINE_API_KEY = process.env.OUTLINE_API_KEY;
 const CACHE_DIR = ".outline-cache/attachments";
 const CONCURRENCY = 6;
 const CHECK = process.argv.includes("--check");
+/** Drafts to validate in check mode, as Outline ids, url ids or URLs. */
+const DRAFT_TARGETS = process.argv
+  .slice(2)
+  .filter((arg) => !arg.startsWith("--"));
 
 // ---------------------------------------------------------------------------
 // Metadata
@@ -115,24 +121,44 @@ async function api<T>(method: string, body: unknown): Promise<T> {
   return ((await response.json()) as { data: T }).data;
 }
 
+/** Resolve an Outline id, url id or document URL to the document id. */
+async function resolveDocumentId(target: string): Promise<string> {
+  const path = /\/doc\/([^/?#]+)/.exec(target)?.[1] ?? target;
+  const id =
+    path.includes("-") && path.length !== 36 ? path.split("-").pop() : path;
+  return (await api<OutlineDocument>("documents.info", { id })).id;
+}
+
 /**
- * The collection tree only lists published documents. When checking, attach
- * the collection's drafts to it: drafts without a parent are new articles,
- * the rest belong under their parent (usually draft translations).
+ * The collection tree only lists published documents. When checking specific
+ * drafts, attach them to it: drafts without a parent are new articles, the
+ * rest belong under their parent (usually draft translations). Other drafts
+ * are ignored.
  */
 async function withDrafts(tree: OutlineNode[]): Promise<OutlineNode[]> {
-  const drafts: OutlineDocument[] = [];
+  if (DRAFT_TARGETS.length === 0) {
+    return tree;
+  }
+  const targets = new Set(
+    await Promise.all(DRAFT_TARGETS.map((target) => resolveDocumentId(target))),
+  );
+  const all: OutlineDocument[] = [];
   for (let offset = 0; ; offset += 100) {
     const page = await api<OutlineDocument[]>("documents.drafts", {
       collectionId: SITE.collectionId,
       limit: 100,
       offset,
     });
-    drafts.push(...page);
+    all.push(...page);
     if (page.length < 100) {
       break;
     }
   }
+  const drafts = all.filter(
+    (draft) =>
+      targets.has(draft.id) ||
+      (draft.parentDocumentId && targets.has(draft.parentDocumentId)),
+  );
   const nodes = new Map<string, OutlineNode>();
   const index = (list: OutlineNode[]) => {
     for (const node of list) {
@@ -576,7 +602,7 @@ async function main() {
   const fileCount = articles.reduce((sum, files) => sum + files.length, 0);
   if (CHECK) {
     console.log(
-      `Checked ${articles.length} articles (${fileCount} files, drafts included): no problems`,
+      `Checked ${articles.length} articles (${fileCount} files, ${DRAFT_TARGETS.length} draft targets): no problems`,
     );
     return;
   }
