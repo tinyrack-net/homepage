@@ -4,20 +4,21 @@ excerpt: "Originally, every Tinyrack service ran from my home. Then I had to mov
 lang: "en"
 routeSlug: "tinyrack-infra-has-moved-to-the-cloud"
 translationKey: "tinyrack-infra-has-moved-to-the-cloud"
-featureImage: "./attachments/2fd8ca67dd8f68ce6673f5557f361436ca59a7f1-2-690x397.jpeg"
-updatedAt: "2025-06-30T01:27:06.000+09:00"
 publishedAt: "2025-06-30T01:23:06.000+09:00"
+updatedAt: "2025-06-30T01:27:06.000+09:00"
+tags: ["news"]
+featureImage: "./attachments/2fd8ca67dd8f68ce6673f5557f361436ca59a7f1-2-690x397.jpeg"
 commentsTerm: "685fa13e3a6f090064951b6d"
-tags:
-  - "news"
+draft: false
 ---
+
 Originally, every Tinyrack service ran directly from my home. The project was still young and traffic was not high, so I expected that I could handle it without much trouble.
 
 Then I had to move. That meant service interruption, and I started to worry. After thinking through several options, I concluded that servers used by people other than myself should run reliably in an external cloud, even if my personal-use servers stayed at home.
 
 In the end, I rented a virtual machine from Hetzner Cloud and rebuilt the infrastructure with Kubernetes. I want to introduce that process here.
 
-* * *
+***
 
 # Choosing a Cloud Service
 
@@ -49,17 +50,17 @@ If this page or my [forum](https://forum.tinyrack.net/?ref=tinyrack.net) does no
 
 The server configuration and price I finally chose are:
 
-- Virtual server type: Dedicated vCPU
-- CPU: 4 cores
-- RAM: 16GB
-- Storage: 160GB
-- Free traffic: 20TB
-- OS: Ubuntu 24.04
-- Price: $26.49 per month
+* Virtual server type: Dedicated vCPU
+* CPU: 4 cores
+* RAM: 16GB
+* Storage: 160GB
+* Free traffic: 20TB
+* OS: Ubuntu 24.04
+* Price: $26.49 per month
 
 The current specification is a little higher than my requirements, but Hetzner supports downgrades as long as the storage size is the same. I plan to adjust it later if needed.
 
-* * *
+***
 
 # Building the Service
 
@@ -95,7 +96,7 @@ After much trial and error, I completed the Kubernetes infrastructure. I then re
 
 I thought it would be useful to leave the process as open source so others could refer to it, so I published the [GitHub project](https://github.com/tinyrack-net/infrastructure?ref=tinyrack.net). If you are curious about my work or want to build a homelab with Kubernetes, take a look.
 
-* * *
+***
 
 # Security Strategy
 
@@ -107,7 +108,7 @@ This time I applied a zero-trust security strategy. In short, it means distrusti
 
 The strategy is to minimize public IP exposure and, even if exposed, block all network requests. There is no perfect security method, but I expect this to be enough to defend against most network-level attacks.
 
-* * *
+***
 
 # Data Protection
 
@@ -117,15 +118,15 @@ Expensive managed clouds usually handle database and storage backups, so there i
 
 I applied the [3-2-1 backup strategy](https://experience.dropbox.com/ko-kr/resources/3-2-1-backup-strategy?ref=tinyrack.net), which means:
 
-- Keep at least two backups in addition to the original data
-- Store one backup on a physically different device
-- Store one backup in a physically different region
+* Keep at least two backups in addition to the original data
+* Store one backup on a physically different device
+* Store one backup in a physically different region
 
 To achieve this, all service data is backed up periodically to my homelab storage server, and then backed up again to an overseas storage server.
 
 If the server fails, as long as either the German or Korean backup exists, the service can be restored normally. That should be safe enough.
 
-* * *
+***
 
 # Next Steps
 

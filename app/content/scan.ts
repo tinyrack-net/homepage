@@ -34,7 +34,12 @@ export function toMediaUrl(
 function readGroup(
   contentDir: string,
   collection: "articles" | "pages",
-): { slug: string; lang: SupportedLanguageCodes; file: string }[] {
+): {
+  slug: string;
+  lang: SupportedLanguageCodes;
+  file: string;
+  routeFile: string;
+}[] {
   const collectionDir = join(contentDir, collection);
   if (!existsSync(collectionDir)) {
     return [];
@@ -44,20 +49,29 @@ function readGroup(
     (entry) => entry.isDirectory(),
   );
 
-  const files: { slug: string; lang: SupportedLanguageCodes; file: string }[] =
-    [];
+  const files: {
+    slug: string;
+    lang: SupportedLanguageCodes;
+    file: string;
+    routeFile: string;
+  }[] = [];
 
   for (const group of groups) {
     const groupDir = join(collectionDir, group.name);
     for (const file of readdirSync(groupDir)) {
-      if (!file.endsWith(".mdx")) {
+      // `.md` is plain markdown (articles pulled from Outline); `.mdx` may
+      // use components (hand-written pages).
+      const match = /^(.+)\.mdx?$/.exec(file);
+      const lang = match?.[1];
+      if (!lang || !isLang(lang)) {
         continue;
       }
-      const lang = file.replace(/\.mdx$/, "");
-      if (!isLang(lang)) {
-        continue;
-      }
-      files.push({ slug: group.name, lang, file: join(groupDir, file) });
+      files.push({
+        slug: group.name,
+        lang,
+        file: join(groupDir, file),
+        routeFile: `${collection}/${group.name}/${file}`,
+      });
     }
   }
 
@@ -68,14 +82,14 @@ export function scanContent(root: string): BlogManifest {
   const contentDir = join(root, "content");
 
   const articles: ArticleEntry[] = readGroup(contentDir, "articles").map(
-    ({ slug, lang, file }) => {
+    ({ slug, lang, file, routeFile }) => {
       const { data } = matter(readFileSync(file, "utf8"));
       const routeSlug = String(data["routeSlug"] ?? slug);
       return {
         collection: "articles",
         id: `articles/${slug}/${lang}`,
         slug,
-        routeFile: `articles/${slug}/${lang}.mdx`,
+        routeFile,
         path: getContentPath(lang, routeSlug),
         data: {
           title: String(data["title"] ?? ""),
@@ -99,14 +113,14 @@ export function scanContent(root: string): BlogManifest {
   );
 
   const pages: PageEntry[] = readGroup(contentDir, "pages").map(
-    ({ slug, lang, file }) => {
+    ({ slug, lang, file, routeFile }) => {
       const { data } = matter(readFileSync(file, "utf8"));
       const routeSlug = String(data["routeSlug"] ?? slug);
       return {
         collection: "pages",
         id: `pages/${slug}/${lang}`,
         slug,
-        routeFile: `pages/${slug}/${lang}.mdx`,
+        routeFile,
         path: getContentPath(lang, routeSlug),
         data: {
           title: String(data["title"] ?? ""),

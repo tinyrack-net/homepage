@@ -8,6 +8,14 @@ declare module "*.mdx" {
   ): JSX.Element;
 }
 
+declare module "*.md" {
+  import type { JSX } from "react";
+
+  export default function MdContent(
+    props: Record<string, unknown>,
+  ): JSX.Element;
+}
+
 declare module "virtual:blog/manifest" {
   // Inline import: a top-level `import type` inside an ambient module block
   // does not resolve here, and `skipLibCheck` hides that failure, which

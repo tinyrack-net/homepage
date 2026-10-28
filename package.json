@@ -13,6 +13,8 @@
     "i18n:compile": "paraglide-js compile --project ./project.inlang --outdir ./app/i18n/paraglide --strategy baseLocale --emit-ts-declarations",
     "preview": "vite preview",
     "typegen": "react-router typegen",
+    "content:pull": "node scripts/content-pull.ts",
+    "content:fixtures": "node scripts/content-fixtures.ts",
     "typecheck": "pnpm i18n:compile && pnpm typecheck:app",
     "typecheck:app": "react-router typegen && tsc --noEmit",
     "deploy": "wrangler deploy",
@@ -69,6 +71,7 @@
     "unist-util-visit": "^5.1.0",
     "vite": "8.3.4",
     "vitest": "^5.0.5",
-    "wrangler": "4.151.1"
+    "wrangler": "4.151.1",
+    "yaml": "^2.9.1"
   }
 }

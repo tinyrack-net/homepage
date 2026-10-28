@@ -60,3 +60,7 @@ paseo.json
 
 # Output of scripts/shoot.mjs
 .screenshots/
+
+# Articles are pulled from Outline (pnpm content:pull) or fixtures (pnpm content:fixtures)
+/content/articles/
+/.outline-cache/

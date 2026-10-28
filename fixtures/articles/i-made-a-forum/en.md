@@ -4,24 +4,25 @@ excerpt: "One of my goals was to create a forum where people who enjoy homelabs 
 lang: "en"
 routeSlug: "i-made-a-forum"
 translationKey: "i-made-a-forum"
-featureImage: "./attachments/screenshot-from-2025-05-16-08-52-47.png"
-updatedAt: "2025-05-20T03:02:14.000+09:00"
 publishedAt: "2025-05-20T02:00:00.000+09:00"
+updatedAt: "2025-05-20T03:02:14.000+09:00"
+tags: ["news"]
+featureImage: "./attachments/screenshot-from-2025-05-16-08-52-47.png"
 commentsTerm: "682379548bc8bb0001e480fc"
-tags:
-  - "news"
+draft: false
 ---
+
 One of my goals was to create a forum where people who enjoy homelabs can gather and talk. The forum is now mostly ready, so I want to introduce it and the process behind building it.
 
 There are many ways to build a forum, but before choosing the method I started by defining the value I wanted to provide.
 
-- Structured guide documents for building a homelab
-- A place where homelab users can communicate
-- A place where users can help each other solve problems
+* Structured guide documents for building a homelab
+* A place where homelab users can communicate
+* A place where users can help each other solve problems
 
 After deciding on those goals, I started looking at forum engines.
 
-* * *
+***
 
 # Choosing a Forum Engine
 
@@ -33,7 +34,7 @@ The overseas forum engines, on the other hand, felt like products made specifica
 
 I also realized that many forums I already knew or had visited were based on `Discourse`. It is used by many companies and appears to be well maintained, so I decided to use it.
 
-* * *
+***
 
 # Installation
 
@@ -57,7 +58,7 @@ Software distributed with Docker usually has the advantage of a consistent and e
 
 After some trial and error, the installation itself finished without much trouble. I then connected it to my reverse proxy, configured the domain and SSL certificate, and completed the setup.
 
-* * *
+***
 
 # Configuration
 
@@ -65,12 +66,12 @@ After some trial and error, the installation itself finished without much troubl
 
 After installation, I noticed a few missing features. I looked through the [official forum plugin page](https://meta.discourse.org/c/plugin/22?ref=tinyrack.net), installed and tested several plugins, and eventually chose these:
 
-- Apple Auth: Apple login support, while Google and GitHub are already supported
-- Doc Category: shows a document table of contents in the sidebar
-- RSS Polling: automatically imports blog posts into Discourse
-- Solved: lets users mark a solution for question posts
-- Mermaid: supports [Mermaid](https://mermaid.js.org/?ref=tinyrack.net) diagrams in the editor
-- Reactions: lets users react to posts with emoji
+* Apple Auth: Apple login support, while Google and GitHub are already supported
+* Doc Category: shows a document table of contents in the sidebar
+* RSS Polling: automatically imports blog posts into Discourse
+* Solved: lets users mark a solution for question posts
+* Mermaid: supports [Mermaid](https://mermaid.js.org/?ref=tinyrack.net) diagrams in the editor
+* Reactions: lets users react to posts with emoji
 
 My favorite feature was the integration with the blog. By combining Discourse Embed and the RSS Polling plugin, blog posts can be imported into Discourse automatically, and the blog can display comments from the linked Discourse topic. I found this kind of bidirectional integration fascinating.
 
@@ -78,19 +79,19 @@ My favorite feature was the integration with the blog. By combining Discourse Em
 
 After configuring plugins, I changed the options I needed:
 
-- Branding, including name and logo
-- Landing page setup
-- Third-party login settings
-- Sign-up terms
-- Font changes
-- Blog integration
-- Translation improvements
+* Branding, including name and logo
+* Landing page setup
+* Third-party login settings
+* Sign-up terms
+* Font changes
+* Blog integration
+* Translation improvements
 
 Almost every Discourse option can be adjusted from the admin page, which was convenient. After the initial setup, I do not expect to use the terminal often unless something breaks.
 
 One downside was that, because it was made overseas, many Korean translations were missing or awkward. Fixing those took a fair amount of time. If possible, I would like to contribute translation improvements back to the Discourse source later.
 
-* * *
+***
 
 # Done!
 
@@ -98,23 +99,23 @@ One downside was that, because it was made overseas, many Korean translations we
 
 The forum is now mostly ready. There are still many posts left to write, but I think it will become a better forum as it fills up. Based on my experience so far, these are the strengths of Discourse:
 
-- The built-in search is excellent.
-- Search engine optimization is well handled.
-- The UI and UX are polished.
-- It has many good writing features, including Markdown, HTML, and Mermaid.
-- It integrates well with other apps, including embedded comments and RSS polling.
-- Site backup and restoration are easy.
-- Third-party login through OAuth is easy to integrate.
+* The built-in search is excellent.
+* Search engine optimization is well handled.
+* The UI and UX are polished.
+* It has many good writing features, including Markdown, HTML, and Mermaid.
+* It integrates well with other apps, including embedded comments and RSS polling.
+* Site backup and restoration are easy.
+* Third-party login through OAuth is easy to integrate.
 
 Of course, there are also some downsides:
 
-- Discourse is a thread-style forum rather than a traditional board-style forum, which may feel unfamiliar in Korea.
-- Many Korean translations are incomplete, although most text can be customized by the site administrator.
-- It only has a Markdown editor. I think this is not ideal for Korean users who are more comfortable with a [WYSIWYG editor](https://ko.wikipedia.org/wiki/%EC%9C%84%EC%A7%80%EC%9C%84%EA%B7%B8?ref=tinyrack.net). Recent versions include an experimental WYSIWYG editor, but it still had many bugs.
+* Discourse is a thread-style forum rather than a traditional board-style forum, which may feel unfamiliar in Korea.
+* Many Korean translations are incomplete, although most text can be customized by the site administrator.
+* It only has a Markdown editor. I think this is not ideal for Korean users who are more comfortable with a [WYSIWYG editor](https://ko.wikipedia.org/wiki/%EC%9C%84%EC%A7%80%EC%9C%84%EA%B7%B8?ref=tinyrack.net). Recent versions include an experimental WYSIWYG editor, but it still had many bugs.
 
 The editor issue was the most disappointing point. It could become a big barrier for non-developer users writing posts, so I hope the WYSIWYG editor becomes an official feature soon.
 
-* * *
+***
 
 # Closing
 

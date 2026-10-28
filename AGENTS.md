@@ -6,7 +6,9 @@
 - The default locale (`en`) is served at the **unprefixed root**; `ja`/`ko` are prefixed (`/ja/…`, `/ko/…`). Do NOT introduce `/en/…` routes. All list/detail URLs carry a trailing slash. Three locales: `en` (default), `ja`, `ko`.
 
 ## Source Of Truth
-- Content is MDX under `content/{articles,pages}/<slug>/{en,ja,ko}.mdx` plus `content/tags/*.json`. Images live in each group's `attachments/` folder and are served at `/media/<collection>/<slug>/<file>`.
+- Content lives under `content/{articles,pages}/<slug>/{en,ja,ko}.{md,mdx}` plus `content/tags/*.json`. Images live in each group's `attachments/` folder and are served at `/media/<collection>/<slug>/<file>`.
+- Articles are authored in Outline (`Articles / tinyrack` on notes.winetree94.com), not in this repo. `content/articles` is generated plain markdown (`.md`) and gitignored: `pnpm content:pull` (needs `OUTLINE_API_KEY`) writes the real articles, `pnpm content:fixtures` copies the test fixtures from `fixtures/articles`. Never edit generated article files; fix the article in Outline or the converter in `scripts/content-pull.ts`. Article tags must exist in `content/tags`.
+- Pages (`content/pages`) are still hand-written MDX in this repo.
 - `app/content/scan.ts` scans the filesystem (frontmatter via gray-matter) into a manifest exposed to runtime as the virtual module `virtual:blog/manifest` (see `app/vite/blog-content.ts`). `app/lib/content.ts` is the query layer over it — update it for sorting, draft filtering, or tag navigation.
 - Routing depends on frontmatter `lang`, `routeSlug`, `translationKey` (articles also need `publishedAt`, `commentsTerm`). Tags with slug `en`/`ja`/`ko` are reserved language tags and are filtered out of navigation.
 - `app/content/routes-plan.ts` (`planRoutes`) is the single source for which URLs exist; it drives `app/routes.ts`, the prerender list (`react-router.config.ts`), and the sitemap. A unit test locks the "no `/en/`, root = English" contract.
@@ -23,6 +25,7 @@
 - `rss.xml`, `robots.txt`, `sitemap.xml`, `404.html`, and `media/` are emitted at build time in `app/build/finalize.ts` (`buildEnd`), NOT as runtime routes (`ssr: false`).
 
 ## Commands
+- `pnpm content:pull` / `pnpm content:fixtures` — populate `content/articles` before `dev`, `build`, or tests; otherwise there are no articles.
 - `pnpm dev` — React Router dev server on `:8432`.
 - `pnpm build` — the Vite brand-assets plugin syncs stable brand files, then `react-router typegen` and `tsc --noEmit` run before building and prerendering all routes.
 - `pnpm biome` / `pnpm biome:fix` — lint/format (Biome, not ESLint/Prettier).
@@ -35,5 +38,5 @@
 - First-time Playwright: `pnpm exec playwright install --with-deps chromium`.
 
 ## Deployment
-- CI deploys from `main` via `.github/workflows/deployment.yaml`.
+- CI deploys from `main` via `.github/workflows/deployment.yaml`: on every push to `main`, and on manual `workflow_dispatch` when only Outline content changed. Tests always run against fixtures; deploy runs then pull the latest published Outline articles (attachments cached in `.outline-cache` by attachment id), rebuild, and deploy.
 - `pnpm deploy` runs `wrangler deploy`; Wrangler serves static assets from `build/client` (`html_handling: auto-trailing-slash`, `not_found_handling: 404-page`).
