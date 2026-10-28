@@ -14,6 +14,7 @@
     "preview": "vite preview",
     "typegen": "react-router typegen",
     "content:pull": "node scripts/content-pull.ts",
+    "content:check": "node scripts/content-pull.ts --check",
     "content:fixtures": "node scripts/content-fixtures.ts",
     "typecheck": "pnpm i18n:compile && pnpm typecheck:app",
     "typecheck:app": "react-router typegen && tsc --noEmit",

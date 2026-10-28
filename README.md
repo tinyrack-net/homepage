@@ -23,12 +23,31 @@ This repository contains the Tinyrack homepage, built with React Router and popu
 
 ## Content
 
-Articles live in Outline under `Articles / tinyrack` (notes.winetree94.com), not in this repository. Pages (`content/pages`) and tags (`content/tags`) stay here.
+Articles live in the Outline collection `Blog: tinyrack` (notes.winetree94.com), not in this repository. Pages (`content/pages`) and tags (`content/tags`) stay here.
 
-- The original is the article document; translations are its child documents. Document titles are used as-is.
+- Each top-level document is an original article; translations are its child documents. Document titles are used as-is.
 - Drafts are unpublished Outline documents and are never deployed.
-- Each body starts with a `yaml` block. Every document declares its language with `lang` (for example `lang: "en"`). The original also holds `routeSlug`, `publishedAt`, `updatedAt`, `tags`, `featureImage`, `commentsTerm`, and `excerpt`; translations may only override `publishedAt`, `updatedAt`, or `excerpt` and inherit the rest.
-- `pnpm content:pull` converts them into `content/articles/<slug>/<lang>.md` (gitignored). Tests use `pnpm content:fixtures` instead.
+- Every document starts with the same header: a feature image (Outline attachment), a `yaml` block, and a `---` divider before the body.
+
+  ````markdown
+  ![](/api/attachments.redirect?id=<attachment-id>)
+
+  ```yaml
+  lang: "ko"
+  routeSlug: "my-article"
+  publishedAt: "2026-01-01T00:00:00.000+09:00"
+  commentsTerm: "my-article"
+  ```
+
+  ---
+
+  Body...
+  ````
+
+- The image is required in the original and optional in translations, which otherwise reuse it.
+- Every document declares its language with `lang`. The original also holds `routeSlug`, `publishedAt`, `updatedAt`, `tags`, `commentsTerm`, and `excerpt`; translations may only override `publishedAt`, `updatedAt`, or `excerpt` and inherit the rest.
+- `pnpm content:pull` converts published documents into `content/articles/<slug>/<lang>.md` (gitignored). Tests use `pnpm content:fixtures` instead.
+- `pnpm content:check` validates every document, drafts included, without writing files. Run it before publishing.
 
 To publish content-only changes, run the **Web Deployment** workflow manually:
 

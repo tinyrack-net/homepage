@@ -2,11 +2,14 @@
  * Pull blog articles from Outline (the source of truth) into
  * `content/articles/<routeSlug>/<lang>.md`.
  *
- * Outline layout: Articles / <blog> / <original article> / <translations>
- * Every document declares its language with `lang` in the yaml block.
- * Each article body starts with a ```yaml metadata block; see README.md.
+ * Outline layout: <blog collection> / <original article> / <translations>
+ * Every document starts with a feature image, a ```yaml metadata block that
+ * declares `lang`, and a `---` divider; see README.md and content-format.ts.
  *
- * Usage: OUTLINE_API_KEY=... node scripts/content-pull.ts
+ * Usage:
+ *   OUTLINE_API_KEY=... node scripts/content-pull.ts          # published only
+ *   OUTLINE_API_KEY=... node scripts/content-pull.ts --check  # validate all,
+ *                                                     including drafts; no writes
  */
 import {
   cpSync,
@@ -17,17 +20,21 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
-import { parse as parseYaml } from "yaml";
+import {
+  ATTACHMENT_URL,
+  ContentError,
+  checkUnsupportedSyntax,
+  normalizeBody,
+  parseHeader,
+} from "./content-format.ts";
 
 // ---------------------------------------------------------------------------
 // Site configuration
 // ---------------------------------------------------------------------------
 
 const SITE = {
-  /** Outline document whose children are this blog's articles. */
-  parentDocumentId: "9c30bf9b-768c-45b2-a7c2-235dec541ef8",
-  /** Outline collection that contains the parent document. */
-  collectionId: "6bbfb285-728f-482b-9aaf-6b63df7e27d7",
+  /** Outline collection whose top-level documents are this blog's articles. */
+  collectionId: "5bee6c64-68ba-4227-931c-1f56344df64a",
   languages: ["ko", "en", "ja"],
   extension: "md",
   outputDir: "content/articles",
@@ -40,6 +47,7 @@ const OUTLINE_URL = (
 const OUTLINE_API_KEY = process.env.OUTLINE_API_KEY;
 const CACHE_DIR = ".outline-cache/attachments";
 const CONCURRENCY = 6;
+const CHECK = process.argv.includes("--check");
 
 // ---------------------------------------------------------------------------
 // Metadata
@@ -51,7 +59,6 @@ const ORIGINAL_FIELDS = [
   "publishedAt",
   "updatedAt",
   "tags",
-  "featureImage",
   "commentsTerm",
   "excerpt",
 ] as const;
@@ -64,13 +71,19 @@ type Meta = {
   publishedAt: string;
   updatedAt?: string;
   tags: string[];
-  featureImage?: string;
+  featureImage: string;
   commentsTerm: string;
   excerpt: string;
 };
 
 type OutlineNode = { id: string; title: string; children: OutlineNode[] };
-type OutlineDocument = { id: string; title: string; text: string };
+type OutlineDocument = {
+  id: string;
+  title: string;
+  text: string;
+  publishedAt: string | null;
+  parentDocumentId?: string | null;
+};
 
 type ArticleFile = {
   slug: string;
@@ -80,8 +93,6 @@ type ArticleFile = {
   body: string;
   source: string;
 };
-
-class ContentError extends Error {}
 
 // ---------------------------------------------------------------------------
 // Outline API
@@ -104,17 +115,48 @@ async function api<T>(method: string, body: unknown): Promise<T> {
   return ((await response.json()) as { data: T }).data;
 }
 
-function findNode(nodes: OutlineNode[], id: string): OutlineNode | undefined {
-  for (const node of nodes) {
-    if (node.id === id) {
-      return node;
-    }
-    const found = findNode(node.children, id);
-    if (found) {
-      return found;
+/**
+ * The collection tree only lists published documents. When checking, attach
+ * the collection's drafts to it: drafts without a parent are new articles,
+ * the rest belong under their parent (usually draft translations).
+ */
+async function withDrafts(tree: OutlineNode[]): Promise<OutlineNode[]> {
+  const drafts: OutlineDocument[] = [];
+  for (let offset = 0; ; offset += 100) {
+    const page = await api<OutlineDocument[]>("documents.drafts", {
+      collectionId: SITE.collectionId,
+      limit: 100,
+      offset,
+    });
+    drafts.push(...page);
+    if (page.length < 100) {
+      break;
     }
   }
-  return undefined;
+  const nodes = new Map<string, OutlineNode>();
+  const index = (list: OutlineNode[]) => {
+    for (const node of list) {
+      nodes.set(node.id, node);
+      index(node.children);
+    }
+  };
+  index(tree);
+  for (const draft of drafts) {
+    nodes.set(draft.id, { id: draft.id, title: draft.title, children: [] });
+  }
+  const roots = [...tree];
+  for (const draft of drafts) {
+    const node = nodes.get(draft.id) as OutlineNode;
+    const parent = draft.parentDocumentId
+      ? nodes.get(draft.parentDocumentId)
+      : undefined;
+    if (parent) {
+      parent.children.push(node);
+    } else {
+      roots.push(node);
+    }
+  }
+  return roots;
 }
 
 async function mapLimit<T, R>(
@@ -137,36 +179,8 @@ async function mapLimit<T, R>(
 }
 
 // ---------------------------------------------------------------------------
-// Conversion
+// Metadata parsing
 // ---------------------------------------------------------------------------
-
-const YAML_BLOCK = /^\s*```ya?ml\n([\s\S]*?)\n```[ \t]*(?:\n|$)/;
-const ATTACHMENT_URL =
-  /(?:https?:\/\/[^/\s)]+)?\/api\/attachments\.redirect\?id=([0-9a-f-]{36})/g;
-const IS_ATTACHMENT_URL =
-  /^(?:https?:\/\/[^/\s)]+)?\/api\/attachments\.redirect\?id=[0-9a-f-]{36}$/;
-
-function splitMetadata(doc: OutlineDocument) {
-  const match = YAML_BLOCK.exec(doc.text);
-  if (!match) {
-    throw new ContentError(
-      `"${doc.title}": body must start with a yaml metadata block`,
-    );
-  }
-  let data: unknown;
-  try {
-    data = parseYaml(match[1] ?? "") ?? {};
-  } catch (error) {
-    throw new ContentError(`"${doc.title}": invalid yaml (${error})`);
-  }
-  if (typeof data !== "object" || Array.isArray(data)) {
-    throw new ContentError(`"${doc.title}": yaml must be a mapping`);
-  }
-  return {
-    data: data as Record<string, unknown>,
-    body: doc.text.slice(match[0].length),
-  };
-}
 
 function toStringValue(value: unknown): string | undefined {
   if (value === undefined || value === null || value === "") {
@@ -177,14 +191,14 @@ function toStringValue(value: unknown): string | undefined {
 }
 
 function readMeta(
-  doc: OutlineDocument,
+  source: string,
   data: Record<string, unknown>,
   allowed: readonly string[],
 ): Partial<Meta> {
   const unknown = Object.keys(data).filter((key) => !allowed.includes(key));
   if (unknown.length > 0) {
     throw new ContentError(
-      `"${doc.title}": unsupported metadata ${unknown.join(", ")} (allowed: ${allowed.join(", ")})`,
+      `"${source}": unsupported metadata ${unknown.join(", ")} (allowed: lang, ${allowed.join(", ")})`,
     );
   }
   const meta: Partial<Meta> = {};
@@ -195,7 +209,7 @@ function readMeta(
         continue;
       }
       if (!Array.isArray(value)) {
-        throw new ContentError(`"${doc.title}": tags must be a list`);
+        throw new ContentError(`"${source}": tags must be a list`);
       }
       meta.tags = value.map(String);
     } else {
@@ -209,83 +223,20 @@ function readMeta(
 }
 
 /** Read and remove the required `lang` field from a yaml block. */
-function takeLang(doc: OutlineDocument, data: Record<string, unknown>): string {
+function takeLang(source: string, data: Record<string, unknown>): string {
   const lang = toStringValue(data.lang);
   delete data.lang;
   if (!lang) {
     throw new ContentError(
-      `"${doc.title}": lang is required (${SITE.languages.join(", ")})`,
+      `"${source}": lang is required (${SITE.languages.join(", ")})`,
     );
   }
   if (!SITE.languages.includes(lang)) {
     throw new ContentError(
-      `"${doc.title}": unsupported lang "${lang}" (${SITE.languages.join(", ")})`,
+      `"${source}": unsupported lang "${lang}" (${SITE.languages.join(", ")})`,
     );
   }
   return lang;
-}
-
-/** Normalize Outline's markdown export into plain CommonMark/GFM. */
-function normalizeBody(markdown: string): string {
-  const lines = markdown.replace(/\r\n/g, "\n").split("\n");
-  const out: string[] = [];
-  let fence: string | null = null;
-
-  for (const line of lines) {
-    const fenceMatch = /^\s*(`{3,}|~{3,})/.exec(line);
-    if (fence) {
-      out.push(line);
-      if (fenceMatch?.[1]?.startsWith(fence)) {
-        fence = null;
-      }
-      continue;
-    }
-    if (fenceMatch) {
-      fence = fenceMatch[1] ?? null;
-      out.push(line);
-      continue;
-    }
-
-    // Outline indents standalone images by one space.
-    let next = line.replace(/^ (!\[)/, "$1");
-
-    // Outline serializes hard breaks inside blockquotes as a literal "\n".
-    const quote = /^((?:> ?)+)/.exec(next)?.[1];
-    if (quote) {
-      next = next
-        .split(/(`[^`]*`)/)
-        .map((part, index) =>
-          index % 2 === 1 ? part : part.replace(/\\n/g, `\\\n${quote}`),
-        )
-        .join("");
-    }
-    out.push(next);
-  }
-
-  return `${out
-    .join("\n")
-    .replace(/^\s+/, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trimEnd()}\n`;
-}
-
-function checkUnsupportedSyntax(file: ArticleFile) {
-  const prose = file.body.replace(/^(`{3,}|~{3,})[\s\S]*?^\1/gm, "");
-  const problems: string[] = [];
-  if (/^:::/m.test(prose)) {
-    problems.push("notice blocks (:::)");
-  }
-  if (/@\[[^\]]*\]\(mention:\/\//.test(prose)) {
-    problems.push("mentions");
-  }
-  if (/\]\(\/doc\//.test(prose)) {
-    problems.push("links to other Outline documents");
-  }
-  if (problems.length > 0) {
-    throw new ContentError(
-      `"${file.source}": unsupported Outline syntax: ${problems.join(", ")}`,
-    );
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -349,7 +300,7 @@ function assignFileNames(
 }
 
 // ---------------------------------------------------------------------------
-// Main
+// Collection
 // ---------------------------------------------------------------------------
 
 function knownTags(): Set<string> {
@@ -366,7 +317,7 @@ function yamlValue(value: unknown): string {
     : JSON.stringify(value);
 }
 
-function renderFile(file: ArticleFile, featureImage?: string): string {
+function renderFile(file: ArticleFile): string {
   const frontmatter: Record<string, unknown> = {
     title: file.title,
     excerpt: file.meta.excerpt,
@@ -376,7 +327,7 @@ function renderFile(file: ArticleFile, featureImage?: string): string {
     publishedAt: file.meta.publishedAt,
     updatedAt: file.meta.updatedAt,
     tags: file.meta.tags,
-    featureImage,
+    featureImage: file.meta.featureImage,
     commentsTerm: file.meta.commentsTerm,
     draft: false,
   };
@@ -386,112 +337,165 @@ function renderFile(file: ArticleFile, featureImage?: string): string {
   return `---\n${lines.join("\n")}\n---\n\n${file.body}`;
 }
 
-async function collectArticles(): Promise<ArticleFile[][]> {
-  const tree = await api<OutlineNode[]>("collections.documents", {
+/** Label used in messages; drafts are marked so check output is unambiguous. */
+function sourceOf(doc: OutlineDocument): string {
+  return doc.publishedAt ? doc.title : `${doc.title} [draft]`;
+}
+
+type Collected = { articles: ArticleFile[][]; errors: string[] };
+
+/**
+ * Read every article in the blog collection. Drafts are skipped unless
+ * checking. Errors are collected per article so one run reports them all.
+ */
+async function collectArticles(): Promise<Collected> {
+  const published = await api<OutlineNode[]>("collections.documents", {
     id: SITE.collectionId,
   });
-  const parent = findNode(tree, SITE.parentDocumentId);
-  if (!parent) {
-    throw new ContentError(
-      `parent document ${SITE.parentDocumentId} not found (is it published?)`,
-    );
-  }
-
+  const tree = CHECK ? await withDrafts(published) : published;
   const tags = knownTags();
-  const slugs = new Set<string>();
+  const errors: string[] = [];
+  const warnings: string[] = [];
 
-  return mapLimit(parent.children, CONCURRENCY, async (node) => {
+  const results = await mapLimit(tree, CONCURRENCY, async (node) => {
     const original = await api<OutlineDocument>("documents.info", {
       id: node.id,
     });
-    const { data, body } = splitMetadata(original);
-    const originalLang = takeLang(original, data);
-    const meta = readMeta(original, data, ORIGINAL_FIELDS);
-    for (const key of ["routeSlug", "publishedAt", "commentsTerm"] as const) {
-      if (!meta[key]) {
-        throw new ContentError(`"${original.title}": ${key} is required`);
+    if (!(CHECK || original.publishedAt)) {
+      return undefined;
+    }
+    try {
+      return await readArticle(node, original, tags, warnings);
+    } catch (error) {
+      if (error instanceof ContentError) {
+        errors.push(error.message);
+        return undefined;
       }
+      throw error;
     }
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(meta.routeSlug as string)) {
-      throw new ContentError(
-        `"${original.title}": routeSlug must be kebab-case`,
-      );
-    }
-    if (slugs.has(meta.routeSlug as string)) {
-      throw new ContentError(`duplicate routeSlug "${meta.routeSlug}"`);
-    }
-    slugs.add(meta.routeSlug as string);
-    const unknownTags = (meta.tags ?? []).filter((tag) => !tags.has(tag));
-    if (unknownTags.length > 0) {
-      throw new ContentError(
-        `"${original.title}": unknown tags ${unknownTags.join(", ")} (add them to ${SITE.tagsDir})`,
-      );
-    }
-
-    const base: Meta = {
-      tags: [],
-      excerpt: "",
-      ...meta,
-    } as Meta;
-    const files: ArticleFile[] = [
-      {
-        slug: base.routeSlug,
-        lang: originalLang,
-        title: original.title.trim(),
-        meta: base,
-        body: normalizeBody(body),
-        source: original.title,
-      },
-    ];
-
-    for (const child of node.children) {
-      const translation = await api<OutlineDocument>("documents.info", {
-        id: child.id,
-      });
-      if (child.children.length > 0) {
-        throw new ContentError(
-          `"${translation.title}": translations cannot have child documents`,
-        );
-      }
-      const split = splitMetadata(translation);
-      const lang = takeLang(translation, split.data);
-      if (files.some((file) => file.lang === lang)) {
-        throw new ContentError(
-          `"${translation.title}": "${original.title}" already has a ${lang} version`,
-        );
-      }
-      const overrides = readMeta(translation, split.data, TRANSLATION_FIELDS);
-      files.push({
-        slug: base.routeSlug,
-        lang,
-        title: translation.title.trim(),
-        meta: { ...base, excerpt: "", ...overrides },
-        body: normalizeBody(split.body),
-        source: translation.title,
-      });
-    }
-
-    for (const file of files) {
-      checkUnsupportedSyntax(file);
-    }
-    return files;
   });
+
+  const articles = results.filter((files) => files !== undefined);
+  const slugs = new Map<string, string>();
+  for (const files of articles) {
+    const first = files[0] as ArticleFile;
+    const previous = slugs.get(first.slug);
+    if (previous) {
+      errors.push(
+        `duplicate routeSlug "${first.slug}" ("${previous}", "${first.source}")`,
+      );
+    }
+    slugs.set(first.slug, first.source);
+  }
+  for (const warning of warnings) {
+    console.warn(`content warning: ${warning}`);
+  }
+  return { articles, errors };
 }
 
-async function main() {
-  if (!OUTLINE_API_KEY) {
+async function readArticle(
+  node: OutlineNode,
+  original: OutlineDocument,
+  tags: Set<string>,
+  warnings: string[],
+): Promise<ArticleFile[]> {
+  const source = sourceOf(original);
+  const header = parseHeader(original.text, source);
+  const originalLang = takeLang(source, header.data);
+  const meta = readMeta(source, header.data, ORIGINAL_FIELDS);
+  if (!header.image) {
+    throw new ContentError(`"${source}": feature image is required`);
+  }
+  for (const key of ["routeSlug", "publishedAt", "commentsTerm"] as const) {
+    if (!meta[key]) {
+      throw new ContentError(`"${source}": ${key} is required`);
+    }
+  }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(meta.routeSlug as string)) {
+    throw new ContentError(`"${source}": routeSlug must be kebab-case`);
+  }
+  const unknownTags = (meta.tags ?? []).filter((tag) => !tags.has(tag));
+  if (unknownTags.length > 0) {
     throw new ContentError(
-      "OUTLINE_API_KEY is not set. Create a read-only API key in Outline and export it.",
+      `"${source}": unknown tags ${unknownTags.join(", ")} (add them to ${SITE.tagsDir})`,
     );
   }
 
-  const articles = await collectArticles();
+  const base = {
+    tags: [],
+    excerpt: "",
+    ...meta,
+    featureImage: header.image,
+  } as Meta;
+  const files: ArticleFile[] = [
+    {
+      slug: base.routeSlug,
+      lang: originalLang,
+      title: original.title.trim(),
+      meta: base,
+      body: normalizeBody(header.body),
+      source,
+    },
+  ];
 
+  for (const child of node.children) {
+    const translation = await api<OutlineDocument>("documents.info", {
+      id: child.id,
+    });
+    if (!(CHECK || translation.publishedAt)) {
+      continue;
+    }
+    const childSource = sourceOf(translation);
+    if (child.children.length > 0) {
+      throw new ContentError(
+        `"${childSource}": translations cannot have child documents`,
+      );
+    }
+    const split = parseHeader(translation.text, childSource);
+    const lang = takeLang(childSource, split.data);
+    if (files.some((file) => file.lang === lang)) {
+      throw new ContentError(
+        `"${childSource}": "${source}" already has a ${lang} version`,
+      );
+    }
+    const overrides = readMeta(childSource, split.data, TRANSLATION_FIELDS);
+    files.push({
+      slug: base.routeSlug,
+      lang,
+      title: translation.title.trim(),
+      meta: {
+        ...base,
+        excerpt: "",
+        ...overrides,
+        featureImage: split.image ?? base.featureImage,
+      },
+      body: normalizeBody(split.body),
+      source: childSource,
+    });
+  }
+
+  for (const file of files) {
+    checkUnsupportedSyntax(file.source, file.body);
+  }
+  const missing = SITE.languages.filter(
+    (lang) => !files.some((file) => file.lang === lang),
+  );
+  if (missing.length > 0) {
+    warnings.push(`"${source}": missing translations ${missing.join(", ")}`);
+  }
+  return files;
+}
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+
+async function writeArticles(articles: ArticleFile[][]) {
   // Download every referenced attachment (cached by immutable attachment id).
   const ids = new Set<string>();
   for (const files of articles) {
     for (const file of files) {
-      for (const text of [file.body, file.meta.featureImage ?? ""]) {
+      for (const text of [file.body, file.meta.featureImage]) {
         for (const match of text.matchAll(ATTACHMENT_URL)) {
           ids.add(match[1] as string);
         }
@@ -513,7 +517,7 @@ async function main() {
     const articleIds = [
       ...new Set(
         files.flatMap((file) =>
-          [file.meta.featureImage ?? "", file.body].flatMap((text) =>
+          [file.meta.featureImage, file.body].flatMap((text) =>
             [...text.matchAll(ATTACHMENT_URL)].map(
               (match) => match[1] as string,
             ),
@@ -535,21 +539,11 @@ async function main() {
       );
 
     for (const file of files) {
-      if (
-        file.meta.featureImage &&
-        !IS_ATTACHMENT_URL.test(file.meta.featureImage)
-      ) {
-        throw new ContentError(
-          `"${file.source}": featureImage must be an Outline attachment`,
-        );
-      }
-      const featureImage = file.meta.featureImage
-        ? localize(file.meta.featureImage)
-        : undefined;
-      const output = renderFile(
-        { ...file, body: localize(file.body) },
-        featureImage,
-      );
+      const output = renderFile({
+        ...file,
+        meta: { ...file.meta, featureImage: localize(file.meta.featureImage) },
+        body: localize(file.body),
+      });
       writeFileSync(join(dir, `${file.lang}.${SITE.extension}`), output);
     }
   }
@@ -562,10 +556,33 @@ async function main() {
       }
     }
   }
+  return ids.size;
+}
+
+async function main() {
+  if (!OUTLINE_API_KEY) {
+    throw new ContentError(
+      "OUTLINE_API_KEY is not set. Create a read-only API key in Outline and export it.",
+    );
+  }
+
+  const { articles, errors } = await collectArticles();
+  if (errors.length > 0) {
+    throw new ContentError(
+      `${errors.length} problem(s) found:\n  - ${errors.join("\n  - ")}`,
+    );
+  }
 
   const fileCount = articles.reduce((sum, files) => sum + files.length, 0);
+  if (CHECK) {
+    console.log(
+      `Checked ${articles.length} articles (${fileCount} files, drafts included): no problems`,
+    );
+    return;
+  }
+  const attachmentCount = await writeArticles(articles);
   console.log(
-    `Pulled ${articles.length} articles (${fileCount} files, ${ids.size} attachments) into ${SITE.outputDir}`,
+    `Pulled ${articles.length} articles (${fileCount} files, ${attachmentCount} attachments) into ${SITE.outputDir}`,
   );
 }
 
